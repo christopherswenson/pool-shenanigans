@@ -57,6 +57,7 @@ view: game_players {
     type: number
     sql: (${win_count} / ${count}) * 100 ;;
     value_format: "0.00\%"
+    drill_fields: [detail*]
   }
 
   set: detail {
