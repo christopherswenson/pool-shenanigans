@@ -9,6 +9,7 @@ view: balls {
   }
 
   dimension: number {
+    primary_key: yes
     type: number
     sql: ${TABLE}.number ;;
   }
