@@ -30,8 +30,26 @@ explore: games {
     relationship: one_to_one
     sql_on: ${balls_pocketed.pocket_id} = ${pockets.id} ;;
   }
+
+  join: table_state {
+    relationship: one_to_many
+    sql_on: ${shots.id} = ${table_state.current_shot_id} ;;
+  }
 }
 
 explore: players {
+
+}
+
+explore: shots {
+  join: games {
+    relationship: many_to_one
+    sql_on: ${shots.game_id} = ${games.id} ;;
+  }
+
+  join: table_state {
+    relationship: one_to_many
+    sql_on: ${shots.id} = ${table_state.current_shot_id} ;;
+  }
 
 }

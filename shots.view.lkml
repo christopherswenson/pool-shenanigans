@@ -74,6 +74,11 @@ view: shots {
     sql: ${TABLE}.is_jump_shot ;;
   }
 
+  measure: balls_left {
+    type: sum
+    sql: ${table_state.balls_left} ;;
+  }
+
   set: detail {
     fields: [
       id,
