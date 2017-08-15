@@ -6,6 +6,8 @@ view: game_players {
       SELECT id, player_two_id FROM `pool-product-day.pool_shenanigans.games` ;;
   }
 
+  # DIMENSIONS
+
   dimension: hidden_id {
     primary_key: yes
     hidden: yes
@@ -13,11 +15,6 @@ view: game_players {
       'game_id:', CAST(game_players.game_id AS STRING), ',',
       'player_id:', CAST(game_players.player_id AS STRING),
     '}') ;;
-  }
-
-  measure: count {
-    type: count
-    drill_fields: [detail*]
   }
 
   dimension: game_id {
@@ -33,6 +30,24 @@ view: game_players {
   dimension: is_winner {
     type: yesno
     sql: ${games.winner_id} = ${player_id} ;;
+  }
+
+  # MEASURES
+
+  measure: win_count {
+    type: sum
+    sql: CASE WHEN ${games.winner_id} = ${player_id} THEN 1 ELSE 0 END ;;
+  }
+
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
+
+  measure: win_percentage {
+    type: number
+    sql: (${win_count} / ${count}) * 100 ;;
+    value_format: "0.00\%"
   }
 
   set: detail {
