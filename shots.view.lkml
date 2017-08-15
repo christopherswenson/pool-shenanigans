@@ -92,7 +92,11 @@ view: shots {
 
   measure: success_percentage {
     type: number
-    sql: (${success_count} / ${called_count}) * 100 ;;
+    sql: CASE
+      WHEN ${called_count} = 0
+      THEN NULL
+      ELSE (${success_count} / ${called_count}) * 100
+    END ;;
     value_format: "0.00\%"
   }
 
