@@ -15,12 +15,12 @@ view: games {
 
   dimension: player_one_id {
     type: number
-    sql: ${TABLE}.player_1_id ;;
+    sql: ${TABLE}.player_one_id ;;
   }
 
   dimension: player_two_id {
     type: number
-    sql: ${TABLE}.player_2_id ;;
+    sql: ${TABLE}.player_two_id ;;
   }
 
   dimension_group: start_time {

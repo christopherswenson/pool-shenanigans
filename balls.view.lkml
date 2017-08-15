@@ -26,13 +26,10 @@ view: balls {
         sql:  ${number} = 8  ;;
       }
       when: {
-        label: "solid"
-        sql:  ${number} < 8  ;;
-      }
-      when: {
         label: "stripe"
         sql:  ${number} > 8  ;;
       }
+      else: "solid"
     }
   }
 
