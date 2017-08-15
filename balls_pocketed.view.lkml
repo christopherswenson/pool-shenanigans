@@ -1,7 +1,6 @@
 view: balls_pocketed {
   derived_table: {
-    sql: SELECT * FROM `pool-product-day.pool_shenanigans.balls_pocketed`
-      ;;
+    sql: SELECT * FROM `pool-product-day.pool_shenanigans.balls_pocketed` ;;
   }
 
   measure: count {
