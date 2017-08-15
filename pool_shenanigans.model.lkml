@@ -7,23 +7,23 @@ explore: games {
   join: player_one {
     from: players
     relationship: one_to_one
-    sql: ${games.player_one_id} = ${player_one.id} ;;
+    sql_on: ${games.player_one_id} = ${player_one.id} ;;
   }
 
   join: player_two {
     from: players
     relationship: one_to_one
-    sql: ${games.player_two_id} = ${player_two.id} ;;
+    sql_on: ${games.player_two_id} = ${player_two.id} ;;
   }
 
   join: shots {
     relationship: one_to_many
-    sql: ${games.id} = ${shots.game_id} ;;
+    sql_on: ${games.id} = ${shots.game_id} ;;
   }
 
   join: balls_pocketed {
     relationship: one_to_many
-    sql: ${shots.id} = ${balls_pocketed.shot_id} ;;
+    sql_on: ${shots.id} = ${balls_pocketed.shot_id} ;;
   }
 }
 
