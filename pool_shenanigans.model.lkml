@@ -58,6 +58,12 @@ explore: game_players {
     relationship: many_to_one
     sql_on: ${game_players.player_id} = ${players.id} ;;
   }
+
+  join: opponent {
+    from: players
+    relationship: many_to_one
+    sql_on: ${game_players.opponent_id} = ${opponent.id} ;;
+  }
 }
 
 explore: shots {

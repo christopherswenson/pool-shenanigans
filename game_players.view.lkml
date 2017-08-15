@@ -32,6 +32,14 @@ view: game_players {
     sql: ${games.winner_id} = ${player_id} ;;
   }
 
+  dimension: opponent_id {
+    type: number
+    sql: CASE WHEN ${player_id} = ${games.player_one_id}
+      THEN ${games.player_two_id}
+      ELSE ${games.player_one_id}
+    END ;;
+  }
+
   # MEASURES
 
   measure: win_count {
