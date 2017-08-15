@@ -24,6 +24,11 @@ view: players {
     sql: ${TABLE}.last_name ;;
   }
 
+  dimension: full_name {
+    type: string
+    sql: CONCAT(${first_name}, ' ', ${last_name}) ;;
+  }
+
   set: detail {
     fields: [id, first_name, last_name]
   }
