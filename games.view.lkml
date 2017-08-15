@@ -45,6 +45,15 @@ view: games {
     sql: ${TABLE}.winner_id ;;
   }
 
+  dimension: loser_id {
+    type: number
+    sql: CASE
+      WHEN ${winner_id} = ${player_one_id}
+      THEN ${player_two_id}
+      ELSE ${player_one_id}
+    END ;;
+  }
+
   measure: average_game_duration {
     type: average
     sql: ${game_duration} ;;
