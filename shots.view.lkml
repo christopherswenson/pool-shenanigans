@@ -50,13 +50,13 @@ view: shots {
   }
 
   dimension: is_break {
-    type: number
-    sql: ${TABLE}.is_break ;;
+    type: yesno
+    sql: (CASE WHEN ${TABLE}.is_break = 1 THEN true ELSE false END) ;;
   }
 
   dimension: is_table_open {
-    type: number
-    sql: ${TABLE}.is_table_open ;;
+    type: yesno
+    sql: (CASE WHEN ${TABLE}.is_table_open = 1 THEN true ELSE false END) ;;
   }
 
   dimension: combo_size {
@@ -65,18 +65,23 @@ view: shots {
   }
 
   dimension: is_bank_shot {
-    type: number
-    sql: ${TABLE}.is_bank_shot ;;
+    type: yesno
+    sql: (CASE WHEN ${TABLE}.is_bank_shot = 1 THEN true ELSE false END) ;;
   }
 
   dimension: is_jump_shot {
-    type: number
-    sql: ${TABLE}.is_jump_shot ;;
+    type: yesno
+    sql: (CASE WHEN ${TABLE}.is_jump_shot = 1 THEN true ELSE false END) ;;
   }
 
   dimension: is_success {
     type: yesno
     sql: (${called_ball_pocketed.id} IS NOT NULL) AND (NOT ${is_scratch}) ;;
+  }
+
+  measure: called_count {
+    type: sum
+    sql: (CASE WHEN ${called_ball_number} IS NULL THEN 0 ELSE 1 END) ;;
   }
 
   measure: success_count {
@@ -86,7 +91,7 @@ view: shots {
 
   measure: success_percentage {
     type: number
-    sql: (${success_count} / ${count}) * 100 ;;
+    sql: (${success_count} / ${called_count}) * 100 ;;
     value_format: "0.00\%"
   }
 
