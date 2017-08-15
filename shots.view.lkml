@@ -86,7 +86,7 @@ view: shots {
 
   measure: success_count {
     type: sum
-    sql: (CASE WHEN ${is_success} THEN 0 ELSE 1 END) ;;
+    sql: (CASE WHEN ${is_success} THEN 1 ELSE 0 END) ;;
   }
 
   measure: success_percentage {
