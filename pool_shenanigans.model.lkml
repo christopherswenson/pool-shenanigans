@@ -66,4 +66,15 @@ explore: shots {
       ${shots.called_ball_number} = ${called_ball_pocketed.ball_number} AND
       ${shots.called_pocket_id} = ${called_ball_pocketed.pocket_id} ;;
   }
+
+  join: games {
+    relationship: many_to_one
+    sql_on: ${shots.game_id} = ${games.id} ;;
+  }
+
+  join: shooter {
+    from: players
+    relationship: many_to_one
+    sql_on: ${shots.player_id} = ${shooter.id} ;;
+  }
 }
