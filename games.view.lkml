@@ -1,6 +1,7 @@
 view: games {
   derived_table: {
     sql: SELECT * FROM `pool-product-day.pool_shenanigans.games` ;;
+    persist_for: "2 minutes"
   }
 
   measure: count {

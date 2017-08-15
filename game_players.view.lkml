@@ -4,6 +4,7 @@ view: game_players {
       SELECT id as game_id, player_one_id as player_id FROM `pool-product-day.pool_shenanigans.games`
       UNION ALL
       SELECT id, player_two_id FROM `pool-product-day.pool_shenanigans.games` ;;
+    persist_for: "2 minutes"
   }
 
   # DIMENSIONS
