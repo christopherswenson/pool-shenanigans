@@ -34,9 +34,19 @@ view: games {
     sql: ${TABLE}.end_time ;;
   }
 
+  dimension: game_duration {
+    type: number
+    sql: timestamp_diff(${end_time_raw}, ${start_time_raw}, MINUTE) ;;
+  }
+
   dimension: winner_id {
     type: number
     sql: ${TABLE}.winner_id ;;
+  }
+
+  measure: average_game_duration {
+    type: average
+    sql: ${game_duration} ;;
   }
 
   set: detail {
