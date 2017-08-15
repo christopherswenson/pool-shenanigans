@@ -94,11 +94,13 @@ view: shots {
     type: number
     sql: (${success_count} / ${called_count}) * 100 ;;
     value_format: "0.00\%"
+    drill_fields: [called_pocket_id, game_id]
   }
 
   measure: balls_left {
     type: sum
     sql: ${table_state.balls_left} ;;
+    drill_fields: [called_ball_number]
   }
 
   set: detail {

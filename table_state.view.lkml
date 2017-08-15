@@ -30,12 +30,13 @@ view: table_state {
   dimension: current_shot_id {
     type:  number
     sql: ${TABLE}.current_shot_id ;;
+    drill_fields: [game_id, balls_left]
   }
 
-#   dimension: game_id {
-#     type:  number
-#     sql: ${TABLE}.game_id ;;
-#   }
+  dimension: game_id {
+    type:  number
+    sql: ${TABLE}.game_id ;;
+  }
 #
 #   dimension: shot_id {
 #     type:  number
@@ -50,6 +51,7 @@ view: table_state {
   dimension: balls_left {
     type: number
     sql: CASE WHEN (${TABLE}.balls_pocketed IS NULL) THEN 15 ELSE 15 - ${TABLE}.balls_pocketed END ;;
+    drill_fields: [game_id, current_shot_id]
   }
 
 }
