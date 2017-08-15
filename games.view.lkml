@@ -13,12 +13,12 @@ view: games {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: player_1_id {
+  dimension: player_one_id {
     type: number
     sql: ${TABLE}.player_1_id ;;
   }
 
-  dimension: player_2_id {
+  dimension: player_two_id {
     type: number
     sql: ${TABLE}.player_2_id ;;
   }
@@ -41,8 +41,8 @@ view: games {
   set: detail {
     fields: [
       id,
-      player_1_id,
-      player_2_id,
+      player_one_id,
+      player_two_id,
       start_time_time,
       end_time_time,
       winner_id

@@ -13,6 +13,17 @@ view: pockets {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: type {
+    type: string
+    case: {
+      when: {
+        label: "corner"
+        sql: ${TABLE}.id in [0, 1, 4, 5] ;;
+      }
+      else: "side"
+    }
+  }
+
   set: detail {
     fields: [id]
   }
