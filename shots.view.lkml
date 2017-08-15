@@ -44,8 +44,8 @@ view: shots {
   }
 
   dimension: is_scratch {
-    type: number
-    sql: ${TABLE}.is_scratch ;;
+    type: yesno
+    sql: (CASE WHEN ${TABLE}.is_scratch = 1 THEN true ELSE false END) ;;
   }
 
   dimension: is_break {
@@ -71,6 +71,22 @@ view: shots {
   dimension: is_jump_shot {
     type: number
     sql: ${TABLE}.is_jump_shot ;;
+  }
+
+  dimension: is_success {
+    type: yesno
+    sql: (${called_ball_pocketed.id} IS NOT NULL) AND (NOT ${is_scratch}) ;;
+  }
+
+  measure: success_count {
+    type: sum
+    sql: (CASE WHEN ${is_success} THEN 0 ELSE 1 END) ;;
+  }
+
+  measure: success_percentage {
+    type: number
+    sql: (${success_count} / ${count}) * 100 ;;
+    value_format: "0.00\%"
   }
 
   set: detail {
