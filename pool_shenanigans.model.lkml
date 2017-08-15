@@ -6,3 +6,7 @@ include: "*.dashboard.lookml"  # include all dashboards in this project
 explore: games {
 
 }
+
+explore: players {
+
+}
