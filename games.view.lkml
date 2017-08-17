@@ -22,11 +22,13 @@ view: games {
   }
 
   dimension: player_one_id {
+    hidden: yes
     type: number
     sql: ${TABLE}.player_one_id ;;
   }
 
   dimension: player_two_id {
+    hidden: yes
     type: number
     sql: ${TABLE}.player_two_id ;;
   }
@@ -48,11 +50,13 @@ view: games {
   }
 
   dimension: winner_id {
+    hidden: yes
     type: number
     sql: ${TABLE}.winner_id ;;
   }
 
   dimension: loser_id {
+    hidden: yes
     type: number
     sql: CASE
       WHEN ${winner_id} = ${player_one_id}
