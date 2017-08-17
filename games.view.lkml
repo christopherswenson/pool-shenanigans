@@ -15,6 +15,12 @@ view: games {
     sql: ${TABLE}.id ;;
   }
 
+  dimension: number {
+    type: number
+    sql: ${TABLE}.id + 1 ;;
+    value_format: "\"Game \" 0"
+  }
+
   dimension: player_one_id {
     type: number
     sql: ${TABLE}.player_one_id ;;
@@ -38,6 +44,7 @@ view: games {
   dimension: game_duration {
     type: number
     sql: timestamp_diff(${end_time_raw}, ${start_time_raw}, MINUTE) ;;
+    html: {{linked_value}} minutes ;;
   }
 
   dimension: winner_id {

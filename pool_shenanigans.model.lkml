@@ -35,13 +35,10 @@ explore: games {
 
   # NOTE This join must be made anywhere where shots is joined in as well,
   # so ensure all instances are updated whenever this is modified
-  join: called_ball_pocketed {
-    from: balls_pocketed
+  join: called_balls_pocketed {
     relationship: one_to_one
     sql_on:
-      ${shots.id} = ${called_ball_pocketed.shot_id} AND
-      ${shots.called_ball_number} = ${called_ball_pocketed.ball_number} AND
-      ${shots.called_pocket_id} = ${called_ball_pocketed.pocket_id} ;;
+      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
   }
 
   join: balls_pocketed {
@@ -84,13 +81,10 @@ explore: game_players {
 
   # NOTE This join must be made anywhere where shots is joined in as well,
   # so ensure all instances are updated whenever this is modified
-  join: called_ball_pocketed {
-    from: balls_pocketed
+  join: called_balls_pocketed {
     relationship: one_to_one
     sql_on:
-      ${shots.id} = ${called_ball_pocketed.shot_id} AND
-      ${shots.called_ball_number} = ${called_ball_pocketed.ball_number} AND
-      ${shots.called_pocket_id} = ${called_ball_pocketed.pocket_id} ;;
+      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
   }
 
   join: balls_pocketed {
@@ -107,13 +101,10 @@ explore: game_players {
 explore: shots {
   # NOTE This join must be made anywhere where shots is joined in as well,
   # so ensure all instances are updated whenever this is modified
-  join: called_ball_pocketed {
-    from: balls_pocketed
+  join: called_balls_pocketed {
     relationship: one_to_one
     sql_on:
-      ${shots.id} = ${called_ball_pocketed.shot_id} AND
-      ${shots.called_ball_number} = ${called_ball_pocketed.ball_number} AND
-      ${shots.called_pocket_id} = ${called_ball_pocketed.pocket_id} ;;
+      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
   }
 
   join: games {
@@ -130,5 +121,16 @@ explore: shots {
   join: table_state {
     relationship: one_to_many
     sql_on: ${shots.id} = ${table_state.current_shot_id} ;;
+  }
+
+  join: balls_remaining {
+    relationship: many_to_one
+    sql_on: ${shots.id} = ${balls_remaining.shot_id} ;;
+  }
+
+  join: balls_remaining_balls {
+    from: balls
+    relationship: one_to_many
+    sql_on: ${balls_remaining_balls.number} = ${balls_remaining.ball_number} ;;
   }
 }

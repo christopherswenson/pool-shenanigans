@@ -20,18 +20,18 @@ view: balls {
     sql: ${number} ;;
     case: {
       when: {
-        label: "cue"
+        label: "Cue"
         sql:  ${number} = 0  ;;
       }
       when: {
-        label: "eight"
+        label: "Eight"
         sql:  ${number} = 8  ;;
       }
       when: {
-        label: "stripe"
+        label: "Stripe"
         sql:  ${number} > 8  ;;
       }
-      else: "solid"
+      else: "Solid"
     }
   }
 

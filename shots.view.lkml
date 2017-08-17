@@ -77,7 +77,7 @@ view: shots {
 
   dimension: is_success {
     type: yesno
-    sql: (${called_ball_pocketed.id} IS NOT NULL) AND (NOT ${is_scratch}) ;;
+    sql: (${called_balls_pocketed.shot_id} IS NOT NULL) AND (NOT ${is_scratch}) ;;
   }
 
   measure: called_count {
