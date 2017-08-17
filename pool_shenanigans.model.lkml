@@ -33,12 +33,9 @@ explore: games {
     sql_on: ${games.id} = ${shots.game_id} ;;
   }
 
-  # NOTE This join must be made anywhere where shots is joined in as well,
-  # so ensure all instances are updated whenever this is modified
   join: called_balls_pocketed {
     relationship: one_to_one
-    sql_on:
-      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
+    sql_on: ${shots.id} = ${called_balls_pocketed.shot_id} ;;
   }
 
   join: balls_pocketed {
@@ -79,8 +76,6 @@ explore: game_players {
     sql_on: ${games.id} = ${shots.game_id} AND ${shots.player_id} = ${game_players.player_id};;
   }
 
-  # NOTE This join must be made anywhere where shots is joined in as well,
-  # so ensure all instances are updated whenever this is modified
   join: called_balls_pocketed {
     relationship: one_to_one
     sql_on:
@@ -99,8 +94,6 @@ explore: game_players {
 }
 
 explore: shots {
-  # NOTE This join must be made anywhere where shots is joined in as well,
-  # so ensure all instances are updated whenever this is modified
   join: called_balls_pocketed {
     relationship: one_to_one
     sql_on:
