@@ -31,26 +31,31 @@ explore: games {
   join: shots {
     relationship: one_to_many
     sql_on: ${games.id} = ${shots.game_id} ;;
+    required_joins: [called_balls_pocketed]
   }
 
   join: called_balls_pocketed {
     relationship: one_to_one
     sql_on: ${shots.id} = ${called_balls_pocketed.shot_id} ;;
+    required_joins: [shots]
   }
 
   join: balls_pocketed {
     relationship: one_to_many
     sql_on: ${shots.id} = ${balls_pocketed.shot_id} ;;
+    required_joins: [shots]
   }
 
   join: pockets {
     relationship: one_to_one
     sql_on: ${balls_pocketed.pocket_id} = ${pockets.id} ;;
+    required_joins: [balls_pocketed]
   }
 
   join: table_state {
     relationship: one_to_many
     sql_on: ${shots.id} = ${table_state.current_shot_id} ;;
+    required_joins: [shots]
   }
 }
 
@@ -74,30 +79,32 @@ explore: game_players {
   join: shots {
     relationship: one_to_many
     sql_on: ${games.id} = ${shots.game_id} AND ${shots.player_id} = ${game_players.player_id};;
+    required_joins: [called_balls_pocketed]
   }
 
   join: called_balls_pocketed {
     relationship: one_to_one
-    sql_on:
-      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
+    sql_on: ${shots.id} = ${called_balls_pocketed.shot_id} ;;
+    required_joins: [shots]
   }
 
   join: balls_pocketed {
     relationship: one_to_many
     sql_on: ${shots.id} = ${balls_pocketed.shot_id} ;;
+    required_joins: [shots]
   }
 
   join: table_state {
     relationship: one_to_many
     sql_on: ${shots.id} = ${table_state.current_shot_id} ;;
+    required_joins: [shots]
   }
 }
 
 explore: shots {
   join: called_balls_pocketed {
     relationship: one_to_one
-    sql_on:
-      ${shots.id} = ${called_balls_pocketed.shot_id} ;;
+    sql_on: ${shots.id} = ${called_balls_pocketed.shot_id} ;;
   }
 
   join: games {
@@ -125,5 +132,6 @@ explore: shots {
     from: balls
     relationship: one_to_many
     sql_on: ${balls_remaining_balls.number} = ${balls_remaining.ball_number} ;;
+    required_joins: [balls_remaining]
   }
 }
