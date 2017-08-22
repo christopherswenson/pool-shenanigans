@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="title"></h5>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div class="row">
+      <div class="form-group">
+        <label for="player-two" class="form-control-label">Select a ball that was pocketed, and where it sank:</label>
+        <div class="row">
+          <div class="col-md-6">
+            <pocket-selector></pocket-selector>
+          </div>
+          <div class="col-md-6">
+            <ball-selector></ball-selector>
+            <div class="gutter">
+              <span id="gutter" class="mr-auto"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <checkbox tabindex="3"></checkbox>
+          <label for="player-two" class="form-control-label checkbox-label">Table scratch occured</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary mr-auto" id="back-button">Back</button>
+  <button type="button" class="btn btn-secondary" id="clear-button">Clear</button>
+  <button type="button" class="btn btn-primary" id="continue-button">Continue</button>
+</div>

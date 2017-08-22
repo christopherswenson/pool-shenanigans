@@ -1,0 +1,57 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="title"></h5>
+</div>
+<div class="modal-body">
+  <div class="container">
+    <div class="row">
+      <div class="form-group">
+        <label for="player-two" class="form-control-label">Select the called ball and pocket:</label>
+        <div class="row">
+          <div class="col-md-6">
+            <pocket-selector></pocket-selector>
+          </div>
+          <div class="col-md-6">
+            <ball-selector></ball-selector>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label for="player-one" class="form-control-label">Combo size:</label>
+          <select class="form-control" id="combo-count" name="player-two">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="form-control-label">&nbsp;</label>
+          <div class="checkbox-group">
+            <checkbox id="jump" tabindex="3"></checkbox>
+            <label for="player-two" class="form-control-label checkbox-label">Jump shot?</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="form-control-label">&nbsp;</label>
+          <div class="checkbox-group">
+            <checkbox id="bank" tabindex="4"></checkbox>
+            <label for="player-two" class="form-control-label checkbox-label">Bank shot?</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary mr-auto" id="back-button">Back</button>
+  <span id="gutter" class="mr-auto"></span>
+  <button type="button" class="btn btn-primary" id="continue-button">Continue</button>
+</div>

@@ -1,0 +1,52 @@
+
+pocket-selector {
+  padding: 0px 30px;
+  --height: 500px;
+  height: var(--height);
+  width: calc(var(--height) * 0.85);
+  display: block;
+}
+
+pocket-selector table {
+  width: 100%;
+  height: 100%;
+}
+
+pocket-selector .choice {
+  opacity: 0.3;
+}
+
+pocket-selector .choice:hover, .choice[selected] {
+  transition: all 0.2s ease-in-out;
+  opacity: 1;
+}
+
+pocket-selector .choice[number="0"] {
+  background-image: url("/static/app/img/pool-table/0.png");
+  background-size: cover;
+}
+
+pocket-selector .choice[number="1"] {
+  background-image: url("/static/app/img/pool-table/1.png");
+  background-size: cover;
+}
+
+pocket-selector .choice[number="2"] {
+  background-image: url("/static/app/img/pool-table/2.png");
+  background-size: cover;
+}
+
+pocket-selector .choice[number="3"] {
+  background-image: url("/static/app/img/pool-table/3.png");
+  background-size: cover;
+}
+
+pocket-selector .choice[number="4"] {
+  background-image: url("/static/app/img/pool-table/4.png");
+  background-size: cover;
+}
+
+pocket-selector .choice[number="5"] {
+  background-image: url("/static/app/img/pool-table/5.png");
+  background-size: cover;
+}

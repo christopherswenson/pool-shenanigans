@@ -1,0 +1,7 @@
+.gutter {
+  display: flex;
+  margin: 20px;
+  margin-top: 0;
+  border-top: 1px solid #d6d6d6;
+  padding-top: 10px;
+}

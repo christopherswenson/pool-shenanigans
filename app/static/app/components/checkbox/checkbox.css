@@ -1,0 +1,48 @@
+checkbox {
+  height: 38px;
+  width: 38px;
+  display: inline-block;
+  border-radius: 10px;
+  border:1px solid rgba(0, 0, 0, 0.15);
+  margin-right: 10px;
+  overflow: hidden;
+}
+
+checkbox:hover, checkbox:focus {
+  background-color: #d1e5f5;
+  border-color: #5cb3fd;
+  outline: none;
+}
+
+checkbox:hover i.fa {
+  display: block;
+  opacity: 0.2;
+}
+
+checkbox[selected] {
+  background-color: #2196f3;
+}
+
+checkbox[selected]:hover i.fa {
+  opacity: 1;
+}
+
+checkbox i.fa {
+  display: none;
+  padding: 3px;
+  color: white;
+}
+
+checkbox[selected] i.fa {
+  display: inline-block;
+}
+
+.checkbox-label {
+  vertical-align: middle;
+  position: absolute;
+  top: 7px;
+}
+
+ .checkbox-group {
+  position: relative;
+}
