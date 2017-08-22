@@ -146,7 +146,7 @@ class CreateGamePaneComponent {
         }
         if (ballPocketed["number"] == 0) shot["isScratch"] = true
         if (ballPocketed["number"] == 8) shot["isFinal"] = true
-        // shot["ballsRemaining"] = ballsRemaining.filter((number) => number != ballPocketed["number"])
+        shot["ballsRemaining"] = shot["ballsRemaining"].filter((number) => number != ballPocketed["number"])
       })
 
       if (outcome["isTableScratch"]) shot["isScratch"] = true
@@ -196,6 +196,7 @@ class CreateGamePaneComponent {
     shot["number"] = turn["shots"].length
     shot["isBreak"] = turn["isBreakingTurn"] && shot["number"] == 0
     shot["isTableOpen"] = this.getCurrentPlayer()["pattern"] == null
+    shot["ballsRemaining"] = this.getBallsRemaining()
 
     turn["shots"].push(shot)
 
@@ -216,7 +217,8 @@ class CreateGamePaneComponent {
 
   getCurrentShot () {
     let shots = this.getCurrentTurn()["shots"]
-    return shots[shots.length - 1]
+    if (shots) return shots[shots.length - 1]
+    else return null
   }
 
   getCurrentPlayer () {
@@ -230,9 +232,18 @@ class CreateGamePaneComponent {
   getOtherPlayer () {
     let currentPlayer = this.getCurrentPlayer()
 
-    return (this.gamePlayers[0] == currentPlayer)
-      ? this.gamePlayers[1]
-      : this.gamePlayers[0]
+    return (this.game["gamePlayers"][0] == currentPlayer) ? this.game["gamePlayers"][1] : this.game["gamePlayers"][0]
+  }
+
+  getBallsRemaining () {
+    let turn = this.game["turns"].reverse().find((turn) => {
+      return turn["shots"].length > 0
+    })
+    if (turn) {
+      let shot = turn["shots"].reverse()[0]
+      return shot["ballsRemaining"]
+    }
+    else return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
   }
 
   normalTurn () {
