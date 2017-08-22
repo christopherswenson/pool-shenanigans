@@ -1,5 +1,5 @@
 
-class PocketedComponent {
+class BallPocketedPaneComponent {
   constructor (params) {
     this.initBallOptions = params["ballOptions"].slice()
     this.ballOptions = params["ballOptions"].slice()
