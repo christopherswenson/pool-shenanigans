@@ -240,11 +240,11 @@ class CreateGamePaneComponent {
   }
 
   getBallsRemaining () {
-    let turn = this.game["turns"].reverse().find((turn) => {
+    let turn = this.game["turns"].slice().reverse().find((turn) => {
       return turn["shots"].length > 0
     })
     if (turn) {
-      let shot = turn["shots"].reverse()[0]
+      let shot = turn["shots"].slice().reverse()[0]
       return shot["ballsRemaining"]
     }
     else return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
