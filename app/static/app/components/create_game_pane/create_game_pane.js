@@ -73,30 +73,30 @@ class CreateGamePaneComponent {
     return `${this.getCurrentPlayer()["firstName"]}'s ${kind}`
   }
 
-  getCall (completedCall) {
-    let ballCalledPaneComponent = new BallCalledPaneComponent({
-      "ballOptions": this.calledBallOptions(),
-      "title": this.getTurnTitle(),
+  getCall () {
+    let shot = this.getCurrentShot()
+    if (!shot["isBreak"]) {
+      let ballCalledPaneComponent = new BallCalledPaneComponent({
+        "ballOptions": this.calledBallOptions(),
+        "title": this.getTurnTitle(),
 
-      "calledBall": null,
-      "calledPocket": null,
-      "isJumpShot": false,
-      "isBankShot": false,
-      "comboCount": 1
-    })
-    ballCalledPaneComponent.display(this.$element)
-    ballCalledPaneComponent.onComplete((call) => {
-      console.log("call", call)
-      let shot = this.getCurrentShot()
-      shot["calledBall"]    = call["calledBall"]
-      shot["calledPocket"]  = call["calledPocket"]
-      shot["isJumpShot"]    = call["isJumpShot"]
-      shot["isBankShot"]    = call["isBankShot"]
-      shot["comboCount"]    = call["comboCount"]
+        "calledBall": null,
+        "calledPocket": null,
+        "isJumpShot": false,
+        "isBankShot": false,
+        "comboCount": 1
+      })
+      ballCalledPaneComponent.display(this.$element)
+      ballCalledPaneComponent.onComplete((call) => {
+        shot["calledBall"]    = call["calledBall"]
+        shot["calledPocket"]  = call["calledPocket"]
+        shot["isJumpShot"]    = call["isJumpShot"]
+        shot["isBankShot"]    = call["isBankShot"]
+        shot["comboCount"]    = call["comboCount"]
 
-      completedCall(call)
-    })
-    // ballCalledPaneComponent.onBacktrack(backtrackCallback)
+        this.getOutcome(call)
+      })
+    } else this.getOutcome({})
   }
 
   calledBallOptions() {
@@ -134,14 +134,12 @@ class CreateGamePaneComponent {
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsPocketed"].forEach((ballPocketed) => {
         let isCalled = this.ballPocketedIsCalled(shot, ballPocketed)
-        console.log("isCalled", isCalled, shot, ballPocketed)
         ballPocketed["isCalled"] = isCalled
         ballPocketed["isSlop"] = false
         if (isCalled) {
           shot["isSuccess"] = true
           let ballPattern = this.patternOfBall(ballPocketed["number"])
           this.getCurrentPlayer()["pattern"] = ballPattern
-          console.log("get other player", this.getOtherPlayer())
           this.getOtherPlayer()["pattern"] = this.otherPattern(ballPattern)
         } else if (ballPocketed["number"] != 0 && ballPocketed["number"] != 8 && !turn["isBreakingTurn"]) {
           ballPocketed["isSlop"] = true
@@ -155,7 +153,6 @@ class CreateGamePaneComponent {
       if (shot["isBreak"]) shot["isSuccess"] = shot["ballsPocketed"].length > 0
       if (shot["isScratch"]) shot["isSuccess"] = false
 
-      console.log("foo", shot["isBreak"], shot["isSuccess"])
       if (shot["isFinal"]) {
         turn["isFinal"] = true
         this.endGame()
@@ -190,9 +187,7 @@ class CreateGamePaneComponent {
   }
 
   normalShot () {
-    console.log("THE GAME", this.game)
     let turn = this.getCurrentTurn()
-    console.log("normal shot:", turn)
 
     let shot = {}
     shot["number"] = turn["shots"].length
@@ -202,13 +197,7 @@ class CreateGamePaneComponent {
 
     turn["shots"].push(shot)
 
-    if (shot["isBreak"]) {
-      this.getOutcome({})
-    } else {
-      this.getCall((call) => {
-        this.getOutcome(call)
-      })
-    }
+    this.getCall()
   }
 
   getCurrentTurn () {
@@ -219,7 +208,6 @@ class CreateGamePaneComponent {
 
   getCurrentShot () {
     let shots = this.getCurrentTurn()["shots"]
-    console.log("shots", shots, shots[shots.length - 1], shots.length)
 
     if (shots) return shots[shots.length - 1]
     else return null
@@ -255,7 +243,6 @@ class CreateGamePaneComponent {
     turn["number"] = this.game["turns"].length
     turn["isBreakingTurn"] = turn["number"] == 0
     turn["player"] = turn["isBreakingTurn"] ? this.game["breakingPlayer"] : this.getOtherPlayer()
-    console.log("normal turn stared with player", turn["player"])
     turn["shots"] = []
 
     this.game["turns"].push(turn)
