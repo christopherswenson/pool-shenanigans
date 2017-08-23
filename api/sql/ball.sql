@@ -1,0 +1,17 @@
+DELETE FROM api_ball;
+INSERT INTO api_ball (kind, number) VALUES ("Cue", 0);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 1);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 2);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 3);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 4);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 5);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 6);
+INSERT INTO api_ball (kind, number) VALUES ("Solid", 7);
+INSERT INTO api_ball (kind, number) VALUES ("Eight", 8);
+INSERT INTO api_ball (kind, number) VALUES ("Stripe", 9);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 10);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 11);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 12);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 13);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 14);
+INSERT INTO api_ball (kind, number) VALUES ( "Stripe", 15);

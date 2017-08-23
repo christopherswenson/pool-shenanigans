@@ -1,0 +1,261 @@
+@font-face {
+  font-family: 'Old Standard TT';
+  src: url("/static/app/font/old_standard_tt/OldStandard-Regular.ttf");
+  font-weight: normal;
+}
+
+.pool-ball {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  border-radius: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.15);;
+  margin: 10px;
+  display: inline-block;
+}
+
+.pool-ball[disabled] {
+  opacity: 0.5;
+}
+
+.pool-ball-md {
+  width: 60px;
+  height: 60px;
+  font-size: 19px;
+  margin: 10px;
+}
+
+.pool-ball-sm {
+  width: 38px;
+  height: 38px;
+  font-size: 10px;
+  line-height: 13px;
+  margin: 0px 5px;
+}
+
+.pool-ball-sm::before {
+  color: gray;
+}
+
+.pool-ball-lg {
+  width: 90px;
+  height: 90px;
+  font-size: 28px;
+  margin: 15px;
+}
+
+.pool-ball::before {
+  width: 55%;
+  height: 55%;
+  background-color: #f8f5ec;
+  border-radius: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.15);;
+  position: absolute;
+  left: 22%;
+  top: 22%;
+  padding: 8%;
+  text-align: center;
+  z-index: 9;
+  font-family: 'Old Standard TT', serif;
+  font-weight: bold;
+}
+
+.pool-ball::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  background: radial-gradient(circle at 33% 33%, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.10));
+  position: absolute;
+  z-index: 10;
+}
+
+.pool-ball[number=""]::before {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f5ec;
+  word-wrap: break-word;
+  content: "No Ball";
+  padding-top: 12%;
+  left: 0;
+  top: 0;
+}
+
+.pool-ball[number="..."]::before {
+  width: 100%;
+  height: 100%;
+  background-color: #f8f5ec;
+  content: "...";
+  padding-top: 19%;
+  font-size: large;
+  left: 0;
+  top: 0;
+}
+
+.pool-ball[number="0"] {
+  background-color: #fff2de;
+}
+
+.pool-ball[number="1"]::before {
+  content: "1";
+}
+
+.pool-ball[number="1"] {
+  background-color: #FFC107; /* yellow */
+}
+
+.pool-ball[number="2"]::before {
+  content: "2";
+}
+
+.pool-ball[number="2"] {
+  background-color: #3958ff; /* blue */
+}
+
+.pool-ball[number="3"]::before {
+  content: "3";
+}
+
+.pool-ball[number="3"] {
+  background-color: #ff0000; /* red */
+}
+
+.pool-ball[number="4"]::before {
+  content: "4";
+}
+
+.pool-ball[number="4"] {
+  background-color: #5f01a5; /* purple */
+}
+
+.pool-ball[number="5"]::before {
+  content: "5";
+}
+
+.pool-ball[number="5"] {
+  background-color: #ff5722; /* orange */
+}
+
+.pool-ball[number="6"]::before {
+  content: "6";
+}
+
+.pool-ball[number="6"] {
+  background-color: #048e04; /* green */
+}
+
+.pool-ball[number="7"]::before {
+  content: "7";
+}
+
+.pool-ball[number="7"] {
+  background-color: #a90000; /* dark red */
+}
+
+.pool-ball[number="8"]::before {
+  content: "8";
+}
+
+.pool-ball[number="8"] {
+  background-color: #212121; /* black */
+}
+
+.pool-ball[number="9"]::before {
+  content: "9";
+}
+
+.pool-ball[number="9"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #FFC107 14%,
+    #FFC107 86%);
+  );
+}
+
+.pool-ball[number="10"]::before {
+  content: "10";
+}
+
+.pool-ball[number="10"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #3958ff 14%,
+    #3958ff 86%);
+  );
+}
+
+.pool-ball[number="11"]::before {
+  content: "11";
+}
+
+.pool-ball[number="11"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #ff0000 14%,
+    #ff0000 86%);
+  );
+}
+
+.pool-ball[number="12"]::before {
+  content: "12";
+}
+
+.pool-ball[number="12"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #5f01a5 14%,
+    #5f01a5 86%);
+  );
+}
+
+.pool-ball[number="13"]::before {
+  content: "13";
+}
+
+.pool-ball[number="13"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #ff5722 14%,
+    #ff5722 86%);
+  );
+}
+
+.pool-ball[number="14"]::before {
+  content: "14";
+}
+
+.pool-ball[number="14"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #048e04 14%,
+    #048e04 86%);
+  );
+}
+
+.pool-ball[number="15"]::before {
+  content: "15";
+}
+
+.pool-ball[number="15"] {
+  background: repeating-linear-gradient(
+    #f8f5ec,
+    #f8f5ec 14%,
+    #a90000 14%,
+    #a90000 86%);
+  );
+}
+
+.pool-ball:hover {
+  transition: all 0.1s ease-in-out;
+}
+
+.pool-ball-xs::before {
+  content: "" !important;
+}

@@ -1,0 +1,13 @@
+
+ball-selector .choice {
+  opacity: 0.3;
+}
+
+ball-selector .choice:hover, .choice[selected] {
+  opacity: 1;
+}
+
+ball-selector {
+  display: block;
+  padding: 10px;
+}

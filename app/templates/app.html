@@ -1,0 +1,35 @@
+{% load static %}
+{% load get %}
+
+<html lang="en">
+  <head>
+    <title>New Game</title>
+    <meta name="author" content="Christopher Swenson">
+
+    <link rel="stylesheet" href="/static/app/css/pool_ball.css">
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
+
+    <link rel="stylesheet" href="/static/app/css/bootstrap_overrides.css">
+
+    {% for css_file in css %}
+      <link rel="stylesheet" href="{% static css_file|get:'path' %}">
+    {% endfor %}
+
+    {% for html_template in html %}
+      <link id="{{ html_template|get:'name' }}" rel="import" href="{% static html_template|get:'path' %}">
+    {% endfor %}
+  </head>
+
+  <body>
+    <div id="app-content"></div>
+
+    <script src="/static/jquery/js/jquery.min.js"></script>
+    <script src="/static/tether/js/tether.min.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.js"></script>
+
+    {% for js_file in js %}
+      <script src="{% static js_file|get:'path' %}"></script>
+    {% endfor %}
+  </body>
+</html>

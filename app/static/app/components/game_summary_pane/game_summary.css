@@ -1,0 +1,16 @@
+#summary-container {
+  width: 100%;
+}
+
+#summary-container .turn-summary .header {
+  border-left: 3px solid #2196F3;
+  padding-left: 20px;
+  margin-left: 20px;
+  padding: 10px;
+  margin-bottom: 0px;
+}
+
+#summary-container .turn-summary ul {
+  list-style: none;
+  margin: 20px;
+}
