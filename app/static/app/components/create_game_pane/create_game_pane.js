@@ -86,6 +86,7 @@ class CreateGamePaneComponent {
     })
     ballCalledPaneComponent.display(this.$element)
     ballCalledPaneComponent.onComplete((call) => {
+      console.log("call", call)
       let shot = this.getCurrentShot()
       shot["calledBall"]    = call["calledBall"]
       shot["calledPocket"]  = call["calledPocket"]
@@ -99,7 +100,7 @@ class CreateGamePaneComponent {
   }
 
   calledBallOptions() {
-    let ballsRemaining = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] // TODO
+    let ballsRemaining = this.getBallsRemaining()
     let atLeastOneStripe = ballsRemaining.find((number) => this.patternOfBall(number) == "Stripe")
     let atLeastOneSolid = ballsRemaining.find((number) => this.patternOfBall(number) == "Solid")
 
@@ -117,7 +118,7 @@ class CreateGamePaneComponent {
   }
 
   getOutcome (completeOutcome) {
-    let ballsRemaining = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] // TODO
+    let ballsRemaining = this.getBallsRemaining()
 
     let ballPocketedPaneComponent = new BallPocketedPaneComponent({
       "title": this.getTurnTitle(),
@@ -133,6 +134,7 @@ class CreateGamePaneComponent {
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsPocketed"].forEach((ballPocketed) => {
         let isCalled = this.ballPocketedIsCalled(shot, ballPocketed)
+        console.log("isCalled", isCalled, shot, ballPocketed)
         ballPocketed["isCalled"] = isCalled
         ballPocketed["isSlop"] = false
         if (isCalled) {
@@ -165,9 +167,9 @@ class CreateGamePaneComponent {
     // ballPocketedPaneComponent.onBacktrack(backtrackCallback)
   }
 
-  ballPocketedIsCalled(call, ballPocketed) {
-    return call["calledBall"] == ballPocketed["number"] &&
-      call["calledPocket"] == ballPocketed["pocket"]
+  ballPocketedIsCalled(shot, ballPocketed) {
+    return shot["calledBall"] == ballPocketed["number"] &&
+      shot["calledPocket"] == ballPocketed["pocket"]
   }
 
   patternOfBall (number) {
@@ -217,6 +219,8 @@ class CreateGamePaneComponent {
 
   getCurrentShot () {
     let shots = this.getCurrentTurn()["shots"]
+    console.log("shots", shots, shots[shots.length - 1], shots.length)
+
     if (shots) return shots[shots.length - 1]
     else return null
   }
