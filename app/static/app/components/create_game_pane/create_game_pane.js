@@ -174,6 +174,8 @@ class CreateGamePaneComponent {
       let shot = this.getCurrentShot()
       let previousShot = this.getPreviousShot()
       shot["isSuccess"] = false
+      shot["isFinal"] = false
+      shot["isScratch"] = false
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsRemaining"] = shot["ballsRemainingBefore"].slice()
       shot["isFollowingScratch"] = !!((previousShot != null) && previousShot["isScratch"])

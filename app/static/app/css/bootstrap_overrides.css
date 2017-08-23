@@ -2,6 +2,18 @@
   height: 800px;
 }
 
+.modal-body-scroll {
+  overflow-y: scroll;
+}
+
+.modal-header {
+  min-height: 61px;
+}
+
+.modal-footer {
+  min-height: 69px;
+}
+
 button[class="close"] {
   outline: none;
 }

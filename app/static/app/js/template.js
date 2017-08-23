@@ -6,8 +6,15 @@ function findTemplate (id) {
   return $(link.import).find('body').children()
 }
 
-function loadTemplate ($element, id) {
+function applyTemplateParams($template, params) {
+  Object.keys(params).forEach((selector) => {
+    $template.find(selector).empty().append(params[selector])
+  })
+}
+
+function loadTemplate ($element, id, params) {
   let $template = findTemplate(id).clone()
+  applyTemplateParams($template, params || {})
   if ($element == null) return $template
   $element.html($template)
   return $element
