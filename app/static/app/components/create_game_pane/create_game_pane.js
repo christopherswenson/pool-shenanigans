@@ -79,8 +79,8 @@ class CreateGamePaneComponent {
       "game": this.game
     })
     gameSummaryComponent.display(this.$element)
-    gameSummaryComponent.onComplete( () => {
-      this.completeCallback()
+    gameSummaryComponent.onComplete( (game) => {
+      this.completeCallback(game)
     })
     gameSummaryComponent.onBacktrack(() => {
       this.backtrackGame("game-summary")
