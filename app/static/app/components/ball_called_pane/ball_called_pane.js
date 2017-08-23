@@ -44,7 +44,6 @@ class BallCalledPaneComponent {
   }
 
   setupBallSelector () {
-    // this.calledBall = null
     this.ballSelectorComponent = new BallSelectorComponent({
       options: this.ballOptions,
       value: this.calledBall
@@ -52,6 +51,7 @@ class BallCalledPaneComponent {
     this.ballSelectorComponent.display(this.$ballSelector)
     this.ballSelectorComponent.onChange( (value) => {
       this.calledBall = value
+      this.maybeEnableContinueButton()
     })
   }
 
@@ -77,15 +77,21 @@ class BallCalledPaneComponent {
     })
   }
 
+  maybeEnableContinueButton () {
+    let enabled = this.calledPocket != null && this.calledBall != null
+    this.$continueButton.prop("disabled", !enabled)
+  }
+
   setupPocketSelector () {
-    // this.calledPocket = null
     this.pocketSelectorComponent = new PocketSelectorComponent({
       value: this.calledPocket
     })
     this.pocketSelectorComponent.display(this.$pocketSelector)
     this.pocketSelectorComponent.onChange( (value) => {
       this.calledPocket = value
+      this.maybeEnableContinueButton()
     })
+    this.maybeEnableContinueButton()
   }
 
   currentOutputState () {

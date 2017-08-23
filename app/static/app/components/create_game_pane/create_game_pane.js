@@ -105,11 +105,12 @@ class CreateGamePaneComponent {
   getCall () {
     let shot = this.getCurrentShot()
     if (!shot["isBreak"]) {
+      let calledBallOptions = this.calledBallOptions()
       let ballCalledPaneComponent = new BallCalledPaneComponent({
-        "ballOptions": this.calledBallOptions(),
+        "ballOptions": calledBallOptions,
         "title": this.getTurnTitle(),
 
-        "calledBall": shot["calledBall"] || null,
+        "calledBall": shot["calledBall"] || (calledBallOptions.length == 1 ? calledBallOptions[0] : null),
         "calledPocket": shot["calledPocket"] || null,
         "isJumpShot": shot["isJumpShot"] || false,
         "isBankShot": shot["isBankShot"] || false,
