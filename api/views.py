@@ -18,7 +18,13 @@ def players(request):
 
 @csrf_exempt
 def games(request):
-    if request.method != 'POST':
+    if request.method == 'GET':
+
+        games = Game.objects.all()
+        data = {'games': [ game.toDict() for game in games ]}
+        return JsonResponse(data)
+
+    elif request.method != 'POST':
         raise Http404
 
     game_json = parse_json(request.body).get("game")
@@ -36,7 +42,9 @@ def games(request):
             is_winner=game_player_json["isWinner"],
             pattern=game_player_json.get("pattern", None)
         )
+        game_player.save()
 
+    shot_number_in_game = 0
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
         turn = Turn(
             game=game,
@@ -44,7 +52,6 @@ def games(request):
             number=turn_number)
         turn.save()
 
-        shot_number_in_game = 0
         for (shot_number_in_turn, shot_json) in enumerate(turn_json["shots"]):
             called_pocket = None
             if shot_json["calledPocket"] is not None:
@@ -80,5 +87,7 @@ def games(request):
                     is_slop=ball_pocketed_json["isSlop"]
                 )
                 ball_pocketed.save()
+
+            shot_number_in_game += 1
 
     return JsonResponse({'status': 'ok'})

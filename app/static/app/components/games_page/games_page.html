@@ -1,4 +1,16 @@
-<button class="btn btn-primary" id="new-game-button">New Game</button>
+<div class="modal-header">
+  <span>
+    <h5 class="modal-title inline-block">Game Summary</h5>
+    <select class="form-control" id="game-select"></select>
+  </span>
+  <button class="btn btn-primary" id="new-game-button">New Game</button>
+</div>
+<div class="modal-body looker-embed-container">
+  <iframe id="embed-iframe" class="looker-embed" src="https://self-signed.looker.com:9999/embed/dashboards/1?game_id=13"></iframe>
+</div>
+<div class="modal-footer modal-footer-fixed-bottom">
+
+</div>
 
 <div class="modal fade" id="new-game-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">

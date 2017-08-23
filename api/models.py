@@ -6,6 +6,11 @@ class Game(models.Model):
     started_at = models.DateTimeField('date started')
     ended_at = models.DateTimeField('date ended')
 
+    def toDict(self):
+        return {
+            'id': self.pk
+        }
+
 class Player(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
