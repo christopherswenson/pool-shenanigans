@@ -114,7 +114,7 @@ class CreateGamePaneComponent {
         "calledPocket": shot["calledPocket"] || null,
         "isJumpShot": shot["isJumpShot"] || false,
         "isBankShot": shot["isBankShot"] || false,
-        "comboCount": shot["calledBall"] || 1
+        "comboCount": shot["comboCount"] || 1
       })
       ballCalledPaneComponent.display(this.$element)
       ballCalledPaneComponent.onComplete((call) => {

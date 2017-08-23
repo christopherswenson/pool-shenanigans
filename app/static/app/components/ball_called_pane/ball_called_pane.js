@@ -72,8 +72,8 @@ class BallCalledPaneComponent {
   }
 
   setupComboSelector () {
-    this.$comboSelector.click ( () => {
-      this.comboCount = this.$comboSelector.val()
+    this.$comboSelector.change ( () => {
+      this.comboCount = parseInt(this.$comboSelector.val())
     })
   }
 
