@@ -90,4 +90,4 @@ def games(request):
 
             shot_number_in_game += 1
 
-    return JsonResponse({'status': 'ok'})
+    return JsonResponse({'status': 'ok', 'game': game.toDict()})

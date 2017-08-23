@@ -44,8 +44,8 @@ class GameSummaryPaneComponent {
 
   setupSaveButton () {
     this.$saveButton.click( () => {
-      GameStore.post(this.game, () => {
-        this.completeCallback()
+      GameStore.post(this.game, (game) => {
+        this.completeCallback(game)
       })
     })
   }

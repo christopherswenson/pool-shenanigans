@@ -5,7 +5,7 @@ const GameStore = {
     xhr.setRequestHeader("Content-type", "application/json")
     xhr.onreadystatechange = () => {
       if (xhr.readyState == XMLHttpRequest.DONE) {
-        onComplete(JSON.parse(xhr.responseText))
+        onComplete(JSON.parse(xhr.responseText)["game"])
       }
     }
     xhr.send(JSON.stringify({"game": game}))
