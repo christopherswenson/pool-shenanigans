@@ -3,6 +3,8 @@ from django.http import Http404
 from django.template import loader
 from json import loads as parse_json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate as app_authenticate, login as app_login, logout as app_logout
+from django.contrib.auth.models import User
 
 from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining
 
@@ -92,3 +94,51 @@ def games(request):
             shot_number_in_game += 1
 
     return JsonResponse({'status': 'ok', 'game': game.toDict()})
+
+@csrf_exempt
+def login(request):
+    if request.method != 'POST':
+        raise Http404
+
+    credentials_json = parse_json(request.body)
+    username = credentials_json['username']
+    password = credentials_json['password']
+    user = app_authenticate(request, username=username, password=password)
+    if user is not None:
+        app_login(request, user)
+        return JsonResponse({
+            'status': 'ok',
+            'user': request.user.toDict()
+        })
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'error': "invalid_login_credentials"
+        })
+
+@csrf_exempt
+def logout(request):
+    app_logout(request)
+    return JsonResponse({'status': 'ok'})
+
+def user(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'user': request.user.toDict()
+        })
+    else:
+        return JsonResponse({
+            'user': None
+        })
+
+def userToDict(self):
+    return {
+        'username': self.get_username(),
+        'fullName': self.get_full_name(),
+        'shortName': self.get_short_name()
+    }
+
+User.add_to_class("toDict", userToDict)

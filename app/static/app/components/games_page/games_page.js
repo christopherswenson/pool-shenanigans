@@ -4,13 +4,63 @@ class GamesPageComponent {
 
     this.$newGameButton = $element.find("#new-game-button")
     this.$newGameModal = $element.find("#new-game-modal")
+    this.$loginModal = $element.find("#login-modal")
+    this.$logoutButton = $element.find("#logout-button")
     this.$gameSelector = $element.find("#game-select")
     this.$embedIframe = $element.find("#embed-iframe")
+    this.$userGreeting = $element.find("#user-greeting")
 
     this.games = []
+    this.authenticatedUser = null
 
     this.setupNewGameButton()
     this.setupGameSelector()
+    this.setupLogoutButton()
+    this.ensureLogin()
+  }
+
+  setupLogoutButton () {
+    this.$logoutButton.click( () => {
+      this.$logoutButton.prop("disabled", true)
+      AuthenticatedUserStore.logout(() => {
+        this.$logoutButton.prop("disabled", false)
+        this.authenticatedUser = null
+        this.updateGreeting()
+        this.displayLoginModal()
+      })
+    })
+  }
+
+  ensureLogin () {
+    AuthenticatedUserStore.get((user) => {
+      this.authenticatedUser = user
+      if (this.authenticatedUser == null) {
+        this.displayLoginModal()
+      } else {
+        this.updateGreeting()
+        this.loadDashboard()
+      }
+    })
+  }
+
+  updateGreeting () {
+    if (this.authenticatedUser == null) {
+      this.$userGreeting.html("")
+    } else {
+      this.$userGreeting.html(`Hello, ${this.authenticatedUser["fullName"]}`)
+    }
+  }
+
+  displayLoginModal () {
+    let loginPaneComponent = new LoginPaneComponent
+    loginPaneComponent.display(this.$loginModal.find(".modal-content"))
+    loginPaneComponent.onComplete((response) => {
+      this.authenticatedUser = response["user"]
+      this.$loginModal.modal('hide')
+      this.loadDashboard()
+      this.updateGreeting()
+    })
+    this.$loginModal.modal()
   }
 
   setupNewGameButton () {
@@ -29,6 +79,7 @@ class GamesPageComponent {
   }
 
   loadDashboard () {
+    if (this.authenticatedUser == null) return
     let id = this.$gameSelector.val()
     this.$embedIframe.attr("src", `https://self-signed.looker.com:9999/embed/dashboards/1?game_id=${id}`)
   }
