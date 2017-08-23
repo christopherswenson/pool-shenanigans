@@ -9,5 +9,5 @@ ball-selector .choice:hover, .choice[selected] {
 
 ball-selector {
   display: block;
-  padding: 20px;
+  padding: 10px;
 }

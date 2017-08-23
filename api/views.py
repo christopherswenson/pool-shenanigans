@@ -33,9 +33,9 @@ def games(request):
         game_player = GamePlayer(
             game=game,
             player=Player.objects.get(pk=game_player_json["id"]),
-            is_winner=game_player_json["isWinner"]
+            is_winner=game_player_json["isWinner"],
+            pattern=game_player_json.get("pattern", None)
         )
-        # todo pattern
 
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
         turn = Turn(
@@ -59,7 +59,8 @@ def games(request):
                 is_success=shot_json["isSuccess"],
                 is_break=shot_json["isBreak"],
                 called_pocket=called_pocket,
-                called_ball=called_ball
+                called_ball=called_ball,
+                is_following_scratch=shot_json["isFollowingScratch"]
             )
             shot.save()
 

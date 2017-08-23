@@ -1,3 +1,7 @@
 .modal-content.modal-content-tall {
   height: 800px;
 }
+
+button[class="close"] {
+  outline: none;
+}

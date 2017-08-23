@@ -28,12 +28,6 @@ class Turn(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     number = models.IntegerField(default=0)
 
-    # @classmethod
-    # def fromDict(cls, params):
-    #     turn = Turn(
-    #
-    #     )
-
 class Ball(models.Model):
     kind = models.CharField(max_length=255)
     number = models.IntegerField(default=0)
@@ -50,6 +44,7 @@ class Shot(models.Model):
     is_break = models.BooleanField(default=False)
     called_pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE, null=True)
     called_ball = models.ForeignKey(Ball, on_delete=models.CASCADE, null=True)
+    is_following_scratch = models.BooleanField(default=False)
 
 class BallPocketed(models.Model):
     shot = models.ForeignKey(Shot, on_delete=models.CASCADE)

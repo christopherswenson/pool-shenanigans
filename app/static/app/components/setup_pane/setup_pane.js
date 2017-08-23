@@ -2,8 +2,10 @@
 class SetupComponent {
 
   constructor (params) {
-    this.playerOneId = null
-    this.playerTwoId = null
+    this.players = params["players"]
+    this.playerOneId = (params["gamePlayers"] || this.players)[0]["id"]
+    this.playerTwoId = (params["gamePlayers"] || this.players)[1]["id"]
+    this.breakingPlayerId = (params["breakingPlayer"] || {})["id"]
   }
 
   display ($element) {
@@ -15,13 +17,10 @@ class SetupComponent {
     this.$nextButton = this.$element.find("#next-button")
     this.$backButton = this.$element.find("#back-button")
 
-    PlayerStore.get((players) => {
-      this.setPlayers(players)
-      this.populatePlayerOptions(players)
-      this.populateBreakingPlayerOptions(players)
-      this.setupNextButton(players)
-      this.setupBackButton()
-    })
+    this.populatePlayerOptions()
+    this.populateBreakingPlayerOptions()
+    this.setupNextButton()
+    this.setupBackButton()
   }
 
   onComplete (completeCallback) {
@@ -32,10 +31,6 @@ class SetupComponent {
     this.backtrackCallback = backtrackCallback
   }
 
-  setPlayers (players) {
-    this.players = players
-  }
-
   playerOptions (players) {
     return players.map(function(player) {
       let name = `${player.firstName} ${player.lastName}`
@@ -43,14 +38,9 @@ class SetupComponent {
     })
   }
 
-  populatePlayerOptions (players) {
-    this.playerOneId = players[0].id
-    this.playerTwoId = players[1].id
-    this.breakingPlayerId = this.playerOneId
-    this.otherPlayerId = this.playerTwoId
-
-    this.$playerOneSelect.empty().append(this.playerOptions(players)).val(this.playerOneId)
-    this.$playerTwoSelect.empty().append(this.playerOptions(players)).val(this.playerTwoId)
+  populatePlayerOptions () {
+    this.$playerOneSelect.empty().append(this.playerOptions(this.players)).val(this.playerOneId)
+    this.$playerTwoSelect.empty().append(this.playerOptions(this.players)).val(this.playerTwoId)
 
     ;[this.$playerOneSelect, this.$playerTwoSelect].forEach( (element) => {
       element.data('previous', element.val())
@@ -63,7 +53,7 @@ class SetupComponent {
           element.data('previous', element.val())
         }
         this.refreshPlayerIds()
-        this.populateBreakingPlayerOptions(players)
+        this.populateBreakingPlayerOptions()
       })
     })
 
@@ -79,22 +69,22 @@ class SetupComponent {
     this.otherPlayerId = (this.breakingPlayerId == this.playerOneId) ? this.playerTwoId : this.playerOneId
   }
 
-  playerWithId (players, id) {
-    return players.find((player) => player.id == id)
+  playerWithId (id) {
+    return this.players.find((player) => player.id == id)
   }
 
-  populateBreakingPlayerOptions (players) {
+  populateBreakingPlayerOptions () {
     let bothPlayers = [
-      this.playerWithId(players, this.playerOneId),
-      this.playerWithId(players, this.playerTwoId)
+      this.playerWithId(this.playerOneId),
+      this.playerWithId(this.playerTwoId)
     ]
     this.$breakingPlayerSelect.empty().append(this.playerOptions(bothPlayers))
     this.refreshPlayerIds()
   }
 
   currentOutputState () {
-    let breakingPlayer = this.playerWithId(this.players, this.breakingPlayerId)
-    let otherPlayer = this.playerWithId(this.players, this.otherPlayerId)
+    let breakingPlayer = this.playerWithId(this.breakingPlayerId)
+    let otherPlayer = this.playerWithId(this.otherPlayerId)
     return {
       "gamePlayers":[{
         "playerId": this.$playerOneSelect.val()
@@ -102,8 +92,7 @@ class SetupComponent {
         "playerId": this.$playerTwoSelect.val()
       }],
       "breakingPlayer": breakingPlayer,
-      "otherPlayer": otherPlayer,
-      "players": this.players
+      "otherPlayer": otherPlayer
     }
   }
 

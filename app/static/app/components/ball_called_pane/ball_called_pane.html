@@ -1,17 +1,22 @@
 <div class="modal-header">
   <h5 class="modal-title" id="title"></h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true"><i class="fa fa-times" aria-hidden="true"></i></span>
+  </button>
 </div>
 <div class="modal-body">
   <div class="container">
     <div class="row">
-      <div class="form-group">
-        <label for="player-two" class="form-control-label">Select the called ball and pocket:</label>
-        <div class="row">
-          <div class="col-md-6">
-            <pocket-selector></pocket-selector>
-          </div>
-          <div class="col-md-6">
-            <ball-selector></ball-selector>
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="player-two" class="form-control-label">Select the called ball and pocket:</label>
+          <div class="row">
+            <div class="col-md-6">
+              <pocket-selector></pocket-selector>
+            </div>
+            <div class="col-md-6">
+              <ball-selector></ball-selector>
+            </div>
           </div>
         </div>
       </div>

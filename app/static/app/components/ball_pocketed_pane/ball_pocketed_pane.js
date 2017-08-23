@@ -2,8 +2,12 @@
 class BallPocketedPaneComponent {
   constructor (params) {
     this.initBallOptions = params["ballOptions"].slice()
-    this.ballOptions = params["ballOptions"].slice()
-    this.ballsPocketed = []
+    this.ballsPocketed = params["ballsPocketed"].slice()
+    this.ballOptions = params["ballOptions"].filter((option) => {
+      return !this.ballsPocketed.find((ballPocketed) => {
+        return ballPocketed["number"] == option
+      })
+    })
     this.title = params.title
 
     this.currentBallNumber = null
@@ -28,6 +32,7 @@ class BallPocketedPaneComponent {
     this.setupClearButton()
     this.setupContinueButton()
     this.setupBackButton()
+    this.updateGutter()
   }
 
   onComplete (completeCallback) {

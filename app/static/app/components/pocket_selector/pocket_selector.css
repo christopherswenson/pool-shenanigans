@@ -1,9 +1,9 @@
 
 pocket-selector {
-  padding: 0px 30px;
-  --height: 500px;
+  margin: 10px 0px 0px 30px;
+  --height: 462px;
   height: var(--height);
-  width: calc(var(--height) * 0.85);
+  width: calc(var(--height) * 0.75);
   display: block;
 }
 
