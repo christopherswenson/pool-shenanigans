@@ -46,6 +46,10 @@ class Shot(models.Model):
     called_ball = models.ForeignKey(Ball, on_delete=models.CASCADE, null=True)
     is_following_scratch = models.BooleanField(default=False)
 
+class BallRemaining(models.Model):
+    ball = models.ForeignKey(Ball, on_delete=models.CASCADE)
+    shot = models.ForeignKey(Shot, on_delete=models.CASCADE)
+
 class BallPocketed(models.Model):
     shot = models.ForeignKey(Shot, on_delete=models.CASCADE)
     pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE)

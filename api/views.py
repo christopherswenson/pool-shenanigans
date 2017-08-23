@@ -4,7 +4,7 @@ from django.template import loader
 from json import loads as parse_json
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer
+from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining
 
 from .models import Player
 
@@ -63,6 +63,13 @@ def games(request):
                 is_following_scratch=shot_json["isFollowingScratch"]
             )
             shot.save()
+
+            for ball_remaining_number in shot_json["ballsRemaining"]:
+                ball_remaining = BallRemaining(
+                    ball=Ball.objects.get(number=ball_remaining_number),
+                    shot=shot
+                )
+                ball_remaining.save()
 
             for ball_pocketed_json in shot_json["ballsPocketed"]:
                 ball_pocketed = BallPocketed(

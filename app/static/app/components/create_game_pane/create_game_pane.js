@@ -158,7 +158,6 @@ class CreateGamePaneComponent {
   }
 
   getOutcome (params) {
-    console.log(this.game)
     if (params == null) params = {}
     let ballsRemaining = this.getBallsRemaining()
 
