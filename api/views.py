@@ -67,7 +67,8 @@ def games(request):
                 is_break=shot_json["isBreak"],
                 called_pocket=called_pocket,
                 called_ball=called_ball,
-                is_following_scratch=shot_json["isFollowingScratch"]
+                is_following_scratch=shot_json["isFollowingScratch"],
+                combo_count=shot_json["comboCount"]
             )
             shot.save()
 
