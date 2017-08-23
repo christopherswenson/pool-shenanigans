@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.http import Http404
 from django.template import loader
 from json import loads as parse_json
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer
 
@@ -15,6 +16,7 @@ def players(request):
     data = {'players': [ player.toDict() for player in players ]}
     return JsonResponse(data)
 
+@csrf_exempt
 def games(request):
     if request.method != 'POST':
         raise Http404
@@ -38,7 +40,7 @@ def games(request):
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
         turn = Turn(
             game=game,
-            player=Player.objects.get(pk=turn_json["playerId"]),
+            player=Player.objects.get(pk=turn_json["player"]["id"]),
             number=turn_number)
         turn.save()
 
@@ -49,7 +51,7 @@ def games(request):
                 called_pocket = Pocket.objects.get(number=shot_json["calledPocket"])
             called_ball = None
             if shot_json["calledBall"] is not None:
-                called_ball = Pocket.objects.get(number=shot_json["calledBall"])
+                called_ball = Ball.objects.get(number=shot_json["calledBall"])
             shot = Shot(
                 turn=turn,
                 number_in_turn=shot_number_in_turn,

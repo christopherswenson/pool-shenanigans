@@ -40,25 +40,14 @@ class CreateGamePaneComponent {
     })
   }
 
-  endGame (gameCompleteCallback) {
+  endGame () {
     let turn = this.getCurrentTurn()
     let isCurrentPlayerWinner = turn["shots"][turn["shots"].length - 1]["isSuccess"]
-    this.getCurrentPlayer()["isWinner"] = isCurrentPlayerWinner
+    this.getCurrentPlayer()["isWinner"] = !!isCurrentPlayerWinner
     this.getOtherPlayer()["isWinner"] = !isCurrentPlayerWinner
 
     this.game["endedAt"] = new Date(Date.now())
-    gameCompleteCallback()
-  }
-
-  continueGameplay (gameCompleteCallback) {
-    this.normalTurn(() => {
-      let turn = this.getCurrentTurn()
-      if (turn["isFinal"]) {
-        this.endGame(gameCompleteCallback)
-      } else {
-        this.continueGameplay(gameCompleteCallback)
-      }
-    })
+    this.gameSummary()
   }
 
   beginGameplay () {
@@ -96,7 +85,15 @@ class CreateGamePaneComponent {
 
         this.getOutcome(call)
       })
-    } else this.getOutcome({})
+    } else {
+      shot["calledBall"]   = null
+      shot["calledPocket"] = null
+      shot["isJumpShot"]   = false
+      shot["isBankShot"]   = false
+      shot["comboCount"]   = 1
+
+      this.getOutcome({})
+    }
   }
 
   calledBallOptions() {
@@ -131,6 +128,7 @@ class CreateGamePaneComponent {
     ballPocketedPaneComponent.onComplete((outcome) => {
       let turn = this.getCurrentTurn()
       let shot = this.getCurrentShot()
+      shot["isSuccess"] = false
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsPocketed"].forEach((ballPocketed) => {
         let isCalled = this.ballPocketedIsCalled(shot, ballPocketed)
