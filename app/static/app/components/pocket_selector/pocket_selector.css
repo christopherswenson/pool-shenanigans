@@ -12,8 +12,47 @@ pocket-selector table {
   height: 100%;
 }
 
+pocket-selector .choice::before {
+  content: attr(number);
+  font-size: 4em;
+  position: absolute;
+  color: rgba(0, 0, 0, 0.2);
+}
+
+pocket-selector .choice:hover::before {
+  color: rgba(0, 0, 0, 0.15);
+}
+
+pocket-selector .choice[number="0"]::before,
+pocket-selector .choice[number="1"]::before {
+  top: 35%;
+}
+
+pocket-selector .choice[number="2"]::before,
+pocket-selector .choice[number="3"]::before {
+  top: 23%;
+}
+
+pocket-selector .choice[number="4"]::before,
+pocket-selector .choice[number="5"]::before {
+  bottom: 35%;
+}
+
+pocket-selector .choice[number="0"]::before,
+pocket-selector .choice[number="2"]::before,
+pocket-selector .choice[number="4"]::before {
+  left: 50%;
+}
+
+pocket-selector .choice[number="1"]::before,
+pocket-selector .choice[number="3"]::before,
+pocket-selector .choice[number="5"]::before {
+  right: 50%;
+}
+
 pocket-selector .choice {
   opacity: 0.3;
+  position: relative;
 }
 
 pocket-selector .choice:hover, .choice[selected] {
