@@ -44,6 +44,7 @@ class GameSummaryPaneComponent {
 
   setupSaveButton () {
     this.$saveButton.click( () => {
+      this.$saveButton.prop("disabled", true)
       GameStore.post(this.game, (game) => {
         this.completeCallback(game)
       })

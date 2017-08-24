@@ -6,6 +6,7 @@ import binascii
 import os
 from hashlib import sha1
 import hmac
+from os import environ
 
 class Looker:
   def __init__(self, host, secret):
@@ -84,3 +85,45 @@ class EmbedUrl:
     query_string = '&'.join(["%s=%s" % (key, urllib.quote_plus(val)) for key, val in params.iteritems()])
 
     return "%s%s?%s" % (self.looker.host, self.path, query_string)
+
+def embed_url_for_user(app_user, link):
+    looker = Looker(embed_host(), embed_secret())
+
+    user = EmbedUser(
+        app_user.id,
+        first_name=app_user.first_name,
+        last_name=app_user.last_name,
+        permissions=[
+            'access_data',
+            'create_table_calculations',
+            'download_without_limit',
+            'explore',
+            'manage_spaces',
+            'save_content',
+            'schedule_look_emails',
+            'see_lookml',
+            'see_lookml_dashboards',
+            'see_looks',
+            'see_sql',
+            'see_user_dashboards',
+            'embed_browse_spaces',
+        ],
+        models=['pool_shenanigans'],
+        group_ids=[28],
+        external_group_id='pool_player',
+        user_attributes={'db_database': environ.get("DB_NAME")},
+        access_filters={}
+    )
+
+    fifteen_minutes = 15 * 60
+
+    url = EmbedUrl(looker, user, fifteen_minutes, link, force_logout_login=True)
+
+    return "https://" + url.to_string()
+
+
+def embed_secret():
+    return environ.get('EMBED_SECRET')
+
+def embed_host():
+    return environ.get('EMBED_HOST')

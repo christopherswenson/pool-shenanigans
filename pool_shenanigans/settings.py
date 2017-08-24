@@ -25,7 +25,7 @@ SECRET_KEY = 'lem-66y8)emvuz++s3((x6$4osc9%8&0f1erjc6qwcc8+l$aju'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['christopher.swenson.org']
+ALLOWED_HOSTS = ['christopher.swenson.org', 'localhost']
 
 
 # Application definition
