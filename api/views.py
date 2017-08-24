@@ -120,7 +120,7 @@ def login(request):
         app_login(request, user)
         return JsonResponse({
             'status': 'ok',
-            'user': request.user.toDict()
+            'user': request.user.to_dict()
         })
     else:
         return JsonResponse({
@@ -139,7 +139,7 @@ def user(request):
 
     if request.user.is_authenticated:
         return JsonResponse({
-            'user': request.user.toDict()
+            'user': request.user.to_dict()
         })
     else:
         return JsonResponse({
@@ -159,11 +159,12 @@ def game_embed_url(request, game_id=None):
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # helpers
 
-def userToDict(self):
+def user_to_dict(self):
     return {
         'username': self.get_username(),
         'fullName': self.get_full_name(),
-        'shortName': self.get_short_name()
+        'shortName': self.get_short_name(),
+        "isAdmin": self.is_superuser
     }
 
-User.add_to_class("toDict", userToDict)
+User.add_to_class("to_dict", user_to_dict)
