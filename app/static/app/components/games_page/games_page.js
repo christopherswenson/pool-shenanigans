@@ -6,6 +6,7 @@ class GamesPageComponent {
     this.$newGameModal = $element.find("#new-game-modal")
     this.$loginModal = $element.find("#login-modal")
     this.$logoutButton = $element.find("#logout-button")
+    this.$adminButton = $element.find("#admin-button")
     this.$gameSelector = $element.find("#game-select")
     this.$embedIframe = $element.find("#embed-iframe")
     this.$userGreeting = $element.find("#user-greeting")
@@ -32,6 +33,12 @@ class GamesPageComponent {
     this.setupGameSelector()
     this.updateGreeting()
     this.loadDashboard()
+    this.maybeEnableAdminButton()
+  }
+
+  maybeEnableAdminButton () {
+    let hidden = this.authenticatedUser == null || !this.authenticatedUser.isAdmin
+    this.$adminButton.attr("hidden", hidden)
   }
 
   setupLogoutButton () {
