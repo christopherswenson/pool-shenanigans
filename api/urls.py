@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^user/login$', views.login, name='login'),
     url(r'^user/logout$', views.logout, name='logout'),
     url(r'^user$', views.user, name='user'),
+    url(r'^embed/url$', views.embed_url, name='embed_url'),
 ]

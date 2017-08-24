@@ -80,8 +80,10 @@ class GamesPageComponent {
 
   loadDashboard () {
     if (this.authenticatedUser == null) return
-    let id = this.$gameSelector.val()
-    this.$embedIframe.attr("src", `https://self-signed.looker.com:9999/embed/dashboards/1?game_id=${id}`)
+    EmbedStore.url((response) => {
+      let id = this.$gameSelector.val()
+      this.$embedIframe.attr("src", response["url"])
+    })
   }
 
   updateGameOptions() {
