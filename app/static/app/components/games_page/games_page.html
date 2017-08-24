@@ -6,14 +6,21 @@
   <button class="btn btn-primary" id="new-game-button">New Game</button>
 </div>
 <div class="modal-body looker-embed-container">
-  <iframe id="embed-iframe" class="looker-embed" src="https://self-signed.looker.com:9999/embed/dashboards/1?game_id=13"></iframe>
+  <iframe id="embed-iframe" class="looker-embed" src=""></iframe>
 </div>
 <div class="modal-footer modal-footer-fixed-bottom">
-
+  <span id="user-greeting" class="mr-auto"></span>
+  <button class="btn btn-secondary btn-working" id="logout-button">Logout</button>
 </div>
 
 <div class="modal fade" id="new-game-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content modal-content-tall"></div>
+  </div>
+</div>
+
+<div class="modal fade" id="login-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
   </div>
 </div>

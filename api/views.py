@@ -3,11 +3,18 @@ from django.http import Http404
 from django.template import loader
 from json import loads as parse_json
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate as app_authenticate, login as app_login, logout as app_logout
+from django.contrib.auth.models import User
+from os import environ
+from django.contrib.auth.decorators import login_required
 
 from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining
 
 from .models import Player
 
+from .looker_embed import Looker, EmbedUser, EmbedUrl
+
+@login_required
 def players(request):
     if request.method != 'GET':
         raise Http404
@@ -16,6 +23,7 @@ def players(request):
     data = {'players': [ player.toDict() for player in players ]}
     return JsonResponse(data)
 
+@login_required
 @csrf_exempt
 def games(request):
     if request.method == 'GET':
@@ -92,3 +100,106 @@ def games(request):
             shot_number_in_game += 1
 
     return JsonResponse({'status': 'ok', 'game': game.toDict()})
+
+@csrf_exempt
+def login(request):
+    if request.method != 'POST':
+        raise Http404
+
+    credentials_json = parse_json(request.body)
+    username = credentials_json['username']
+    password = credentials_json['password']
+    user = app_authenticate(request, username=username, password=password)
+    if user is not None:
+        app_login(request, user)
+        return JsonResponse({
+            'status': 'ok',
+            'user': request.user.toDict()
+        })
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'error': "invalid_login_credentials"
+        })
+
+@csrf_exempt
+def logout(request):
+    app_logout(request)
+    return JsonResponse({'status': 'ok'})
+
+def user(request):
+    if request.method != 'GET':
+        raise Http404
+
+    if request.user.is_authenticated:
+        return JsonResponse({
+            'user': request.user.toDict()
+        })
+    else:
+        return JsonResponse({
+            'user': None
+        })
+
+
+@login_required
+def embed_url(request):
+    if request.method != 'GET':
+        raise Http404
+
+    return JsonResponse({
+        'url': getEmbedUrlForUser(request.user)
+    })
+
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# helpers
+
+def userToDict(self):
+    return {
+        'username': self.get_username(),
+        'fullName': self.get_full_name(),
+        'shortName': self.get_short_name()
+    }
+
+def getEmbedUrlForUser(user):
+    looker = Looker(getEmbedHost(), getEmbedSecret())
+
+    user = EmbedUser(
+        user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        permissions=[
+            'access_data',
+            'create_table_calculations',
+            'download_without_limit',
+            'explore',
+            'manage_spaces',
+            'save_content',
+            'schedule_look_emails',
+            'see_lookml',
+            'see_lookml_dashboards',
+            'see_looks',
+            'see_sql',
+            'see_user_dashboards',
+            'embed_browse_spaces',
+        ],
+        models=['pool_shenanigans'],
+        group_ids=[28],
+        external_group_id='pool_player',
+        user_attributes={'db_database': environ.get("DB_NAME")},
+        access_filters={}
+    )
+
+    fifteen_minutes = 15 * 60
+
+    url = EmbedUrl(looker, user, fifteen_minutes, "/embed/dashboards/309", force_logout_login=True)
+
+    return "https://" + url.to_string()
+
+
+def getEmbedSecret():
+    return environ.get('EMBED_SECRET')
+
+def getEmbedHost():
+    return environ.get('EMBED_HOST')
+
+User.add_to_class("toDict", userToDict)
