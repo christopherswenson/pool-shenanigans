@@ -19,6 +19,16 @@ class GamesPageComponent {
     this.ensureLogin()
   }
 
+  get selectedGameId () {
+    return parseInt(this.$gameSelector.val())
+  }
+
+  get selectedGame () {
+    return (this.games || []).find((game) => {
+      return game.id == this.selectedGameId
+    })
+  }
+
   setupLogoutButton () {
     this.$logoutButton.click( () => {
       this.$logoutButton.prop("disabled", true)
@@ -80,9 +90,10 @@ class GamesPageComponent {
 
   loadDashboard () {
     if (this.authenticatedUser == null) return
-    EmbedStore.url((response) => {
-      let id = this.$gameSelector.val()
-      this.$embedIframe.attr("src", response["url"])
+    if (this.selectedGame == null) return
+    GameStore.embed_url(this.selectedGame["id"], (embed_url) => {
+      this.$embedIframe.attr("src", embed_url)
+      // console.log(embed_url)
     })
   }
 
@@ -101,6 +112,7 @@ class GamesPageComponent {
     GameStore.get((games) => {
       this.games = games
       this.updateGameOptions()
+      this.loadDashboard()
     })
   }
 }
