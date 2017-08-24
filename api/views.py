@@ -38,6 +38,8 @@ def games(request):
         raise Http404
 
     game_json = parse_json(request.body).get("game")
+    print "Log: Received Game with JSON:"
+    print game_json
 
     game = Game(
         started_at = game_json["startedAt"],
@@ -78,7 +80,9 @@ def games(request):
                 called_pocket=called_pocket,
                 called_ball=called_ball,
                 is_following_scratch=shot_json["isFollowingScratch"],
-                combo_count=shot_json["comboCount"]
+                is_table_open=shot_json["isTableOpen"],
+                combo_count=shot_json["comboCount"],
+                is_scratch=shot_json["isScratch"]
             )
             shot.save()
 
