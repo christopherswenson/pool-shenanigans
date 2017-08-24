@@ -14,7 +14,6 @@ class GamesPageComponent {
     this.authenticatedUser = null
 
     this.setupNewGameButton()
-    this.setupGameSelector()
     this.setupLogoutButton()
     this.ensureLogin()
   }
@@ -29,12 +28,19 @@ class GamesPageComponent {
     })
   }
 
+  loginSuccess () {
+    this.setupGameSelector()
+    this.updateGreeting()
+    this.loadDashboard()
+  }
+
   setupLogoutButton () {
     this.$logoutButton.click( () => {
       this.$logoutButton.prop("disabled", true)
       AuthenticatedUserStore.logout(() => {
         this.$logoutButton.prop("disabled", false)
         this.authenticatedUser = null
+        this.$embedIframe.attr("src", "")
         this.updateGreeting()
         this.displayLoginModal()
       })
@@ -46,10 +52,7 @@ class GamesPageComponent {
       this.authenticatedUser = user
       if (this.authenticatedUser == null) {
         this.displayLoginModal()
-      } else {
-        this.updateGreeting()
-        this.loadDashboard()
-      }
+      } else this.loginSuccess()
     })
   }
 
@@ -67,8 +70,7 @@ class GamesPageComponent {
     loginPaneComponent.onComplete((response) => {
       this.authenticatedUser = response["user"]
       this.$loginModal.modal('hide')
-      this.loadDashboard()
-      this.updateGreeting()
+      this.loginSuccess()
     })
     this.$loginModal.modal()
   }
@@ -93,7 +95,6 @@ class GamesPageComponent {
     if (this.selectedGame == null) return
     GameStore.embed_url(this.selectedGame["id"], (embed_url) => {
       this.$embedIframe.attr("src", embed_url)
-      // console.log(embed_url)
     })
   }
 

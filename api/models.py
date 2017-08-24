@@ -47,9 +47,11 @@ class Shot(models.Model):
     number_in_game = models.IntegerField(default=0)
     is_success = models.BooleanField(default=False)
     is_break = models.BooleanField(default=False)
+    is_scratch = models.BooleanField(default=False)
     called_pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE, null=True)
     called_ball = models.ForeignKey(Ball, on_delete=models.CASCADE, null=True)
     is_following_scratch = models.BooleanField(default=False)
+    is_table_open = models.BooleanField(default=False)
     combo_count = models.IntegerField(default= 1)
 
 class BallRemaining(models.Model):
