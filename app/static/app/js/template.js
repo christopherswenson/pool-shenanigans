@@ -3,7 +3,7 @@ function findTemplate (id) {
   if (link == null) {
     throw `Error: Could not find template with id '${id}'.`
   }
-  return $(link.import).find('body').children()
+  return $(link.import).children()
 }
 
 function applyTemplateParams($template, params) {
