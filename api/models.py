@@ -1,6 +1,5 @@
 from django.db import models
-# from datetime import datetime
-from dateutil.parser import parse as parse_date
+from django.contrib.auth.models import User
 
 class Game(models.Model):
     started_at = models.DateTimeField('date started')
@@ -14,6 +13,7 @@ class Game(models.Model):
 class Player(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def toDict(self):
         return {
@@ -64,3 +64,6 @@ class BallPocketed(models.Model):
     ball = models.ForeignKey(Ball, on_delete=models.CASCADE)
     is_called = models.BooleanField(default=False)
     is_slop = models.BooleanField(default=False)
+
+class Invitation(models.Model):
+    code = models.CharField(max_length=255)

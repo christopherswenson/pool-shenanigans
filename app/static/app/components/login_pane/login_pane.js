@@ -12,9 +12,15 @@ class LoginPaneComponent {
     this.$passwordInput = this.$element.find("#password-input")
     this.$errorPane = this.$element.find("#error-pane")
     this.$loginButton = this.$element.find("#login-button")
+    this.$registerButton = this.$element.find("#register-button")
+    this.$modal = this.$element.find("#login-modal")
+
+    this.$modal.modal()
+    this.auth = new AuthenticationController
 
     this.setupEnterShortcut()
     this.setupLoginButton()
+    this.setupRegisterButton()
   }
 
   get usernameValue () {
@@ -30,6 +36,15 @@ class LoginPaneComponent {
       if (event.which == ENTER_KEY) {
           this.authenticate()
       }
+    })
+  }
+
+  setupRegisterButton () {
+    this.$registerButton.click( () => {
+      this.$modal.modal('hide')
+      this.auth.displayRegisterModal(this.usernameValue, this.passwordValue, () => {
+        this.completeCallback(this.auth.user)
+      })
     })
   }
 
@@ -58,7 +73,10 @@ class LoginPaneComponent {
   }
 
   onComplete (completeCallback) {
-    this.completeCallback = completeCallback
+    this.completeCallback = () => {
+      this.$modal.modal('hide')
+      completeCallback(this.auth.user)
+    }
   }
 
   updateLoginButton () {
@@ -70,18 +88,20 @@ class LoginPaneComponent {
     this.error = null
     this.displayError()
     this.updateLoginButton()
-    AuthenticatedUserStore.login({
-      "username": this.usernameValue,
-      "password": this.passwordValue
-    }, (response) => {
-      if (response["status"] == "error") {
-        this.error = response["error"]
-        this.displayError()
-        this.authenticating = false
-        this.updateLoginButton()
-      } else {
-        this.completeCallback(response)
+    this.auth.login(
+      this.usernameValue,
+      this.passwordValue,
+      (response) => {
+        if (response["status"] == "error") {
+          this.error = response["error"]
+          this.displayError()
+          this.authenticating = false
+          this.updateLoginButton()
+        } else {
+          this.$errorPane.empty()
+          this.completeCallback()
+        }
       }
-    })
+    )
   }
 }
