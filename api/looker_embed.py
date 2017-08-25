@@ -6,7 +6,7 @@ import binascii
 import os
 from hashlib import sha1
 import hmac
-from djang.conf import settings
+from django.conf import settings
 
 class Looker:
   def __init__(self, host, secret):
