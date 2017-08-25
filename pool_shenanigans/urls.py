@@ -9,6 +9,8 @@ apppatterns = [
     url(r'^', include('app.urls')),
 ]
 
+prefix = "^" + settings.URL_PREFIX
+
 urlpatterns = [
-    url(r'^pool/', include(apppatterns))
+    url(prefix, include(apppatterns))
 ]
