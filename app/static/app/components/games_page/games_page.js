@@ -30,7 +30,6 @@ class GamesPageComponent {
   }
 
   loginSuccess () {
-    console.log("login success")
     this.setupGameSelector()
     this.updateGreeting()
     this.loadDashboard()

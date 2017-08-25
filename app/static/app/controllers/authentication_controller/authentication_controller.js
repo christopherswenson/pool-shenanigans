@@ -26,9 +26,9 @@ class AuthenticationController {
     })
   }
 
-  login (username, password, completeCallback) {
+  login (email, password, completeCallback) {
     AuthenticatedUserStore.login({
-      "username": username,
+      "email": email,
       "password": password
     }, (response) => {
       this.authenticatedUser = response["user"]
