@@ -187,8 +187,10 @@ class CreateGamePaneComponent {
         if (isCalled) {
           shot["isSuccess"] = true
           let ballPattern = this.patternOfBall(ballPocketed["number"])
-          this.getCurrentPlayer()["pattern"] = ballPattern
-          this.getOtherPlayer()["pattern"] = this.otherPattern(ballPattern)
+          if (this.getCurrentPlayer()["pattern"] == null) {
+            this.getCurrentPlayer()["pattern"] = ballPattern
+            this.getOtherPlayer()["pattern"] = this.otherPattern(ballPattern)
+          }
         } else if (ballPocketed["number"] != 0 && ballPocketed["number"] != 8 && !turn["isBreakingTurn"]) {
           ballPocketed["isSlop"] = true
         }
