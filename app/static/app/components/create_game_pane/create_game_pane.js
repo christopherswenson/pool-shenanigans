@@ -124,7 +124,9 @@ class CreateGamePaneComponent {
         shot["isBankShot"]    = call["isBankShot"]
         shot["comboCount"]    = call["comboCount"]
 
-        this.getOutcome(call)
+        this.getOutcome({
+          "ballsPocketed": call["ballsPocketed"] || []
+        })
       })
       ballCalledPaneComponent.onBacktrack(() => {
         this.backtrackGame("ball-called")
@@ -187,7 +189,7 @@ class CreateGamePaneComponent {
         if (isCalled) {
           shot["isSuccess"] = true
           let ballPattern = this.patternOfBall(ballPocketed["number"])
-          if (this.getCurrentPlayer()["pattern"] == null) {
+          if (this.getCurrentPlayer()["pattern"] == null && ballPattern != null) {
             this.getCurrentPlayer()["pattern"] = ballPattern
             this.getOtherPlayer()["pattern"] = this.otherPattern(ballPattern)
           }
@@ -222,9 +224,9 @@ class CreateGamePaneComponent {
 
   patternOfBall (number) {
     if (number >= 1 && number <= 7) {
-      return "Stripe"
-    } else if (number >= 9 && number <= 15) {
       return "Solid"
+    } else if (number >= 9 && number <= 15) {
+      return "Stripe"
     }
   }
 
