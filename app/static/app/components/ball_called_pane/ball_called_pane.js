@@ -19,6 +19,7 @@ class BallCalledPaneComponent {
     this.$pocketSelector = this.$element.find("pocket-selector")
     this.$comboSelector = this.$element.find("#combo-count")
     this.$continueButton = this.$element.find("#continue-button")
+    this.$successButton = this.$element.find("#success-button")
     this.$backButton = this.$element.find("#back-button")
 
     this.setupTitle()
@@ -29,6 +30,7 @@ class BallCalledPaneComponent {
     this.setupComboSelector()
     this.setupContinueButton()
     this.setupBackButton()
+    this.setupSuccessButton()
   }
 
   setupTitle () {
@@ -80,6 +82,7 @@ class BallCalledPaneComponent {
   maybeEnableContinueButton () {
     let enabled = this.calledPocket != null && this.calledBall != null
     this.$continueButton.prop("disabled", !enabled)
+    this.$successButton.prop("disabled", !enabled)
   }
 
   setupPocketSelector () {
@@ -94,19 +97,31 @@ class BallCalledPaneComponent {
     this.maybeEnableContinueButton()
   }
 
-  currentOutputState () {
+  currentOutputState (options) {
+    if (options == null) options = {}
+    let ballsPocketed = (options["success"] ? [{
+      "number": this.calledBall,
+      "pocket": this.calledPocket
+    }] : [])
     return {
-      calledBall: this.calledBall,
-      calledPocket: this.calledPocket,
-      isJumpShot: this.isJumpShot,
-      isBankShot: this.isBankShot,
-      comboCount: this.comboCount
+      "calledBall": this.calledBall,
+      "calledPocket": this.calledPocket,
+      "isJumpShot": this.isJumpShot,
+      "isBankShot": this.isBankShot,
+      "comboCount": this.comboCount,
+      "ballsPocketed": ballsPocketed
     }
   }
 
   setupContinueButton () {
     this.$continueButton.click( () => {
       this.completeCallback(this.currentOutputState())
+    })
+  }
+
+  setupSuccessButton () {
+    this.$successButton.click( () => {
+      this.completeCallback(this.currentOutputState({"success": true}))
     })
   }
 

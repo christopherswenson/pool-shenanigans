@@ -2,6 +2,7 @@
 class GameSummaryPaneComponent {
   constructor (params) {
     this.game = params["game"]
+    console.log("Log: Game JSON", this.game)
   }
 
   display ($element) {
