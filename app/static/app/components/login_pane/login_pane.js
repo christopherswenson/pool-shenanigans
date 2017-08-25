@@ -8,7 +8,7 @@ class LoginPaneComponent {
 
     this.$element = loadTemplate($element, "login_pane.html")
 
-    this.$usernameInput = this.$element.find("#username-input")
+    this.$emailInput = this.$element.find("#email-input")
     this.$passwordInput = this.$element.find("#password-input")
     this.$errorPane = this.$element.find("#error-pane")
     this.$loginButton = this.$element.find("#login-button")
@@ -23,8 +23,8 @@ class LoginPaneComponent {
     this.setupRegisterButton()
   }
 
-  get usernameValue () {
-    return this.$usernameInput.val()
+  get emailValue () {
+    return this.$emailInput.val()
   }
 
   get passwordValue () {
@@ -42,7 +42,7 @@ class LoginPaneComponent {
   setupRegisterButton () {
     this.$registerButton.click( () => {
       this.$modal.modal('hide')
-      this.auth.displayRegisterModal(this.usernameValue, this.passwordValue, () => {
+      this.auth.displayRegisterModal(this.emailValue, this.passwordValue, () => {
         this.completeCallback(this.auth.user)
       })
     })
@@ -89,7 +89,7 @@ class LoginPaneComponent {
     this.displayError()
     this.updateLoginButton()
     this.auth.login(
-      this.usernameValue,
+      this.emailValue,
       this.passwordValue,
       (response) => {
         if (response["status"] == "error") {

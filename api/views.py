@@ -113,9 +113,9 @@ def login(request):
         raise Http404
 
     credentials_json = parse_json(request.body)
-    username = credentials_json['username']
+    email = credentials_json['email']
     password = credentials_json['password']
-    user = app_authenticate(request, username=username, password=password)
+    user = app_authenticate(request, username=email, password=password)
     if user is not None:
         app_login(request, user)
         return JsonResponse({
