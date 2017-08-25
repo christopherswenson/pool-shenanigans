@@ -79,8 +79,8 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_HOST = os.environ.get("DB_HOST")
 DB_NAME = os.environ.get("DB_NAME")
 
-EMBED_SECRET = environ.get('EMBED_SECRET')
-EMBED_HOST = environ.get('EMBED_HOST')
+EMBED_SECRET = os.environ.get('EMBED_SECRET')
+EMBED_HOST = os.environ.get('EMBED_HOST')
 
 DATABASES = {
     'default': {
@@ -132,7 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-URL_PREFIX = "/"
+URL_PREFIX = ""
 APP_STATIC_PATH = "/app/static/app"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = os.path.join(URL_PREFIX, '/static/')
