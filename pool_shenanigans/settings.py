@@ -79,8 +79,8 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_HOST = os.environ.get("DB_HOST")
 DB_NAME = os.environ.get("DB_NAME")
 
-EMBED_SECRET = environ.get('EMBED_SECRET')
-EMBED_HOST = environ.get('EMBED_HOST')
+EMBED_SECRET = os.environ.get('EMBED_SECRET')
+EMBED_HOST = os.environ.get('EMBED_HOST')
 
 if DB_PASSWORD is None:
     raise "DB_PASSWORD must not be None"
