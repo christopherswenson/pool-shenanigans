@@ -24,5 +24,18 @@ const GameStore = {
       }
       xhr.send()
     })
+  },
+
+  embed_url (id, onComplete) {
+    UrlPrefixStore.get((url_prefix) => {
+      let xhr = new XMLHttpRequest()
+      xhr.open("GET", `${url_prefix}/api/games/${id}/embed_url`, true)
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          onComplete(JSON.parse(xhr.responseText)["url"])
+        }
+      }
+      xhr.send()
+    })
   }
 }

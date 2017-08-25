@@ -2,6 +2,7 @@
 class GameSummaryPaneComponent {
   constructor (params) {
     this.game = params["game"]
+    console.log("Log: Game JSON", this.game)
   }
 
   display ($element) {
@@ -44,6 +45,7 @@ class GameSummaryPaneComponent {
 
   setupSaveButton () {
     this.$saveButton.click( () => {
+      this.$saveButton.prop("disabled", true)
       GameStore.post(this.game, (game) => {
         this.completeCallback(game)
       })

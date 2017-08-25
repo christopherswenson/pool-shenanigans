@@ -6,6 +6,7 @@ class GamesPageComponent {
     this.$newGameModal = $element.find("#new-game-modal")
     this.$loginModal = $element.find("#login-modal")
     this.$logoutButton = $element.find("#logout-button")
+    this.$adminButton = $element.find("#admin-button")
     this.$gameSelector = $element.find("#game-select")
     this.$embedIframe = $element.find("#embed-iframe")
     this.$userGreeting = $element.find("#user-greeting")
@@ -14,9 +15,30 @@ class GamesPageComponent {
     this.authenticatedUser = null
 
     this.setupNewGameButton()
-    this.setupGameSelector()
     this.setupLogoutButton()
     this.ensureLogin()
+  }
+
+  get selectedGameId () {
+    return parseInt(this.$gameSelector.val())
+  }
+
+  get selectedGame () {
+    return (this.games || []).find((game) => {
+      return game.id == this.selectedGameId
+    })
+  }
+
+  loginSuccess () {
+    this.setupGameSelector()
+    this.updateGreeting()
+    this.loadDashboard()
+    this.maybeEnableAdminButton()
+  }
+
+  maybeEnableAdminButton () {
+    let hidden = this.authenticatedUser == null || !this.authenticatedUser.isAdmin
+    this.$adminButton.attr("hidden", hidden)
   }
 
   setupLogoutButton () {
@@ -25,6 +47,7 @@ class GamesPageComponent {
       AuthenticatedUserStore.logout(() => {
         this.$logoutButton.prop("disabled", false)
         this.authenticatedUser = null
+        this.$embedIframe.attr("src", "")
         this.updateGreeting()
         this.displayLoginModal()
       })
@@ -36,10 +59,7 @@ class GamesPageComponent {
       this.authenticatedUser = user
       if (this.authenticatedUser == null) {
         this.displayLoginModal()
-      } else {
-        this.updateGreeting()
-        this.loadDashboard()
-      }
+      } else this.loginSuccess()
     })
   }
 
@@ -57,8 +77,7 @@ class GamesPageComponent {
     loginPaneComponent.onComplete((response) => {
       this.authenticatedUser = response["user"]
       this.$loginModal.modal('hide')
-      this.loadDashboard()
-      this.updateGreeting()
+      this.loginSuccess()
     })
     this.$loginModal.modal()
   }
@@ -80,9 +99,9 @@ class GamesPageComponent {
 
   loadDashboard () {
     if (this.authenticatedUser == null) return
-    EmbedStore.url((response) => {
-      let id = this.$gameSelector.val()
-      this.$embedIframe.attr("src", response["url"])
+    if (this.selectedGame == null) return
+    GameStore.embed_url(this.selectedGame["id"], (embed_url) => {
+      this.$embedIframe.attr("src", embed_url)
     })
   }
 
@@ -101,6 +120,7 @@ class GamesPageComponent {
     GameStore.get((games) => {
       this.games = games
       this.updateGameOptions()
+      this.loadDashboard()
     })
   }
 }

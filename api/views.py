@@ -12,7 +12,7 @@ from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, Ba
 
 from .models import Player
 
-from .looker_embed import Looker, EmbedUser, EmbedUrl
+from .looker_embed import embed_url_for_user
 
 @login_required
 def players(request):
@@ -29,13 +29,17 @@ def games(request):
     if request.method == 'GET':
 
         games = Game.objects.all()
-        data = {'games': [ game.toDict() for game in games ]}
+        data = {
+            'games': [ game.toDict() for game in games ],
+        }
         return JsonResponse(data)
 
     elif request.method != 'POST':
         raise Http404
 
     game_json = parse_json(request.body).get("game")
+    print "Log: Received Game with JSON:"
+    print game_json
 
     game = Game(
         started_at = game_json["startedAt"],
@@ -76,7 +80,9 @@ def games(request):
                 called_pocket=called_pocket,
                 called_ball=called_ball,
                 is_following_scratch=shot_json["isFollowingScratch"],
-                combo_count=shot_json["comboCount"]
+                is_table_open=shot_json["isTableOpen"],
+                combo_count=shot_json["comboCount"],
+                is_scratch=shot_json["isScratch"]
             )
             shot.save()
 
@@ -114,7 +120,7 @@ def login(request):
         app_login(request, user)
         return JsonResponse({
             'status': 'ok',
-            'user': request.user.toDict()
+            'user': request.user.to_dict()
         })
     else:
         return JsonResponse({
@@ -133,7 +139,7 @@ def user(request):
 
     if request.user.is_authenticated:
         return JsonResponse({
-            'user': request.user.toDict()
+            'user': request.user.to_dict()
         })
     else:
         return JsonResponse({
@@ -142,64 +148,23 @@ def user(request):
 
 
 @login_required
-def embed_url(request):
-    if request.method != 'GET':
+def game_embed_url(request, game_id=None):
+    if request.method != 'GET' or game_id is None :
         raise Http404
 
     return JsonResponse({
-        'url': getEmbedUrlForUser(request.user)
+        'url': embed_url_for_user(request.user, "/embed/dashboards/309?game_id=%s" % game_id)
     })
 
 # # # # # # # # # # # # # # # # # # # # # # # # #
 # helpers
 
-def userToDict(self):
+def user_to_dict(self):
     return {
         'username': self.get_username(),
         'fullName': self.get_full_name(),
-        'shortName': self.get_short_name()
+        'shortName': self.get_short_name(),
+        "isAdmin": self.is_superuser
     }
 
-def getEmbedUrlForUser(user):
-    looker = Looker(getEmbedHost(), getEmbedSecret())
-
-    user = EmbedUser(
-        user.id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        permissions=[
-            'access_data',
-            'create_table_calculations',
-            'download_without_limit',
-            'explore',
-            'manage_spaces',
-            'save_content',
-            'schedule_look_emails',
-            'see_lookml',
-            'see_lookml_dashboards',
-            'see_looks',
-            'see_sql',
-            'see_user_dashboards',
-            'embed_browse_spaces',
-        ],
-        models=['pool_shenanigans'],
-        group_ids=[28],
-        external_group_id='pool_player',
-        user_attributes={'db_database': environ.get("DB_NAME")},
-        access_filters={}
-    )
-
-    fifteen_minutes = 15 * 60
-
-    url = EmbedUrl(looker, user, fifteen_minutes, "/embed/dashboards/309", force_logout_login=True)
-
-    return "https://" + url.to_string()
-
-
-def getEmbedSecret():
-    return environ.get('EMBED_SECRET')
-
-def getEmbedHost():
-    return environ.get('EMBED_HOST')
-
-User.add_to_class("toDict", userToDict)
+User.add_to_class("to_dict", user_to_dict)
