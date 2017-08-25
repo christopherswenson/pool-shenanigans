@@ -61,31 +61,31 @@ pocket-selector .choice:hover, .choice[selected] {
 }
 
 pocket-selector .choice[number="0"] {
-  background-image: url("/static/app/img/pool-table/0.png");
+  background-image: url("../pool-table/0.png");
   background-size: cover;
 }
 
 pocket-selector .choice[number="1"] {
-  background-image: url("/static/app/img/pool-table/1.png");
+  background-image: url("../pool-table/1.png");
   background-size: cover;
 }
 
 pocket-selector .choice[number="2"] {
-  background-image: url("/static/app/img/pool-table/2.png");
+  background-image: url("../pool-table/2.png");
   background-size: cover;
 }
 
 pocket-selector .choice[number="3"] {
-  background-image: url("/static/app/img/pool-table/3.png");
+  background-image: url("../pool-table/3.png");
   background-size: cover;
 }
 
 pocket-selector .choice[number="4"] {
-  background-image: url("/static/app/img/pool-table/4.png");
+  background-image: url("../pool-table/4.png");
   background-size: cover;
 }
 
 pocket-selector .choice[number="5"] {
-  background-image: url("/static/app/img/pool-table/5.png");
+  background-image: url("../pool-table/5.png");
   background-size: cover;
 }
