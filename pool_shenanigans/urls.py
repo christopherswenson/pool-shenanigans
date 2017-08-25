@@ -9,7 +9,7 @@ apppatterns = [
     url(r'^', include('app.urls')),
 ]
 
-prefix = "^" + settings.URL_PREFIX #re.compile()
+prefix = "^" + settings.URL_PREFIX
 
 urlpatterns = [
     url(prefix, include(apppatterns))
