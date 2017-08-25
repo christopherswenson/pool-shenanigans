@@ -79,12 +79,20 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_HOST = os.environ.get("DB_HOST")
 DB_NAME = os.environ.get("DB_NAME")
 
+EMBED_SECRET = environ.get('EMBED_SECRET')
+EMBED_HOST = environ.get('EMBED_HOST')
+
 if DB_PASSWORD is None:
     raise "DB_PASSWORD must not be None"
 if DB_HOST is None:
     raise "DB_HOST must not be None"
 if DB_NAME is None:
     raise "DB_NAME must not be None"
+
+if EMBED_SECRET is None:
+    raise "EMBED_SECRET must not be None"
+if EMBED_HOST is None:
+    raise "EMBED_HOST must not be None"
 
 DATABASES = {
     'default': {
@@ -141,7 +149,7 @@ APP_STATIC_PATH = "/app/static/app"
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 STATIC_URL = os.path.join(URL_PREFIX, '/static/')
 
-try: 
+try:
 	from custom_settings import *
 	print "Log: imported custom settings"
 except ImportError:

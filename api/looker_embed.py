@@ -6,7 +6,7 @@ import binascii
 import os
 from hashlib import sha1
 import hmac
-from os import environ
+from djang.conf import settings
 
 class Looker:
   def __init__(self, host, secret):
@@ -87,7 +87,7 @@ class EmbedUrl:
     return "%s%s?%s" % (self.looker.host, self.path, query_string)
 
 def embed_url_for_user(app_user, link):
-    looker = Looker(embed_host(), embed_secret())
+    looker = Looker(settings.EMBED_HOST, settings.EMBED_SECRET)
 
     user = EmbedUser(
         app_user.id,
@@ -120,10 +120,3 @@ def embed_url_for_user(app_user, link):
     url = EmbedUrl(looker, user, fifteen_minutes, link, force_logout_login=True)
 
     return "https://" + url.to_string()
-
-
-def embed_secret():
-    return environ.get('EMBED_SECRET')
-
-def embed_host():
-    return environ.get('EMBED_HOST')
