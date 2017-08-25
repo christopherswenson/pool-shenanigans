@@ -1,36 +1,42 @@
 const AuthenticatedUserStore = {
   login (credentials, onComplete) {
-    let xhr = new XMLHttpRequest()
-    xhr.open("POST", "/api/user/login", true)
-    xhr.setRequestHeader("Content-type", "application/json")
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        onComplete(JSON.parse(xhr.responseText))
+    UrlPrefixStore.get((url_prefix) => {
+      let xhr = new XMLHttpRequest()
+      xhr.open("POST", `${url_prefix}/api/user/login`, true)
+      xhr.setRequestHeader("Content-type", "application/json")
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          onComplete(JSON.parse(xhr.responseText))
+        }
       }
-    }
-    xhr.send(JSON.stringify(credentials))
+      xhr.send(JSON.stringify(credentials))
+    })
   },
 
   logout (onComplete) {
-    let xhr = new XMLHttpRequest()
-    xhr.open("POST", "/api/user/logout", true)
-    xhr.setRequestHeader("Content-type", "application/json")
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        onComplete(JSON.parse(xhr.responseText))
+    UrlPrefixStore.get((url_prefix) => {
+      let xhr = new XMLHttpRequest()
+      xhr.open("POST", `${url_prefix}/api/user/logout`, true)
+      xhr.setRequestHeader("Content-type", "application/json")
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          onComplete(JSON.parse(xhr.responseText))
+        }
       }
-    }
-    xhr.send()
+      xhr.send()
+    })
   },
 
   get (onComplete) {
-    let xhr = new XMLHttpRequest()
-    xhr.open("GET", "/api/user", true)
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState == XMLHttpRequest.DONE) {
-        onComplete(JSON.parse(xhr.responseText)["user"])
+    UrlPrefixStore.get((url_prefix) => {
+      let xhr = new XMLHttpRequest()
+      xhr.open("GET", `${url_prefix}/api/user`, true)
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+          onComplete(JSON.parse(xhr.responseText)["user"])
+        }
       }
-    }
-    xhr.send()
+      xhr.send()
+    })
   }
 }
