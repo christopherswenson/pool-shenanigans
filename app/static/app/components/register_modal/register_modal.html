@@ -1,0 +1,81 @@
+<template>
+  <div class="modal fade" id="register-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Register New Player</h5>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+                    <input type="text" class="form-control" id="first-name-input" placeholder="First name">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+                    <input type="text" class="form-control" id="last-name-input" placeholder="Last name">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md">@</div>
+                    <input type="text" class="form-control" id="email-input" placeholder="Email">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+                    <input type="password" class="form-control" id="password-input" placeholder="Password">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+                    <input type="password" class="form-control" id="password-repeat-input" placeholder="Password (again)">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                    <div class="input-group-addon input-group-addon-md"><i class="fa fa-ticket" aria-hidden="true"></i></i></div>
+                    <input type="text" class="form-control" id="invitation-code-input" placeholder="Invitation code">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <span id="error-pane" class="mr-auto"></span>
+          <span>
+            <button type="button" class="btn btn-primary btn-working" id="register-button">Create Player</button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

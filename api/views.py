@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from os import environ
 from django.contrib.auth.decorators import login_required
 
-from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining
+from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation
 
 from .models import Player
 
@@ -132,6 +132,51 @@ def login(request):
 def logout(request):
     app_logout(request)
     return JsonResponse({'status': 'ok'})
+
+@csrf_exempt
+def register(request):
+    if request.method != 'POST':
+        raise Http404
+
+    registration_json = parse_json(request.body)
+    credentials_json = registration_json["credentials"]
+    player_json = registration_json["player"]
+
+    email = credentials_json['email']
+    password = credentials_json['password']
+    invitation_code = credentials_json['invitationCode']
+
+    existing_user = User.objects.filter(email=email).first()
+    if existing_user is not None:
+        return JsonResponse({
+            'status': 'error',
+            'error': "user_exists"
+        })
+
+    invitation = Invitation.objects.filter(code=invitation_code).first()
+    if invitation is None:
+        return JsonResponse({
+            'status': 'error',
+            'error': "invalid_invitation"
+        })
+
+    user = User.objects.create_user(email, email, password)
+
+    user.first_name = player_json["firstName"]
+    user.last_name = player_json["lastName"]
+    user.save()
+
+    player = Player(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        user=user
+    )
+    player.save()
+
+    return JsonResponse({
+        'status': 'ok',
+        'user': user.to_dict()
+    })
 
 def user(request):
     if request.method != 'GET':
