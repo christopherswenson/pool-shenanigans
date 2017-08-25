@@ -161,6 +161,7 @@ def register(request):
         })
 
     user = User.objects.create_user(email, email, password)
+    app_login(request, user)
 
     user.first_name = player_json["firstName"]
     user.last_name = player_json["lastName"]

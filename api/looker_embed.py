@@ -115,8 +115,8 @@ def embed_url_for_user(app_user, link):
         access_filters={}
     )
 
-    fifteen_minutes = 15 * 60
+    one_day = 24 * 60 * 60
 
-    url = EmbedUrl(looker, user, fifteen_minutes, link, force_logout_login=True)
+    url = EmbedUrl(looker, user, one_day, link, force_logout_login=True)
 
     return "https://" + url.to_string()
