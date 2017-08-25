@@ -82,18 +82,6 @@ DB_NAME = os.environ.get("DB_NAME")
 EMBED_SECRET = os.environ.get('EMBED_SECRET')
 EMBED_HOST = os.environ.get('EMBED_HOST')
 
-if DB_PASSWORD is None:
-    raise "DB_PASSWORD must not be None"
-if DB_HOST is None:
-    raise "DB_HOST must not be None"
-if DB_NAME is None:
-    raise "DB_NAME must not be None"
-
-if EMBED_SECRET is None:
-    raise "EMBED_SECRET must not be None"
-if EMBED_HOST is None:
-    raise "EMBED_HOST must not be None"
-
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
