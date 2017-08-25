@@ -75,15 +75,27 @@ WSGI_APPLICATION = 'pool_shenanigans.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+DB_PASSWORD = os.environ.get("DB_PASSWORD")
+DB_HOST = os.environ.get("DB_HOST")
+DB_NAME = os.environ.get("DB_NAME")
+
+if DB_PASSWORD is None:
+    raise "DB_PASSWORD must not be None"
+if DB_HOST is None:
+    raise "DB_HOST must not be None"
+if DB_NAME is None:
+    raise "DB_NAME must not be None"
+
 DATABASES = {
     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("DB_NAME"),
-        'HOST': os.environ.get("DB_HOST"),
+        'NAME': DB_NAME,
+        'HOST': DB_HOST,
         'USER': 'pool_shenanigans',
-        'PASSWORD': os.environ.get("DB_PASSWORD")
+        'PASSWORD': DB_PASSWORD,
+        'PORT': '3306'
     }
 }
 
@@ -124,4 +136,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
+URL_PREFIX = "/"
+APP_STATIC_PATH = "/app/static/app"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+STATIC_URL = os.path.join(URL_PREFIX, '/static/')
+
+try: 
+	from custom_settings import *
+	print "Log: imported custom settings"
+except ImportError:
+	print "Log: Warning: no custom settings file"
+
+
+print STATIC_URL

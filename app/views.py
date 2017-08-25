@@ -7,14 +7,13 @@ import os
 
 def all_static_files():
     filemap = {'css': [], 'js': [], 'html': []}
-    static_root = os.path.join(settings.BASE_DIR, "app", settings.STATIC_URL[1:])
-    app_root = os.path.join(static_root, "app")
-    for root, dirs, files in os.walk(app_root):
+    app_static_root = os.path.join(settings.BASE_DIR, settings.APP_STATIC_PATH[1:])
+    for root, dirs, files in os.walk(app_static_root):
         for filename in files:
             extension = os.path.splitext(filename)[1][1:]
             if filemap.get(extension) is not None:
                 fileobj = {
-                    'path': os.path.join(root, filename)[len(static_root):],
+                    'path': os.path.join(root, filename)[len(app_static_root) - len("/app"):],
                     'name': filename
                 }
                 filemap[extension].append(fileobj)
@@ -25,4 +24,9 @@ def app(request):
         raise Http404
     template = loader.get_template('app.html')
     required_files = all_static_files()
-    return HttpResponse(template.render(required_files, request))
+    return HttpResponse(template.render({
+        'css': required_files['css'],
+        'js': required_files['js'],
+        'html': required_files['html'],
+        'url_prefix': settings.URL_PREFIX
+    }, request))
