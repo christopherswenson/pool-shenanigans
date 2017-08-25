@@ -10,6 +10,7 @@ class GamesPageComponent {
     this.$gameSelector = $element.find("#game-select")
     this.$embedIframe = $element.find("#embed-iframe")
     this.$userGreeting = $element.find("#user-greeting")
+    this.$dbName = $element.find("#db-name")
 
     this.games = []
     this.authenticatedUser = null
@@ -39,6 +40,7 @@ class GamesPageComponent {
   maybeEnableAdminButton () {
     let hidden = this.authenticatedUser == null || !this.authenticatedUser.isAdmin
     this.$adminButton.attr("hidden", hidden)
+    this.$dbName.html(hidden ? "" : Meta.get("db_name"))
   }
 
   setupLogoutButton () {

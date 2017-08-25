@@ -28,5 +28,6 @@ def app(request):
         'css': required_files['css'],
         'js': required_files['js'],
         'html': required_files['html'],
-        'url_prefix': settings.URL_PREFIX
+        'url_prefix': settings.URL_PREFIX,
+        'db_name': settings.DB_NAME,
     }, request))

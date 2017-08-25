@@ -27,3 +27,12 @@ iframe.looker-embed {
 .modal-title.inline-block {
   display: inline-block;
 }
+
+#db-name {
+  padding-right: 10px;
+  color: lightgray;
+}
+
+#admin-buttonn {
+  padding-right: 10px;
+}
