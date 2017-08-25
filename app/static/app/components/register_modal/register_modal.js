@@ -15,12 +15,14 @@ class RegisterModalComponent {
     this.$errorPane = this.$element.find("#error-pane")
     this.$invitationCodeInput = this.$element.find("#invitation-code-input")
     this.$registerButton = this.$element.find("#register-button")
+    this.$closeButton = this.$element.find("#close-button")
     this.$modal = this.$element.find("#register-modal")
 
     this.$modal.modal()
     this.auth = new AuthenticationController
 
     this.setupRegisterButton()
+    this.setupCloseButton()
   }
 
   onComplete (completeCallback) {
@@ -118,6 +120,12 @@ class RegisterModalComponent {
       if (this.validationError == null) {
         this.register()
       }
+    })
+  }
+
+  setupCloseButton () {
+    this.$closeButton.click( () => {
+      this.auth.ensureLogin()
     })
   }
 
