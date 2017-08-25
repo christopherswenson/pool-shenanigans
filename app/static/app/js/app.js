@@ -1,6 +1,5 @@
 
-window.addEventListener('WebComponentsReady', (e) => {
-  console.log("document.ready")
+window.addEventListener('WebComponentsReady', () => {
   gamesPageComponent = new GamesPageComponent
   gamesPageComponent.display($("#app-content"))
 })
