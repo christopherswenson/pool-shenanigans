@@ -7,13 +7,6 @@ pocket-selector {
   display: block;
 }
 
-@media (min-width: 576px) {
-  pocket-selector {
-    --height: 300px;
-    margin: 10px 0px 0px 100px;
-  }
-}
-
 pocket-selector table {
   width: 100%;
   height: 100%;
@@ -95,4 +88,15 @@ pocket-selector .choice[number="4"] {
 pocket-selector .choice[number="5"] {
   background-image: url("./pool-table/5.png");
   background-size: cover;
+}
+
+@media (min-width: 576px) {
+  pocket-selector {
+    --height: 300px;
+    margin: 10px 0px 0px 100px;
+  }
+
+  pocket-selector .choice::before {
+    font-size: 3em;
+  }
 }
