@@ -111,7 +111,7 @@ def embed_url_for_user(app_user, link):
         models=['pool_shenanigans'],
         group_ids=[28],
         external_group_id='pool_player',
-        user_attributes={'db_database': environ.get("DB_NAME")},
+        user_attributes={'db_database': settings.DB_NAME},
         access_filters={}
     )
 
