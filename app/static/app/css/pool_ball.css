@@ -15,6 +15,16 @@
   display: inline-block;
 }
 
+@media (min-width: 576px) {
+  .pool-ball {
+    width: 55px;
+    height: 55px;
+    font-size: 10px
+    line-height: 13px;
+    margin: 10px;
+  }
+}
+
 .pool-ball[disabled] {
   opacity: 0.5;
 }

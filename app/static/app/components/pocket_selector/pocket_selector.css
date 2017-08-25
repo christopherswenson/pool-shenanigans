@@ -7,6 +7,13 @@ pocket-selector {
   display: block;
 }
 
+@media (min-width: 576px) {
+  pocket-selector {
+    --height: 300px;
+    margin: 10px 0px 0px 100px;
+  }
+}
+
 pocket-selector table {
   width: 100%;
   height: 100%;
