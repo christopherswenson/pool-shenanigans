@@ -1,6 +1,5 @@
 .modal-content.modal-content-tall {
   height: 800px;
-  max-height: 90%;
 }
 
 .modal-body-scroll {
@@ -17,18 +16,6 @@
 
 button[class="close"] {
   outline: none;
-}
-
-@media (min-width: 576px) {
-  .modal-dialog {
-    max-width: 90%;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    width: 100%;
-  }
 }
 
 .btn[hidden] {

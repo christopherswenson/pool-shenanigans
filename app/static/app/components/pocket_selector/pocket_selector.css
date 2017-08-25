@@ -89,14 +89,3 @@ pocket-selector .choice[number="5"] {
   background-image: url("./pool-table/5.png");
   background-size: cover;
 }
-
-@media (min-width: 576px) {
-  pocket-selector {
-    --height: 280px;
-    margin: 10px 0px 0px 100px;
-  }
-
-  pocket-selector .choice::before {
-    font-size: 3em;
-  }
-}
