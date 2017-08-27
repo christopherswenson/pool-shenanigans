@@ -22,15 +22,6 @@ class CreateGameModal {
     this.$modal.modal()
   }
 
-  complete (completeCallback) {
-    this.completeCallback = (() => {
-      this.$element.modal('hide')
-      $(document.body).remove(this.$element)
-      completeCallback()
-    })
-    return this
-  }
-
   backtrack (paneName) {
     let shot = this.currentShot
     switch (paneName) {
@@ -75,7 +66,7 @@ class CreateGameModal {
       this.game["breakingPlayer"] = results["breakingPlayer"]
       this.game["otherPlayer"] = results["otherPlayer"]
       this.game["playerTwo"] = results["playerTwo"]
-      this.game["gamePlayers"] = [Authentication.user["player"], results["playerTwo"]]
+      this.game["gamePlayers"] = [results["playerOne"], results["playerTwo"]]
       this.game["turns"] = []
       this.game["startedAt"] = new Date(Date.now())
       this.normalTurn()
@@ -96,6 +87,7 @@ class CreateGameModal {
     let turn = this.currentTurn
     let isCurrentPlayerWinner = turn["shots"][turn["shots"].length - 1]["isSuccess"]
     this.currentPlayer["isWinner"] = !!isCurrentPlayerWinner
+    console.log(this.currentPlayer, this.otherPlayer)
     this.otherPlayer["isWinner"] = !isCurrentPlayerWinner
 
     this.game["endedAt"] = new Date(Date.now())
@@ -292,6 +284,14 @@ class CreateGameModal {
     })
     if (shot) return shot["ballsRemaining"]
     else return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  }
+
+  complete (completeCallback) {
+    this.completeCallback = ((game) => {
+      this.$modal.modal('hide')
+      completeCallback(game)
+    })
+    return this
   }
 
   normalTurn () {

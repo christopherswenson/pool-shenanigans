@@ -16,7 +16,7 @@ class SetupPane {
       "id": "guest",
       "isGuest": true
     }
-    this.players = params["players"].concat(this.guestPlayer)
+    this.players = params["players"]
 
     this.$errorPane = this.$element.find("#error-pane")
     this.errorComponent = new ErrorPane(this.$errorPane, {
@@ -38,22 +38,22 @@ class SetupPane {
 
   // Property getters
 
-  get isPlayerTwoGuest () {
+  get isPlayerTwoNewGuest () {
     return this.guestCheckbox.value
   }
 
-  set isPlayerTwoGuest (value) {
+  set isPlayerTwoNewGuest (value) {
     this.guestCheckbox.value = value
   }
 
   get playerTwoOptions () {
     return this.players.filter((player) => {
-      return player["userId"] != Authentication.user["id"] && !player["isGuest"]
+      return player["id"] != this.playerOne["id"]
     })
   }
 
   get playerOne () {
-    return Authentication.user["player"]
+    return this.playerWithId(Authentication.user["player"]["id"])
   }
 
   get guestFirstName () {
@@ -73,17 +73,16 @@ class SetupPane {
   }
 
   get playerTwo () {
-    if (this.isPlayerTwoGuest) {
+    if (this.isPlayerTwoNewGuest) {
       this.guestPlayer["firstName"] = this.guestFirstName
       this.guestPlayer["lastName"] = this.guestLastName
-      this.guestPlayer["fullName"] = `${this.guestPlayer["firstName"]} ${this.guestPlayer["lastName"]}`.trim() || "Guest"
       return this.guestPlayer
     } else return this.playerWithId(parseInt(this.$playerTwoSelect.val()))
   }
 
   set playerTwo (player) {
-    if (player["isGuest"]) {
-      this.isPlayerTwoGuest = true
+    if (this.isPlayerTwoNewGuest) {
+      this.isPlayerTwoNewGuest = true
       if (player && player["isGuest"]) {
         this.guestFirstName = player["firstName"]
         this.guestLastName = player["lastName"]
@@ -95,7 +94,10 @@ class SetupPane {
   }
 
   get breakingPlayer () {
-    return this.playerWithId(this.$breakingPlayerSelect.val())
+    let id = this.$breakingPlayerSelect.val()
+    if (id == "guest") {
+      return this.guestPlayer
+    } else return this.playerWithId(id)
   }
 
   set breakingPlayer (player) {
@@ -114,12 +116,13 @@ class SetupPane {
     return {
       "breakingPlayer": this.breakingPlayer,
       "playerTwo": this.playerTwo,
-      "otherPlayer": this.otherPlayer
+      "otherPlayer": this.otherPlayer,
+      "playerOne": this.playerOne
     }
   }
 
   get validationError () {
-    if (this.playerTwo["isGuest"]) {
+    if (this.isPlayerTwoNewGuest) {
       if (this.guestFirstName == "") {
         return "no_first_name"
       } else if (this.guestLastName == "") {
@@ -130,10 +133,13 @@ class SetupPane {
 
   // Setup methods
 
+  nameForPlayer (player) {
+    return `${player["firstName"]} ${player["lastName"]} ${player["isGuest"] ? "(guest)" : ""}`
+  }
+
   playerOptions (players) {
-    return players.map(function(player) {
-      let name = player["isGuest"] ? player.fullName : player["fullName"]
-      return $("<option></option>").attr("value", player.id).text(name)
+    return players.map((player) => {
+      return $("<option></option>").attr("value", player.id).text(this.nameForPlayer(player))
     })
   }
 
@@ -157,7 +163,8 @@ class SetupPane {
   }
 
   setupBreakingPlayerOptions () {
-    let isPlayerOne = this.breakingPlayer == null || (this.breakingPlayer["id"] == this.playerOne["id"])
+    let id = this.$breakingPlayerSelect.val()
+    let isPlayerOne = id == null || id == this.playerOne["id"]
     let bothPlayers = [this.playerOne, this.playerTwo]
     this.$breakingPlayerSelect.empty().append(this.playerOptions(bothPlayers))
     this.$breakingPlayerSelect.val(isPlayerOne ? this.playerOne["id"] : this.playerTwo["id"])

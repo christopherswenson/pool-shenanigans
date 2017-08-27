@@ -47,10 +47,20 @@ def games(request):
     )
     game.save()
 
+    guest = None
+
     for game_player_json in game_json["gamePlayers"]:
+        if game_player_json["id"] == "guest":
+            guest = Player(
+                first_name=game_player_json["firstName"],
+                last_name=game_player_json["lastName"],
+                user = None,
+                is_guest = True
+            )
+            guest.save()
         game_player = GamePlayer(
             game=game,
-            player=Player.objects.get(pk=game_player_json["id"]),
+            player=guest if guest is not None else Player.objects.get(pk=game_player_json["id"]),
             is_winner=game_player_json["isWinner"],
             pattern=game_player_json.get("pattern", None)
         )
@@ -58,9 +68,11 @@ def games(request):
 
     shot_number_in_game = 0
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
+        turn_player_json = turn_json["player"]
+        player = guest if turn_player_json["isGuest"] else Player.objects.get(pk=turn_player_json["id"])
         turn = Turn(
             game=game,
-            player=Player.objects.get(pk=turn_json["player"]["id"]),
+            player=player,
             number=turn_number)
         turn.save()
 

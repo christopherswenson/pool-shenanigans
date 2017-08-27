@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.crypto import get_random_string
 
 def user_to_dict(self):
     return {
@@ -22,10 +23,19 @@ class Game(models.Model):
             'id': self.pk
         }
 
+
+def generate_guest_code():
+    while True:
+        code = get_random_string(6, '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ')
+        if Player.objects.filter(guest_code=code).first() is None:
+            return code
+
 class Player(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    guest_code = models.CharField(max_length=255, default=generate_guest_code, unique=True)
+    is_guest = models.BooleanField(default=False)
 
     def toDict(self):
         return {
@@ -33,7 +43,8 @@ class Player(models.Model):
             'firstName': self.first_name,
             'lastName': self.last_name,
             'userId': self.user.pk if self.user else None,
-            'fullName': "%s %s" % (self.first_name, self.last_name)
+            'fullName': "%s %s" % (self.first_name, self.last_name),
+            'isGuest': self.is_guest
         }
 
 class GamePlayer(models.Model):
