@@ -102,7 +102,7 @@ class CreateGameModal {
     this.gameSummary()
   }
 
-  getTurnTitle () {
+  get turnTitle () {
     let kind = this.currentShot["isBreak"] ? "Break" : "Shot"
     return `${this.currentPlayer["firstName"]}'s ${kind}`
   }
@@ -165,8 +165,7 @@ class CreateGameModal {
   getOutcome (params) {
     if (params == null) params = {}
     new BallPocketedPane(this.$modalContent, {
-      "title": this.getTurnTitle(),
-
+      "title": this.turnTitle,
       "ballOptions": this.ballsRemaining.concat(0),
       "ballsPocketed": params["ballsPocketed"] || [],
       "isTableScratch": false

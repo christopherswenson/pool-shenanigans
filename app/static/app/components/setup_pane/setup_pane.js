@@ -52,13 +52,6 @@ class SetupPane {
     })
   }
 
-  playerOptions (players) {
-    return players.map(function(player) {
-      let name = player["isGuest"] ? player.fullName : player["fullName"]
-      return $("<option></option>").attr("value", player.id).text(name)
-    })
-  }
-
   get playerOne () {
     return Authentication.user["player"]
   }
@@ -136,6 +129,13 @@ class SetupPane {
   }
 
   // Setup methods
+
+  playerOptions (players) {
+    return players.map(function(player) {
+      let name = player["isGuest"] ? player.fullName : player["fullName"]
+      return $("<option></option>").attr("value", player.id).text(name)
+    })
+  }
 
   setupPlayerTwoOptions () {
     this.$playerTwoSelect.empty().append(this.playerOptions(this.playerTwoOptions))

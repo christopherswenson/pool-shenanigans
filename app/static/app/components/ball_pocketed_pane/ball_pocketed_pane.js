@@ -8,59 +8,85 @@ class BallPocketedPane {
         return ballPocketed["number"] == option
       })
     })
-    this.title = params["title"]
-    
+
     this.$element = loadTemplate($element, "ball_pocketed_pane.html")
 
-    let $scratchCheckbox = this.$element.find("#scratch-toggle")
-    this.scratchCheckbox = new Checkbox($scratchCheckbox, {
-      "value": params["isTableScratch"]
-    })
 
-    this.$title = this.$element.find("#title")
     this.$clearButton = this.$element.find("#clear-button")
     this.$continueButton = this.$element.find("#continue-button")
     this.$gutter = this.$element.find("#gutter")
     this.$backButton = this.$element.find("#back-button")
 
-    this.setupTitle()
     this.setupBallSelector()
     this.setupPocketSelector()
     this.setupClearButton()
     this.updateGutter()
+    this.setupScratchCheckbox()
+
+    this.title = params["title"]
+    this.isTableScratch = params["isTableScratch"] || false
   }
 
-  complete (completeCallback) {
-    this.$continueButton.click( (event) => {
-      completeCallback(this.currentOutputState)
-    })
-    return this
+  // Property getters and setters
+
+  set title (text) {
+    let $title = this.$element.find("#title")
+    $title.text(text)
   }
 
-  backtrack (backtrackCallback) {
-    this.$backButton.click(() => {
-      backtrackCallback(this.currentOutputState)
-    })
-    return this
+  get ballNumber () {
+    return this.ballSelector.value
   }
 
-  setupTitle () {
-    this.$title.text(this.title)
+  set ballNumber (value) {
+    this.ballSelector.value = value
+  }
+
+  get pocketId () {
+    return this.pocketSelector.value
+  }
+
+  set pocketId (pocket) {
+    this.pocketSelector.value = pocket
   }
 
   get isSelectionComplete () {
-    return this.currentBallNumber != null && this.currentPocketId != null
+    return this.ballNumber != null && this.pocketId != null
+  }
+
+  get isTableScratch () {
+    return this.scratchCheckbox.value
+  }
+
+  set isTableScratch (value) {
+    this.scratchCheckbox.value = value
+  }
+
+  get currentOutputState () {
+    return {
+      "ballsPocketed": this.ballsPocketed,
+      "isTableScratch": this.isTableScratch
+    }
+  }
+
+  // Setup methods
+
+  setupScratchCheckbox () {
+    let $scratchCheckbox = this.$element.find("#scratch-toggle")
+    this.scratchCheckbox = new Checkbox($scratchCheckbox, {})
   }
 
   maybeCollectSelection () {
     if (this.isSelectionComplete) {
       this.ballsPocketed.push({
-        "number": this.ballSelector.value,
-        "pocket": this.pocketSelector.value
+        "number": this.ballNumber,
+        "pocket": this.pocketId
       })
-      this.ballOptions = this.ballOptions.filter((number) => number != this.currentBallNumber)
+      this.ballOptions = this.ballOptions.filter((number) => number != this.ballNumber)
       this.setupBallSelector()
-      this.setupPocketSelector()
+      // this.setupPocketSelector()
+      this.ballNumber = null
+      this.pocketId = null
       this.maybeCollectSelection()
       this.updateGutter()
     }
@@ -84,7 +110,6 @@ class BallPocketedPane {
     }).change( (value) => {
       this.maybeCollectSelection()
     })
-    this.maybeCollectSelection()
   }
 
   setupPocketSelector () {
@@ -92,17 +117,6 @@ class BallPocketedPane {
     this.pocketSelector.change( (value) => {
       this.maybeCollectSelection()
     })
-  }
-
-  get isTableScratch () {
-    return this.scratchCheckbox.value
-  }
-
-  get currentOutputState () {
-    return {
-      "ballsPocketed": this.ballsPocketed,
-      "isTableScratch": this.isTableScratch
-    }
   }
 
   updateGutter () {
@@ -118,5 +132,21 @@ class BallPocketedPane {
       return $ball
     })
     this.$gutter.html($ballsPocketed)
+  }
+
+  // Event handlres
+
+  complete (completeCallback) {
+    this.$continueButton.click( (event) => {
+      completeCallback(this.currentOutputState)
+    })
+    return this
+  }
+
+  backtrack (backtrackCallback) {
+    this.$backButton.click(() => {
+      backtrackCallback(this.currentOutputState)
+    })
+    return this
   }
 }
