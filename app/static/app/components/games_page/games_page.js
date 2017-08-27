@@ -1,15 +1,14 @@
-class GamesPageComponent {
-  display ($element) {
+class GamesPage {
+  constructor ($element, params) {
     this.$element = loadTemplate($element, "games_page.html")
 
-    this.$newGameButton = $element.find("#new-game-button")
-    this.$newGameModal = $element.find("#new-game-modal")
-    this.$logoutButton = $element.find("#logout-button")
-    this.$adminButton = $element.find("#admin-button")
-    this.$gameSelector = $element.find("#game-select")
-    this.$embedIframe = $element.find("#embed-iframe")
-    this.$userGreeting = $element.find("#user-greeting")
-    this.$dbName = $element.find("#db-name")
+    this.$newGameButton = this.$element.find("#new-game-button")
+    this.$logoutButton = this.$element.find("#logout-button")
+    this.$adminButton = this.$element.find("#admin-button")
+    this.$gameSelector = this.$element.find("#game-select")
+    this.$embedIframe = this.$element.find("#embed-iframe")
+    this.$userGreeting = this.$element.find("#user-greeting")
+    this.$dbName = this.$element.find("#db-name")
 
     this.games = []
 
@@ -18,13 +17,13 @@ class GamesPageComponent {
     this.ensureLogin()
   }
 
-  get selectedGameId () {
+  get gameId () {
     return parseInt(this.$gameSelector.val())
   }
 
-  get selectedGame () {
+  get game () {
     return (this.games || []).find((game) => {
-      return game.id == this.selectedGameId
+      return game.id == this.gameId
     })
   }
 
@@ -36,7 +35,7 @@ class GamesPageComponent {
   }
 
   maybeEnableAdminButton () {
-    let hidden = AuthenticationController.user == null || !AuthenticationController.user.isAdmin
+    let hidden = Authentication.user == null || !Authentication.user.isAdmin
     this.$adminButton.attr("hidden", hidden)
     this.$dbName.html(hidden ? "" : Meta.get("db_name"))
   }
@@ -44,7 +43,7 @@ class GamesPageComponent {
   setupLogoutButton () {
     this.$logoutButton.click( () => {
       this.$logoutButton.prop("disabled", true)
-      AuthenticationController.logout(() => {
+      Authentication.logout(() => {
         this.$logoutButton.prop("disabled", false)
         this.$embedIframe.attr("src", "")
         this.updateGreeting()
@@ -54,38 +53,34 @@ class GamesPageComponent {
   }
 
   ensureLogin () {
-    AuthenticationController.ensureLogin(() => {
+    Authentication.ensureLogin(() => {
       this.loginSuccess()
     })
   }
 
   updateGreeting () {
-    if (AuthenticationController.user == null) {
+    if (Authentication.user == null) {
       this.$userGreeting.html("")
     } else {
-      this.$userGreeting.html(`Hello, ${AuthenticationController.user["fullName"]}`)
+      this.$userGreeting.html(`Hello, ${Authentication.user["fullName"]}`)
     }
   }
 
   setupNewGameButton () {
     this.$newGameButton.click( () => {
-      let createGamePaneComponent = new CreateGamePaneComponent
-      createGamePaneComponent.display(this.$newGameModal.find(".modal-content"))
-      this.$newGameModal.modal()
-      createGamePaneComponent.onComplete((game) => {
+      let createGamePaneComponent = new CreateGameModal(this.$element.find("new-game-modal-container")).complete((game) => {
         this.games.push(game)
         this.updateGameOptions()
         this.$gameSelector.val(game["id"])
-        this.$newGameModal.modal('hide')
         this.loadDashboard()
       })
     })
   }
 
   loadDashboard () {
-    if (AuthenticationController.user == null) return
-    if (this.selectedGame == null) return
-    GameStore.embed_url(this.selectedGame["id"], (embed_url) => {
+    if (Authentication.user == null) return
+    if (this.game == null) return
+    GameStore.embed_url(this.game["id"], (embed_url) => {
       this.$embedIframe.attr("src", embed_url)
     })
   }

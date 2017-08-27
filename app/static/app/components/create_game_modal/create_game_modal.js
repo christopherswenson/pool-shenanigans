@@ -1,15 +1,16 @@
 
-class CreateGamePaneComponent {
+class CreateGameModal {
 
-  display ($element) {
-    this.$element = $element
+  constructor ($element, params) {
+    this.$element = loadTemplate($element, "create_game_modal.html")
 
     this.players = []
     this.breakingPlayer = null
     this.gamePlayers = []
     this.ballsPocketed = []
     this.isTableOpen = true
-    this.ballsRemaining = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    this.$modal = this.$element.find("#new-game-modal")
+    this.$modalContent = this.$element.find(".modal-content")
 
     this.game = {}
 
@@ -17,14 +18,21 @@ class CreateGamePaneComponent {
       this.players = players
       this.setupGame()
     })
+
+    this.$modal.modal()
   }
 
-  onComplete (completeCallback) {
-    this.completeCallback = completeCallback
+  complete (completeCallback) {
+    this.completeCallback = (() => {
+      this.$element.modal('hide')
+      $(document.body).remove(this.$element)
+      completeCallback()
+    })
+    return this
   }
 
-  backtrackGame (paneName) {
-    let shot = this.getCurrentShot()
+  backtrack (paneName) {
+    let shot = this.currentShot
     switch (paneName) {
       case "game-summary":
         let ballsPocketed = shot["ballsPocketed"]
@@ -41,25 +49,25 @@ class CreateGamePaneComponent {
         }
         break
       case "ball-called":
-        let turn = this.getCurrentTurn()
+        let turn = this.currentTurn
         if (turn["shots"].length == 1) {
           this.game["turns"].pop()
         } else {
           this.game["turns"][0]["shots"].pop()
         }
-        let lastShot = this.getCurrentShot()
+        let lastShot = this.currentShot
         let lastBallsPocketed = lastShot["ballsPocketed"]
-        this.getCurrentShot()["ballsPocketed"] = null
+        this.currentShot["ballsPocketed"] = null
         this.getOutcome({
           "ballsPocketed": lastBallsPocketed
         })
         break
     }
-    this.game
+    return this
   }
 
   setupGame () {
-    let setupComponent = new SetupComponent(this.$element, {
+    let setupComponent = new SetupPane(this.$modalContent, {
       "playerTwo": this.game["playerTwo"] || null,
       "breakingPlayer": this.game["breakingPlayer"] || null,
       "players": this.players
@@ -67,7 +75,7 @@ class CreateGamePaneComponent {
       this.game["breakingPlayer"] = results["breakingPlayer"]
       this.game["otherPlayer"] = results["otherPlayer"]
       this.game["playerTwo"] = results["playerTwo"]
-      this.game["gamePlayers"] = [AuthenticationController.user["player"], results["playerTwo"]]
+      this.game["gamePlayers"] = [Authentication.user["player"], results["playerTwo"]]
       this.game["turns"] = []
       this.game["startedAt"] = new Date(Date.now())
       this.normalTurn()
@@ -75,49 +83,44 @@ class CreateGamePaneComponent {
   }
 
   gameSummary () {
-    let gameSummaryComponent = new GameSummaryPaneComponent({
+    let gameSummaryComponent = new GameSummaryPane(this.$modalContent, {
       "game": this.game
-    })
-    gameSummaryComponent.display(this.$element)
-    gameSummaryComponent.onComplete( (game) => {
+    }).complete( (game) => {
       this.completeCallback(game)
-    })
-    gameSummaryComponent.onBacktrack(() => {
-      this.backtrackGame("game-summary")
+    }).backtrack(() => {
+      this.backtrack("game-summary")
     })
   }
 
   endGame () {
-    let turn = this.getCurrentTurn()
+    let turn = this.currentTurn
     let isCurrentPlayerWinner = turn["shots"][turn["shots"].length - 1]["isSuccess"]
-    this.getCurrentPlayer()["isWinner"] = !!isCurrentPlayerWinner
-    this.getOtherPlayer()["isWinner"] = !isCurrentPlayerWinner
+    this.currentPlayer["isWinner"] = !!isCurrentPlayerWinner
+    this.otherPlayer["isWinner"] = !isCurrentPlayerWinner
 
     this.game["endedAt"] = new Date(Date.now())
     this.gameSummary()
   }
 
   getTurnTitle () {
-    let kind = this.getCurrentShot()["isBreak"] ? "Break" : "Shot"
-    return `${this.getCurrentPlayer()["firstName"]}'s ${kind}`
+    let kind = this.currentShot["isBreak"] ? "Break" : "Shot"
+    return `${this.currentPlayer["firstName"]}'s ${kind}`
   }
 
   getCall () {
-    let shot = this.getCurrentShot()
+    let shot = this.currentShot
     if (!shot["isBreak"]) {
-      let calledBallOptions = this.calledBallOptions()
-      let ballCalledPaneComponent = new BallCalledPaneComponent({
+      let calledBallOptions = this.calledBallOptions
+      new BallCalledPane(this.$modalContent, {
         "ballOptions": calledBallOptions,
-        "title": this.getTurnTitle(),
+        "title": this.turnTitle,
 
         "calledBall": shot["calledBall"] || (calledBallOptions.length == 1 ? calledBallOptions[0] : null),
         "calledPocket": shot["calledPocket"] || null,
         "isJumpShot": shot["isJumpShot"] || false,
         "isBankShot": shot["isBankShot"] || false,
         "comboCount": shot["comboCount"] || 1
-      })
-      ballCalledPaneComponent.display(this.$element)
-      ballCalledPaneComponent.onComplete((call) => {
+      }).complete((call) => {
         shot["calledBall"]    = call["calledBall"]
         shot["calledPocket"]  = call["calledPocket"]
         shot["isJumpShot"]    = call["isJumpShot"]
@@ -127,9 +130,8 @@ class CreateGamePaneComponent {
         this.getOutcome({
           "ballsPocketed": call["ballsPocketed"] || []
         })
-      })
-      ballCalledPaneComponent.onBacktrack(() => {
-        this.backtrackGame("ball-called")
+      }).backtrack(() => {
+        this.backtrack("ball-called")
       })
     } else {
       shot["calledBall"]   = null
@@ -142,12 +144,12 @@ class CreateGamePaneComponent {
     }
   }
 
-  calledBallOptions() {
-    let ballsRemaining = this.getBallsRemaining()
+  get calledBallOptions () {
+    let ballsRemaining = this.ballsRemaining
     let atLeastOneStripe = ballsRemaining.find((number) => this.patternOfBall(number) == "Stripe")
     let atLeastOneSolid = ballsRemaining.find((number) => this.patternOfBall(number) == "Solid")
 
-    let pattern = this.getCurrentPlayer()["pattern"]
+    let pattern = this.currentPlayer["pattern"]
     if (pattern != null) {
       let ballsOfPattern = ballsRemaining.filter((number) => {
         return this.patternOfBall(number) == pattern
@@ -162,20 +164,16 @@ class CreateGamePaneComponent {
 
   getOutcome (params) {
     if (params == null) params = {}
-    let ballsRemaining = this.getBallsRemaining()
-
-    let ballPocketedPaneComponent = new BallPocketedPaneComponent({
+    new BallPocketedPane(this.$modalContent, {
       "title": this.getTurnTitle(),
 
-      "ballOptions": ballsRemaining.concat(0),
+      "ballOptions": this.ballsRemaining.concat(0),
       "ballsPocketed": params["ballsPocketed"] || [],
       "isTableScratch": false
-    })
-    ballPocketedPaneComponent.display(this.$element)
-    ballPocketedPaneComponent.onComplete((outcome) => {
-      let turn = this.getCurrentTurn()
-      let shot = this.getCurrentShot()
-      let previousShot = this.getPreviousShot()
+    }).complete((outcome) => {
+      let turn = this.currentTurn
+      let shot = this.currentShot
+      let previousShot = this.previousShot
       shot["isSuccess"] = false
       shot["isFinal"] = false
       shot["isScratch"] = false
@@ -189,9 +187,9 @@ class CreateGamePaneComponent {
         if (isCalled) {
           shot["isSuccess"] = true
           let ballPattern = this.patternOfBall(ballPocketed["number"])
-          if (this.getCurrentPlayer()["pattern"] == null && ballPattern != null) {
-            this.getCurrentPlayer()["pattern"] = ballPattern
-            this.getOtherPlayer()["pattern"] = this.otherPattern(ballPattern)
+          if (this.currentPlayer["pattern"] == null && ballPattern != null) {
+            this.currentPlayer["pattern"] = ballPattern
+            this.otherPlayer["pattern"] = this.otherPattern(ballPattern)
           }
         } else if (ballPocketed["number"] != 0 && ballPocketed["number"] != 8 && !turn["isBreakingTurn"]) {
           ballPocketed["isSlop"] = true
@@ -211,9 +209,8 @@ class CreateGamePaneComponent {
       } else if (shot["isSuccess"]) {
         this.normalShot()
       } else this.normalTurn()
-    })
-    ballPocketedPaneComponent.onBacktrack(() => {
-      this.backtrackGame("ball-pocketed")
+    }).backtrack(() => {
+      this.backtrack("ball-pocketed")
     })
   }
 
@@ -240,33 +237,33 @@ class CreateGamePaneComponent {
   }
 
   normalShot () {
-    let turn = this.getCurrentTurn()
+    let turn = this.currentTurn
 
     let shot = {}
     shot["number"] = turn["shots"].length
     shot["isBreak"] = turn["isBreakingTurn"] && shot["number"] == 0
-    shot["isTableOpen"] = this.getCurrentPlayer()["pattern"] == null
-    shot["ballsRemainingBefore"] = this.getBallsRemaining()
+    shot["isTableOpen"] = this.currentPlayer["pattern"] == null
+    shot["ballsRemainingBefore"] = this.ballsRemaining
 
     turn["shots"].push(shot)
 
     this.getCall()
   }
 
-  getCurrentTurn () {
+  get currentTurn () {
     let turns = this.game["turns"]
     if (turns) return turns[turns.length - 1]
     else return null
   }
 
-  getCurrentShot () {
-    let shots = this.getCurrentTurn()["shots"]
+  get currentShot () {
+    let shots = this.currentTurn["shots"]
 
     if (shots) return shots[shots.length - 1]
     else return null
   }
 
-  getPreviousShot () {
+  get previousShot () {
     let shots = this.game["turns"].map((turn) => {
       return turn["shots"]
     }).flatten()
@@ -274,21 +271,21 @@ class CreateGamePaneComponent {
     else return null
   }
 
-  getCurrentPlayer () {
-    return this.getCurrentTurn()["player"]
+  get currentPlayer () {
+    return this.currentTurn["player"]
   }
 
-  isBreakingTurn () {
-    return this.getCurrentTurn()["isBreakingTurn"]
+  get isBreakingTurn () {
+    return this.currentTurn["isBreakingTurn"]
   }
 
-  getOtherPlayer () {
-    let currentPlayer = this.getCurrentPlayer()
-
-    return (this.game["gamePlayers"][0] == currentPlayer) ? this.game["gamePlayers"][1] : this.game["gamePlayers"][0]
+  get otherPlayer () {
+    return ((this.game["gamePlayers"][0] == this.currentPlayer)
+      ? this.game["gamePlayers"][1]
+      : this.game["gamePlayers"][0])
   }
 
-  getBallsRemaining () {
+  get ballsRemaining () {
     let shot = this.game["turns"].map((turn) => {
       return turn["shots"]
     }).flatten().reverse().find((shot) => {
@@ -302,7 +299,7 @@ class CreateGamePaneComponent {
     let turn = {}
     turn["number"] = this.game["turns"].length
     turn["isBreakingTurn"] = turn["number"] == 0
-    turn["player"] = turn["isBreakingTurn"] ? this.game["breakingPlayer"] : this.getOtherPlayer()
+    turn["player"] = turn["isBreakingTurn"] ? this.game["breakingPlayer"] : this.otherPlayer
     turn["shots"] = []
 
     this.game["turns"].push(turn)

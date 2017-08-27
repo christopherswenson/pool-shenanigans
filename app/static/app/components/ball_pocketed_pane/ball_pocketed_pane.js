@@ -1,6 +1,6 @@
 
-class BallPocketedPaneComponent {
-  constructor (params) {
+class BallPocketedPane {
+  constructor ($element, params) {
     this.initBallOptions = params["ballOptions"].slice()
     this.ballsPocketed = params["ballsPocketed"].slice()
     this.ballOptions = params["ballOptions"].filter((option) => {
@@ -8,15 +8,14 @@ class BallPocketedPaneComponent {
         return ballPocketed["number"] == option
       })
     })
-    this.title = params.title
-
-    this.currentBallNumber = null
-    this.currentPocketId = null
-    this.isTableScratch = false
-  }
-
-  display ($element) {
+    this.title = params["title"]
+    
     this.$element = loadTemplate($element, "ball_pocketed_pane.html")
+
+    let $scratchCheckbox = this.$element.find("#scratch-toggle")
+    this.scratchCheckbox = new Checkbox($scratchCheckbox, {
+      "value": params["isTableScratch"]
+    })
 
     this.$title = this.$element.find("#title")
     this.$clearButton = this.$element.find("#clear-button")
@@ -27,35 +26,37 @@ class BallPocketedPaneComponent {
     this.setupTitle()
     this.setupBallSelector()
     this.setupPocketSelector()
-    this.setupScratchCheckbox()
-
     this.setupClearButton()
-    this.setupContinueButton()
-    this.setupBackButton()
     this.updateGutter()
   }
 
-  onComplete (completeCallback) {
-    this.completeCallback = completeCallback
+  complete (completeCallback) {
+    this.$continueButton.click( (event) => {
+      completeCallback(this.currentOutputState)
+    })
+    return this
   }
 
-  onBacktrack (backtrackCallback) {
-    this.backtrackCallback = backtrackCallback
+  backtrack (backtrackCallback) {
+    this.$backButton.click(() => {
+      backtrackCallback(this.currentOutputState)
+    })
+    return this
   }
 
   setupTitle () {
     this.$title.text(this.title)
   }
 
-  isSelectionComplete () {
+  get isSelectionComplete () {
     return this.currentBallNumber != null && this.currentPocketId != null
   }
 
   maybeCollectSelection () {
-    if (this.isSelectionComplete()) {
+    if (this.isSelectionComplete) {
       this.ballsPocketed.push({
-        number: this.currentBallNumber,
-        pocket: this.currentPocketId
+        "number": this.ballSelector.value,
+        "pocket": this.pocketSelector.value
       })
       this.ballOptions = this.ballOptions.filter((number) => number != this.currentBallNumber)
       this.setupBallSelector()
@@ -65,7 +66,7 @@ class BallPocketedPaneComponent {
     }
   }
 
-  clearCurrent () {
+  clear () {
     this.ballsPocketed = []
     this.ballOptions = this.initBallOptions
     this.setupBallSelector()
@@ -74,57 +75,34 @@ class BallPocketedPaneComponent {
   }
 
   setupClearButton () {
-    this.$clearButton.click(this.clearCurrent.bind(this))
+    this.$clearButton.click(() => this.clear())
   }
 
   setupBallSelector () {
-    this.currentBallNumber = null
-    this.ballSelectorComponent = new BallSelectorComponent({
-      options: this.ballOptions
-    })
-    this.ballSelectorComponent.display($("ball-selector"))
-    this.ballSelectorComponent.onChange( (value) => {
-      this.currentBallNumber = value
+    this.ballSelector = new BallSelector($("ball-selector"), {
+      "options": this.ballOptions
+    }).change( (value) => {
       this.maybeCollectSelection()
     })
     this.maybeCollectSelection()
   }
 
   setupPocketSelector () {
-    this.currentPocketId = null
-    this.pocketSelectorComponent = new PocketSelectorComponent({})
-    this.pocketSelectorComponent.display($("pocket-selector"))
-    this.pocketSelectorComponent.onChange( (value) => {
-      this.currentPocketId = value
+    this.pocketSelector = new PocketSelector($("pocket-selector"), {})
+    this.pocketSelector.change( (value) => {
       this.maybeCollectSelection()
     })
   }
 
-  setupScratchCheckbox () {
-    let checkboxComponent = new CheckboxComponent({value: this.isTableScratch})
-    checkboxComponent.display($("checkbox"))
-    checkboxComponent.onChange ( (value) => {
-      this.isTableScratch = true
-    })
+  get isTableScratch () {
+    return this.scratchCheckbox.value
   }
 
-  currentOutputState () {
+  get currentOutputState () {
     return {
       "ballsPocketed": this.ballsPocketed,
       "isTableScratch": this.isTableScratch
     }
-  }
-
-  setupContinueButton () {
-    this.$continueButton.click( (event) => {
-      this.completeCallback(this.currentOutputState())
-    })
-  }
-
-  setupBackButton () {
-    this.$backButton.click(() => {
-      this.backtrackCallback(this.currentOutputState())
-    })
   }
 
   updateGutter () {

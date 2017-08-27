@@ -1,9 +1,9 @@
 
 const ENTER_KEY = 13
 
-class LoginPaneComponent {
+class LoginModal {
 
-  display ($element) {
+  constructor ($element) {
     this.authenticating = false
 
     this.$element = loadTemplate($element, "login_pane.html")
@@ -17,7 +17,7 @@ class LoginPaneComponent {
 
     this.$modal.modal()
 
-    this.errorComponent = new ErrorComponent(this.$errorPane, {
+    this.errorComponent = new ErrorPane(this.$errorPane, {
       "errorMap": {
         "invalid_login_credentials": "Invalid Login Credentials"
       }
@@ -47,8 +47,8 @@ class LoginPaneComponent {
   setupRegisterButton () {
     this.$registerButton.click( () => {
       this.$modal.modal('hide')
-      AuthenticationController.displayRegisterModal(this.emailValue, this.passwordValue, () => {
-        this.completeCallback(AuthenticationController.user)
+      Authentication.displayRegisterModal(this.emailValue, this.passwordValue, () => {
+        this.completeCallback(Authentication.user)
       })
     })
   }
@@ -59,11 +59,12 @@ class LoginPaneComponent {
     })
   }
 
-  onComplete (completeCallback) {
+  complete (completeCallback) {
     this.completeCallback = () => {
       this.$modal.modal('hide')
-      completeCallback(AuthenticationController.user)
+      completeCallback(Authentication.user)
     }
+    return this
   }
 
   updateLoginButton () {
@@ -74,7 +75,7 @@ class LoginPaneComponent {
     this.authenticating = true
     this.errorComponent.error = null
     this.updateLoginButton()
-    AuthenticationController.login(
+    Authentication.login(
       this.emailValue,
       this.passwordValue,
       (response) => {

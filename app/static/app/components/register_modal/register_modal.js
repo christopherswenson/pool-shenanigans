@@ -1,8 +1,8 @@
 
 const MIN_PASSWORD_LENGTH = 8
 
-class RegisterModalComponent {
-  display ($element) {
+class RegisterModal {
+  constructor ($element, params) {
     this.registering = false
 
     this.$element = loadTemplate($element, "register_modal.html")
@@ -19,7 +19,7 @@ class RegisterModalComponent {
     this.$modal = this.$element.find("#register-modal")
 
     this.$modal.modal()
-    this.errorComponent = new ErrorComponent(this.$errorPane, {
+    this.errorComponent = new ErrorPane(this.$errorPane, {
       "errorMap": {
         "no_password_match": "Passwords do not match",
         "no_first_name": "First name must not be blank",
@@ -37,11 +37,12 @@ class RegisterModalComponent {
     this.setupCloseButton()
   }
 
-  onComplete (completeCallback) {
+  complete (completeCallback) {
     this.completeCallback = () => {
       this.$modal.modal('hide')
       completeCallback(this.auth.user)
     }
+    return this
   }
 
   get emailValue () {
@@ -102,7 +103,7 @@ class RegisterModalComponent {
 
   setupCloseButton () {
     this.$closeButton.click( () => {
-      AuthenticationController.ensureLogin()
+      Authentication.ensureLogin()
     })
   }
 
@@ -113,7 +114,7 @@ class RegisterModalComponent {
   register () {
     this.registering = true
     this.updateRegisterButton()
-    AuthenticationController.register({
+    Authentication.register({
       "email": this.emailValue,
       "password": this.passwordValue,
       "invitationCode": this.invitationCodeValue

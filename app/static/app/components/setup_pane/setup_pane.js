@@ -1,5 +1,5 @@
 
-class SetupComponent {
+class SetupPane {
 
   constructor ($element, params) {
     this.$element = loadTemplate($element, "setup_pane.html")
@@ -19,59 +19,37 @@ class SetupComponent {
     this.players = params["players"].concat(this.guestPlayer)
 
     this.$errorPane = this.$element.find("#error-pane")
-    this.errorComponent = new ErrorComponent(this.$errorPane, {
+    this.errorComponent = new ErrorPane(this.$errorPane, {
       "errorMap": {
         "no_first_name": "Guest's first name must not be blank",
         "no_last_name": "Guest's last name must not be blank"
       }
     })
 
-    this.setupGuestCheckbox(params["isPlayerTwoGuest"] || false)
+    this.setupPlayerTwoOptions()
+    this.setupGuestCheckbox()
     this.setupPlayerOneLabel ()
-    this.setupPlayerTwoOptions(params["playerTwo"])
-    this.setupBreakingPlayerOptions(params["breakingPlayer"])
-    this.setupNextButton()
-    this.setupBackButton()
-    this.setupGuestNameInputs(params["playerTwo"])
+    this.setupBreakingPlayerOptions()
+    this.setupGuestNameInputs()
+
+    this.playerTwo = params["playerTwo"] || this.playerTwoOptions[0]
+    this.breakingPlayer = params["breakingPlayer"]
   }
 
-  complete (completeCallback) {
-    this.completeCallback = completeCallback
-    return this
-  }
-
-  onBacktrack (backtrackCallback) {
-    this.backtrackCallback = backtrackCallback
-  }
+  // Property getters
 
   get isPlayerTwoGuest () {
     return this.guestCheckbox.value
   }
 
-  setupPlayerOneLabel () {
-    this.$playerOneLabel.val(this.playerOne["fullName"])
+  set isPlayerTwoGuest (value) {
+    this.guestCheckbox.value = value
   }
 
-  setupGuestCheckbox (initialValue) {
-    this.guestCheckbox = new CheckboxComponent($("checkbox#guest"), {
-      "value": initialValue
-    }).change( (value) => {
-      this.$playerTwoSelect.prop("disabled", value)
-      this.$guestFirstName.prop("disabled", !value)
-      this.$guestLastName.prop("disabled", !value)
-      this.setupBreakingPlayerOptions()
+  get playerTwoOptions () {
+    return this.players.filter((player) => {
+      return player["userId"] != Authentication.user["id"] && !player["isGuest"]
     })
-  }
-
-  setupGuestNameInputs (playerTwo) {
-    ;[this.$guestFirstName, this.$guestLastName].forEach(($element) => {
-      $element.keyup(() => {
-        this.setupBreakingPlayerOptions()
-      })
-    })
-    if (!playerTwo || !playerTwo["isGuest"]) return
-    this.$guestFirstName.val(playerTwo["firstName"])
-    this.$guestLastName.val(playerTwo["lastName"])
   }
 
   playerOptions (players) {
@@ -81,28 +59,24 @@ class SetupComponent {
     })
   }
 
-  setupPlayerTwoOptions (initialValue) {
-    let playerTwoOptions = this.players.filter((player) => {
-      return player["userId"] != AuthenticationController.user["id"]
-    })
-    this.$playerTwoSelect.empty().append(this.playerOptions(playerTwoOptions))
-    this.$playerTwoSelect.val(initialValue || playerTwoOptions[0]["id"])
-
-    this.$playerTwoSelect.change(() => {
-      this.setupBreakingPlayerOptions()
-    })
-  }
-
   get playerOne () {
-    return AuthenticationController.user["player"]
+    return Authentication.user["player"]
   }
 
   get guestFirstName () {
     return this.$guestFirstName.val().trim()
   }
 
+  set guestFirstName (value) {
+    this.$guestFirstName.val(value)
+  }
+
   get guestLastName () {
     return this.$guestLastName.val().trim()
+  }
+
+  set guestLastName (value) {
+    this.$guestLastName.val(value)
   }
 
   get playerTwo () {
@@ -114,8 +88,25 @@ class SetupComponent {
     } else return this.playerWithId(parseInt(this.$playerTwoSelect.val()))
   }
 
+  set playerTwo (player) {
+    if (player["isGuest"]) {
+      this.isPlayerTwoGuest = true
+      if (player && player["isGuest"]) {
+        this.guestFirstName = player["firstName"]
+        this.guestLastName = player["lastName"]
+      }
+    } else if (player) {
+      this.$playerTwoSelect.val(player["id"])
+    }
+    this.setupBreakingPlayerOptions()
+  }
+
   get breakingPlayer () {
     return this.playerWithId(this.$breakingPlayerSelect.val())
+  }
+
+  set breakingPlayer (player) {
+    if (player) this.$breakingPlayerSelect.val(player["id"])
   }
 
   get otherPlayer () {
@@ -126,14 +117,7 @@ class SetupComponent {
     return this.players.find((player) => player.id == id)
   }
 
-  setupBreakingPlayerOptions () {
-    let isPlayerOne = this.breakingPlayer == null || (this.breakingPlayer["id"] == this.playerOne["id"])
-    let bothPlayers = [this.playerOne, this.playerTwo]
-    this.$breakingPlayerSelect.empty().append(this.playerOptions(bothPlayers))
-    this.$breakingPlayerSelect.val(isPlayerOne ? this.playerOne["id"] : this.playerTwo["id"])
-  }
-
-  currentOutputState () {
+  get outputState () {
     return {
       "breakingPlayer": this.breakingPlayer,
       "playerTwo": this.playerTwo,
@@ -151,19 +135,62 @@ class SetupComponent {
     }
   }
 
-  setupNextButton () {
+  // Setup methods
+
+  setupPlayerTwoOptions () {
+    this.$playerTwoSelect.empty().append(this.playerOptions(this.playerTwoOptions))
+    this.$playerTwoSelect.change(() => {
+      this.setupBreakingPlayerOptions()
+    })
+  }
+
+  setupGuestCheckbox () {
+    let $guestCheckbox = this.$element.find("checkbox#guest")
+    this.guestCheckbox = new Checkbox($guestCheckbox, {
+      "value": false
+    }).change( (value) => {
+      this.$playerTwoSelect.prop("disabled", value)
+      this.$guestFirstName.prop("disabled", !value)
+      this.$guestLastName.prop("disabled", !value)
+      this.setupBreakingPlayerOptions()
+    })
+  }
+
+  setupBreakingPlayerOptions () {
+    let isPlayerOne = this.breakingPlayer == null || (this.breakingPlayer["id"] == this.playerOne["id"])
+    let bothPlayers = [this.playerOne, this.playerTwo]
+    this.$breakingPlayerSelect.empty().append(this.playerOptions(bothPlayers))
+    this.$breakingPlayerSelect.val(isPlayerOne ? this.playerOne["id"] : this.playerTwo["id"])
+  }
+
+  setupPlayerOneLabel () {
+    this.$playerOneLabel.val(this.playerOne["fullName"])
+  }
+
+  setupGuestNameInputs () {
+    ;[this.$guestFirstName, this.$guestLastName].forEach(($element) => {
+      $element.keyup(() => {
+        this.setupBreakingPlayerOptions()
+      })
+    })
+  }
+
+  // Event handlers
+
+  complete (completeCallback) {
     this.$nextButton.click(() => {
       this.errorComponent.error = this.validationError
       if (this.validationError == null) {
-        this.completeCallback(this.currentOutputState())
+        completeCallback(this.outputState)
       }
     })
+    return this
   }
 
-  setupBackButton () {
+  backtrack (backtrackCallback) {
     this.$backButton.click(() => {
-      this.backtrackCallback(this.currentOutputState())
+      backtrackCallback(this.outputState)
     })
+    return this
   }
-
 }

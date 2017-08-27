@@ -1,29 +1,34 @@
 
-class PocketSelectorComponent {
-  constructor (params) {
-    this.value = params["value"] || null
-  }
-
-  display ($element) {
+class PocketSelector {
+  constructor ($element, params) {
     this.$element = loadTemplate($element, 'pocket_selector.html')
-
     this.$choices = this.$element.find(".choice")
+
+    this.changeCallback = (() => null)
+    this.value = params["value"] || null
     this.setupChoices()
   }
 
-  onChange (changeCallback) {
+  set value (value) {
+    this._value = value
+    this.$choices.attr("selected", null)
+    this.$element.find(`.choice[number="${this.value}"]`).attr("selected", true)
+    this.changeCallback(value)
+  }
+
+  get value () {
+    return this._value
+  }
+
+  change (changeCallback) {
     this.changeCallback = changeCallback
+    return this
   }
 
   setupChoices () {
-    this.$choices.attr("selected", null)
-    this.$element.find(`.choice[number="${this.value}"]`).attr("selected", true)
     this.$choices.click((event) => {
       let $target = $(event.target)
-      let value = parseInt($target.attr("number"))
-      this.$choices.attr("selected", null)
-      $target.attr("selected", true)
-      this.changeCallback(value)
+      this.value = parseInt($target.attr("number"))
     })
   }
 }

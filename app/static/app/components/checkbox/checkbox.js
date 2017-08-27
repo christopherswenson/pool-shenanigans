@@ -1,4 +1,4 @@
-class CheckboxComponent {
+class Checkbox {
   constructor ($element, params) {
     this.$element = loadTemplate($element, "checkbox.html")
 

@@ -1,5 +1,5 @@
 
-const AuthenticationController = {
+const Authentication = {
 
   authenticatedUser: null,
 

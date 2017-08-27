@@ -1,23 +1,22 @@
 
+const ALL_BALL_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
-class BallSelectorComponent {
-  constructor (params) {
+class BallSelector {
+  constructor ($element, params) {
     if (params == null) params = {}
     this.value = params["value"] || null
-    this.options = params.options || BallSelectorComponent.ALL_BALL_NUMBERS
-  }
+    this.options = params.options || ALL_BALL_NUMBERS
 
-  display ($element) {
     this.$element = loadTemplate($element, 'ball_selector.html')
-    this.sortOptions()
+    this.sort()
     this.setupChoices()
   }
 
-  onChange (changeCallback) {
+  change (changeCallback) {
     this.changeCallback = changeCallback
   }
 
-  sortOptions () {
+  sort () {
     this.options.sort((a, b) => {
       if (a == 0) return 1
       if (b == 0) return -1
@@ -43,5 +42,3 @@ class BallSelectorComponent {
     this.$element.html(this.$choices)
   }
 }
-
-BallSelectorComponent.ALL_BALL_NUMBERS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]

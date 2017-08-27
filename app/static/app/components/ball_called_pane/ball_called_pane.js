@@ -1,82 +1,72 @@
-class BallCalledPaneComponent {
+class BallCalledPane {
 
-  constructor (params) {
-    this.ballOptions = params["ballOptions"].slice()
+  constructor ($element, params) {
     this.title = params.title
 
-    this.calledBall = params["calledBall"] || null
-    this.calledPocket = params["calledPocket"] || null
-    this.isJumpShot = params["isJumpShot"] || false
-    this.isBankShot = params["isBankShot"] || false
-    this.comboCount = params["comboCount"] || 1
-  }
-
-  display ($element) {
     this.$element = loadTemplate($element, "ball_called_pane.html")
 
-    this.$title = this.$element.find("#title")
-    this.$ballSelector = this.$element.find("ball-selector")
-    this.$pocketSelector = this.$element.find("pocket-selector")
-    this.$comboSelector = this.$element.find("#combo-count")
     this.$continueButton = this.$element.find("#continue-button")
     this.$successButton = this.$element.find("#success-button")
-    this.$backButton = this.$element.find("#back-button")
 
-    this.setupTitle()
-    this.setupBallSelector()
-    this.setupPocketSelector()
-    this.setupJumpCheckbox()
-    this.setupBankCheckbox()
-    this.setupComboSelector()
-    this.setupContinueButton()
-    this.setupBackButton()
-    this.setupSuccessButton()
-  }
-
-  setupTitle () {
-    this.$title.text(this.title)
-  }
-
-  onBacktrack (backtrackCallback) {
-    this.backtrackCallback = backtrackCallback
-  }
-
-  onComplete (completeCallback) {
-    this.completeCallback = completeCallback
-  }
-
-  setupBallSelector () {
-    this.ballSelectorComponent = new BallSelectorComponent({
-      options: this.ballOptions,
-      value: this.calledBall
+    this.bankCheckbox = new Checkbox($("checkbox#bank"), {
+      "value": params["isBankShot"] || false
     })
-    this.ballSelectorComponent.display(this.$ballSelector)
-    this.ballSelectorComponent.onChange( (value) => {
-      this.calledBall = value
+
+    this.jumpCheckbox = new Checkbox($("checkbox#jump"), {
+      "value": params["isJumpShot"] || false
+    })
+
+    let $ballSelector = this.$element.find("ball-selector")
+    this.ballSelectorComponent = new BallSelector($ballSelector, {
+      "options": params["ballOptions"].slice(),
+      "value": params["calledBall"] || null
+    }).change( (value) => {
       this.maybeEnableContinueButton()
     })
-  }
 
-  setupJumpCheckbox () {
-    let checkboxComponent = new CheckboxComponent({value: this.isJumpShot})
-    checkboxComponent.display($("checkbox#jump"))
-    checkboxComponent.onChange ( (value) => {
-      this.isJumpShot = value
+    let $pocketSelector = this.$element.find("pocket-selector")
+    this.pocketSelector = new PocketSelector($pocketSelector, {
+      "value": params["calledPocket"] || null
+    }).change( (value) => {
+      this.maybeEnableContinueButton()
     })
-  }
 
-  setupBankCheckbox () {
-    let checkboxComponent = new CheckboxComponent({value: this.isBankShot})
-    checkboxComponent.display($("checkbox#bank"))
-    checkboxComponent.onChange ( (value) => {
-      this.isBankShot = value
-    })
-  }
-
-  setupComboSelector () {
+    this.$comboSelector = this.$element.find("#combo-count")
     this.$comboSelector.change ( () => {
       this.comboCount = parseInt(this.$comboSelector.val())
+    }).val(params["comboCount"] || 1)
+
+    this.$element.find("#title").text(params["title"])
+  }
+
+  backtrack (backtrackCallback) {
+    let $backButton = this.$element.find("#back-button")
+    $backButton.click(() => {
+      backtrackCallback(this.currentOutputState())
     })
+    return this
+  }
+
+  complete (completeCallback) {
+    this.$continueButton.click( () => {
+      completeCallback(this.currentOutputState())
+    })
+    this.$successButton.click( () => {
+      completeCallback(this.currentOutputState({"success": true}))
+    })
+    return this
+  }
+
+  get isJumpShot () {
+    return this.jumpCheckbox.value
+  }
+
+  get isBankShot () {
+    return this.bankCheckbox.value
+  }
+
+  get comboCount () {
+    return parseInt(this.$comboSelector.val())
   }
 
   maybeEnableContinueButton () {
@@ -85,16 +75,8 @@ class BallCalledPaneComponent {
     this.$successButton.prop("disabled", !enabled)
   }
 
-  setupPocketSelector () {
-    this.pocketSelectorComponent = new PocketSelectorComponent({
-      value: this.calledPocket
-    })
-    this.pocketSelectorComponent.display(this.$pocketSelector)
-    this.pocketSelectorComponent.onChange( (value) => {
-      this.calledPocket = value
-      this.maybeEnableContinueButton()
-    })
-    this.maybeEnableContinueButton()
+  get calledPocket () {
+    return this.pocketSelector.value
   }
 
   currentOutputState (options) {
@@ -112,23 +94,4 @@ class BallCalledPaneComponent {
       "ballsPocketed": ballsPocketed
     }
   }
-
-  setupContinueButton () {
-    this.$continueButton.click( () => {
-      this.completeCallback(this.currentOutputState())
-    })
-  }
-
-  setupSuccessButton () {
-    this.$successButton.click( () => {
-      this.completeCallback(this.currentOutputState({"success": true}))
-    })
-  }
-
-  setupBackButton() {
-    this.$backButton.click(() => {
-      this.backtrackCallback(this.currentOutputState())
-    })
-  }
-
 }

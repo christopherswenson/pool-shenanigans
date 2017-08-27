@@ -1,6 +1,6 @@
 
-class ErrorComponent {
-  constructor($element, params) {
+class ErrorPane {
+  constructor ($element, params) {
     this.$element = $element
     this.error = params["error"]
     this.errorMap = params["errorMap"] || {}
