@@ -87,7 +87,6 @@ class CreateGameModal {
     let turn = this.currentTurn
     let isCurrentPlayerWinner = turn["shots"][turn["shots"].length - 1]["isSuccess"]
     this.currentPlayer["isWinner"] = !!isCurrentPlayerWinner
-    console.log(this.currentPlayer, this.otherPlayer)
     this.otherPlayer["isWinner"] = !isCurrentPlayerWinner
 
     this.game["endedAt"] = new Date(Date.now())
@@ -96,7 +95,7 @@ class CreateGameModal {
 
   get turnTitle () {
     let kind = this.currentShot["isBreak"] ? "Break" : "Shot"
-    return `${this.currentPlayer["firstName"]}'s ${kind}`
+    return `${this.currentPlayer["firstName"]} ${this.currentPlayer["lastName"]}'s ${kind}`
   }
 
   getCall () {
