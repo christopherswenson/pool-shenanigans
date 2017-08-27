@@ -201,16 +201,3 @@ def game_embed_url(request, game_id=None):
     return JsonResponse({
         'url': embed_url_for_user(request.user, "/embed/dashboards/309?game_id=%s" % game_id)
     })
-
-# # # # # # # # # # # # # # # # # # # # # # # # #
-# helpers
-
-def user_to_dict(self):
-    return {
-        'username': self.get_username(),
-        'fullName': self.get_full_name(),
-        'shortName': self.get_short_name(),
-        "isAdmin": self.is_superuser
-    }
-
-User.add_to_class("to_dict", user_to_dict)

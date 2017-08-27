@@ -61,7 +61,7 @@ class BallCalledPaneComponent {
     let checkboxComponent = new CheckboxComponent({value: this.isJumpShot})
     checkboxComponent.display($("checkbox#jump"))
     checkboxComponent.onChange ( (value) => {
-      this.isJumpShot = true
+      this.isJumpShot = value
     })
   }
 
@@ -69,7 +69,7 @@ class BallCalledPaneComponent {
     let checkboxComponent = new CheckboxComponent({value: this.isBankShot})
     checkboxComponent.display($("checkbox#bank"))
     checkboxComponent.onChange ( (value) => {
-      this.isBankShot = true
+      this.isBankShot = value
     })
   }
 

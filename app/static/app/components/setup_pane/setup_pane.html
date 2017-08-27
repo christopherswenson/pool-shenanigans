@@ -11,7 +11,7 @@
         <div class="col-md-6">
           <div class="form-group">
             <label for="player-one" class="form-control-label">Player One:</label>
-            <select class="form-control" id="player-one-select" name="player-two"></select>
+            <input class="form-control" type="text" id="player-one-label" name="player-one" disabled></input>
           </div>
         </div>
         <div class="col-md-6">
@@ -26,6 +26,30 @@
           <div class="form-group">
             <label for="breaking-player" class="form-control-label">Who's Breaking?</label>
             <select class="form-control" id="breaking-player-select" name="breaking-player"></select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <div class="form-group">
+              <label class="form-control-label">&nbsp;</label>
+              <div class="checkbox-group">
+                <checkbox id="guest" tabindex="4"></checkbox>
+                <label for="player-two" class="form-control-label checkbox-label">Add new guest?</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+                <input type="text" class="form-control" id="guest-first-name" placeholder="First name" disabled>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+                <input type="text" class="form-control" id="guest-last-name" placeholder="Last name" disabled>
+              </div>
+            </div>
+            <div id="error-pane"></div>
           </div>
         </div>
       </div>

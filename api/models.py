@@ -1,6 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+def user_to_dict(self):
+    return {
+        'username': self.get_username(),
+        'fullName': self.get_full_name(),
+        'shortName': self.get_short_name(),
+        "isAdmin": self.is_superuser,
+        'id': self.pk,
+        "player": self.player.toDict()
+    }
+
+User.add_to_class("to_dict", user_to_dict)
+
 class Game(models.Model):
     started_at = models.DateTimeField('date started')
     ended_at = models.DateTimeField('date ended')
@@ -13,13 +25,15 @@ class Game(models.Model):
 class Player(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
 
     def toDict(self):
         return {
             'id': self.pk,
             'firstName': self.first_name,
-            'lastName': self.last_name
+            'lastName': self.last_name,
+            'userId': self.user.pk if self.user else None,
+            'fullName': "%s %s" % (self.first_name, self.last_name)
         }
 
 class GamePlayer(models.Model):

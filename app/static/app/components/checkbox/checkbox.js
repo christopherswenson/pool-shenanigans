@@ -1,30 +1,30 @@
 class CheckboxComponent {
-  constructor (params) {
-    if (params == null) params = {}
-    this.value = params['value'] || false
-    this.changeEvent = (() => null)
-  }
-
-  display ($element) {
+  constructor ($element, params) {
     this.$element = loadTemplate($element, "checkbox.html")
 
-    this.setValue(this.value)
+    if (params == null) params = {}
+    this.changeEvent = (() => null)
+    this.value = params['value'] || false
     this.setupClickEvent()
   }
 
-  onChange (callback) {
-    this.changeEvent = callback
+  set value (newValue) {
+    this.$element.attr("selected", newValue || null)
+    this.changeEvent(this.value)
   }
 
-  setValue (value) {
-    this.value = value
-    this.$element.attr("selected", this.value || null)
-    this.changeEvent(this.value)
+  get value () {
+    return !!this.$element.attr("selected")
+  }
+
+  change (callback) {
+    this.changeEvent = callback
+    return this
   }
 
   setupClickEvent () {
     this.$element.click( () => {
-      this.setValue(!this.value)
+      this.value = !this.value
     })
   }
 }

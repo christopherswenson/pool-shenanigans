@@ -77,6 +77,7 @@ WSGI_APPLICATION = 'pool_shenanigans.wsgi.application'
 
 DB_PASSWORD = os.environ.get("DB_PASSWORD")
 DB_HOST = os.environ.get("DB_HOST")
+DB_USER = os.environ.get("DB_USER")
 DB_NAME = os.environ.get("DB_NAME")
 
 EMBED_SECRET = os.environ.get('EMBED_SECRET')
@@ -89,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': DB_NAME,
         'HOST': DB_HOST,
-        'USER': 'pool_shenanigans',
+        'USER': DB_USER,
         'PASSWORD': DB_PASSWORD,
         'PORT': '3306'
     }

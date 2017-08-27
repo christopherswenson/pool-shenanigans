@@ -1,12 +1,11 @@
 
-class AuthenticationController {
-  constructor () {
-    this.authenticatedUser = null
-  }
+const AuthenticationController = {
+
+  authenticatedUser: null,
 
   get user () {
     return this.authenticatedUser
-  }
+  },
 
   displayLoginModal (completeCallback) {
     let loginPaneComponent = new LoginPaneComponent
@@ -15,7 +14,7 @@ class AuthenticationController {
       this.authenticatedUser = user
       completeCallback(user)
     })
-  }
+  },
 
   ensureLogin (completeCallback) {
     AuthenticatedUserStore.get((user) => {
@@ -24,7 +23,7 @@ class AuthenticationController {
         this.displayLoginModal(completeCallback)
       } else completeCallback(user)
     })
-  }
+  },
 
   login (email, password, completeCallback) {
     AuthenticatedUserStore.login({
@@ -34,7 +33,7 @@ class AuthenticationController {
       this.authenticatedUser = response["user"]
       completeCallback(response)
     })
-  }
+  },
 
   displayRegisterModal (username, password, completeCallback) {
     let registerModalComponent = new RegisterModalComponent
@@ -43,7 +42,7 @@ class AuthenticationController {
       this.authenticatedUser = user
       completeCallback(user)
     })
-  }
+  },
 
   register (credentials, user, completeCallback) {
     AuthenticatedUserStore.register(
@@ -54,7 +53,7 @@ class AuthenticationController {
         completeCallback(response)
       }
     )
-  }
+  },
 
   logout (completeCallback) {
     AuthenticatedUserStore.logout(() => {

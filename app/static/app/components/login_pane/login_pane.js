@@ -16,7 +16,12 @@ class LoginPaneComponent {
     this.$modal = this.$element.find("#login-modal")
 
     this.$modal.modal()
-    this.auth = new AuthenticationController
+
+    this.errorComponent = new ErrorComponent(this.$errorPane, {
+      "errorMap": {
+        "invalid_login_credentials": "Invalid Login Credentials"
+      }
+    })
 
     this.setupEnterShortcut()
     this.setupLoginButton()
@@ -42,8 +47,8 @@ class LoginPaneComponent {
   setupRegisterButton () {
     this.$registerButton.click( () => {
       this.$modal.modal('hide')
-      this.auth.displayRegisterModal(this.emailValue, this.passwordValue, () => {
-        this.completeCallback(this.auth.user)
+      AuthenticationController.displayRegisterModal(this.emailValue, this.passwordValue, () => {
+        this.completeCallback(AuthenticationController.user)
       })
     })
   }
@@ -54,28 +59,10 @@ class LoginPaneComponent {
     })
   }
 
-  displayError () {
-    this.$errorPane.empty()
-    if (this.error == null) return
-    loadTemplate(this.$errorPane, "login_error.html", {
-      "#error": this.getError()
-    })
-  }
-
-  getError () {
-    if (this.error == null) return null
-    switch (this.error) {
-      case "invalid_login_credentials":
-        return "Invalid Login Credentials"
-      default:
-        return "An unknown error occurred"
-    }
-  }
-
   onComplete (completeCallback) {
     this.completeCallback = () => {
       this.$modal.modal('hide')
-      completeCallback(this.auth.user)
+      completeCallback(AuthenticationController.user)
     }
   }
 
@@ -85,20 +72,18 @@ class LoginPaneComponent {
 
   authenticate () {
     this.authenticating = true
-    this.error = null
-    this.displayError()
+    this.errorComponent.error = null
     this.updateLoginButton()
-    this.auth.login(
+    AuthenticationController.login(
       this.emailValue,
       this.passwordValue,
       (response) => {
         if (response["status"] == "error") {
-          this.error = response["error"]
-          this.displayError()
+          this.errorComponent.error = response["error"]
           this.authenticating = false
           this.updateLoginButton()
         } else {
-          this.$errorPane.empty()
+          this.errorComponent.error = null
           this.completeCallback()
         }
       }

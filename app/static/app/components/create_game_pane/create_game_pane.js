@@ -13,7 +13,10 @@ class CreateGamePaneComponent {
 
     this.game = {}
 
-    this.setupGame()
+    PlayerStore.get((players) => {
+      this.players = players
+      this.setupGame()
+    })
   }
 
   onComplete (completeCallback) {
@@ -56,21 +59,18 @@ class CreateGamePaneComponent {
   }
 
   setupGame () {
-    PlayerStore.get((players) => {
-      let setupComponent = new SetupComponent({
-        "gamePlayers": this.game["gamePlayers"] || null,
-        "breakingPlayer": this.game["breakingPlayer"] || null,
-        "players": players
-      })
-      setupComponent.display(this.$element)
-      setupComponent.onComplete( (results) => {
-        this.game["breakingPlayer"] = results["breakingPlayer"]
-        this.game["otherPlayer"] = results["otherPlayer"]
-        this.game["gamePlayers"] = [this.game["breakingPlayer"], this.game["otherPlayer"]]
-        this.game["turns"] = []
-        this.game["startedAt"] = new Date(Date.now())
-        this.normalTurn()
-      })
+    let setupComponent = new SetupComponent(this.$element, {
+      "playerTwo": this.game["playerTwo"] || null,
+      "breakingPlayer": this.game["breakingPlayer"] || null,
+      "players": this.players
+    }).complete((results) => {
+      this.game["breakingPlayer"] = results["breakingPlayer"]
+      this.game["otherPlayer"] = results["otherPlayer"]
+      this.game["playerTwo"] = results["playerTwo"]
+      this.game["gamePlayers"] = [AuthenticationController.user["player"], results["playerTwo"]]
+      this.game["turns"] = []
+      this.game["startedAt"] = new Date(Date.now())
+      this.normalTurn()
     })
   }
 

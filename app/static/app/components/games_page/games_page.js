@@ -12,7 +12,6 @@ class GamesPageComponent {
     this.$dbName = $element.find("#db-name")
 
     this.games = []
-    this.auth = new AuthenticationController
 
     this.setupNewGameButton()
     this.setupLogoutButton()
@@ -37,7 +36,7 @@ class GamesPageComponent {
   }
 
   maybeEnableAdminButton () {
-    let hidden = this.auth.user == null || !this.auth.user.isAdmin
+    let hidden = AuthenticationController.user == null || !AuthenticationController.user.isAdmin
     this.$adminButton.attr("hidden", hidden)
     this.$dbName.html(hidden ? "" : Meta.get("db_name"))
   }
@@ -45,7 +44,7 @@ class GamesPageComponent {
   setupLogoutButton () {
     this.$logoutButton.click( () => {
       this.$logoutButton.prop("disabled", true)
-      this.auth.logout(() => {
+      AuthenticationController.logout(() => {
         this.$logoutButton.prop("disabled", false)
         this.$embedIframe.attr("src", "")
         this.updateGreeting()
@@ -55,16 +54,16 @@ class GamesPageComponent {
   }
 
   ensureLogin () {
-    this.auth.ensureLogin(() => {
+    AuthenticationController.ensureLogin(() => {
       this.loginSuccess()
     })
   }
 
   updateGreeting () {
-    if (this.auth.user == null) {
+    if (AuthenticationController.user == null) {
       this.$userGreeting.html("")
     } else {
-      this.$userGreeting.html(`Hello, ${this.auth.user["fullName"]}`)
+      this.$userGreeting.html(`Hello, ${AuthenticationController.user["fullName"]}`)
     }
   }
 
@@ -84,7 +83,7 @@ class GamesPageComponent {
   }
 
   loadDashboard () {
-    if (this.auth.user == null) return
+    if (AuthenticationController.user == null) return
     if (this.selectedGame == null) return
     GameStore.embed_url(this.selectedGame["id"], (embed_url) => {
       this.$embedIframe.attr("src", embed_url)

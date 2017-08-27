@@ -19,7 +19,19 @@ class RegisterModalComponent {
     this.$modal = this.$element.find("#register-modal")
 
     this.$modal.modal()
-    this.auth = new AuthenticationController
+    this.errorComponent = new ErrorComponent(this.$errorPane, {
+      "errorMap": {
+        "no_password_match": "Passwords do not match",
+        "no_first_name": "First name must not be blank",
+        "no_last_name": "Last name must not be blank",
+        "no_email": "Email must not be blank",
+        "user_exists": "Username exists",
+        "password_too_short": `Password must be ${MIN_PASSWORD_LENGTH}+ characters`,
+        "no_invitation_code": "An invitation code is required",
+        "invalid_invitation": "Invalid invitation code",
+        "invalid_email": "Invalid email address",
+      }
+    })
 
     this.setupRegisterButton()
     this.setupCloseButton()
@@ -56,33 +68,6 @@ class RegisterModalComponent {
     return this.$invitationCodeInput.val().trim()
   }
 
-  getError () {
-    let error = this.validationError || this.error
-    if (error == null) return
-    switch (error) {
-      case "no_password_match":
-        return "Passwords do not match"
-      case "no_first_name":
-        return "First name must not be blank"
-      case "no_last_name":
-        return "Last name must not be blank"
-      case "no_email":
-        return "Email must not be blank"
-      case "user_exists":
-        return `${this.emailValue} exists`
-      case "password_too_short":
-        return `Password must be ${MIN_PASSWORD_LENGTH}+ characters`
-      case "no_invitation_code":
-        return `An invitation code is required`
-      case "invalid_invitation":
-        return `Invalid invitation code`
-      case "invalid_email":
-        return `Invalid email address`
-      default:
-        return "An unknown error occurred"
-    }
-  }
-
   isEmailValid () {
     let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
     return re.test(this.emailValue)
@@ -106,17 +91,9 @@ class RegisterModalComponent {
     }
   }
 
-  displayError () {
-    this.$errorPane.empty()
-    if (this.error == null && this.validationError == null) return
-    loadTemplate(this.$errorPane, "login_error.html", {
-      "#error": this.getError()
-    })
-  }
-
   setupRegisterButton () {
     this.$registerButton.click( () => {
-      this.displayError()
+      this.errorComponent.error = this.validationError
       if (this.validationError == null) {
         this.register()
       }
@@ -125,7 +102,7 @@ class RegisterModalComponent {
 
   setupCloseButton () {
     this.$closeButton.click( () => {
-      this.auth.ensureLogin()
+      AuthenticationController.ensureLogin()
     })
   }
 
@@ -136,7 +113,7 @@ class RegisterModalComponent {
   register () {
     this.registering = true
     this.updateRegisterButton()
-    this.auth.register({
+    AuthenticationController.register({
       "email": this.emailValue,
       "password": this.passwordValue,
       "invitationCode": this.invitationCodeValue
@@ -145,12 +122,11 @@ class RegisterModalComponent {
       "lastName": this.lastNameValue
     }, (response) => {
       if (response["status"] == "error") {
-        this.error = response["error"]
-        this.displayError()
+        this.errorComponent.error = response["error"]
         this.registering = false
         this.updateRegisterButton()
       } else {
-        this.$errorPane.empty()
+        this.errorComponent.error = null
         this.completeCallback()
       }
     })
