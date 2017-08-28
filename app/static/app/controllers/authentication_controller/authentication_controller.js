@@ -8,12 +8,11 @@ const Authentication = {
   },
 
   displayLoginModal (completeCallback) {
-    let loginPaneComponent = new LoginPaneComponent
-    loginPaneComponent.display($("login-modal-container"))
-    loginPaneComponent.onComplete((user) => {
-      this.authenticatedUser = user
-      completeCallback(user)
-    })
+    let loginPaneComponent = new LoginModal($("login-modal-container"))
+      .complete((user) => {
+        this.authenticatedUser = user
+        completeCallback(user)
+      })
   },
 
   ensureLogin (completeCallback) {
@@ -36,12 +35,11 @@ const Authentication = {
   },
 
   displayRegisterModal (username, password, completeCallback) {
-    let registerModalComponent = new RegisterModalComponent
-    registerModalComponent.display($("register-modal-container"))
-    registerModalComponent.onComplete((user) => {
-      this.authenticatedUser = user
-      completeCallback(user)
-    })
+    let registerModalComponent = new RegisterModal($("register-modal-container"))
+      .complete((user) => {
+        this.authenticatedUser = user
+        completeCallback(user)
+      })
   },
 
   register (credentials, user, completeCallback) {

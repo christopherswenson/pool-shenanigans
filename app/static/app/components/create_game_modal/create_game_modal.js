@@ -50,7 +50,8 @@ class CreateGameModal {
         let lastBallsPocketed = lastShot["ballsPocketed"]
         this.currentShot["ballsPocketed"] = null
         this.getOutcome({
-          "ballsPocketed": lastBallsPocketed
+          "ballsPocketed": lastBallsPocketed,
+          "isTableScratch": lastShot["isTableScratch"]
         })
         break
     }
@@ -159,14 +160,14 @@ class CreateGameModal {
       "title": this.turnTitle,
       "ballOptions": this.ballsRemaining.concat(0),
       "ballsPocketed": params["ballsPocketed"] || [],
-      "isTableScratch": false
+      "isTableScratch": params["isTableScratch"]
     }).complete((outcome) => {
       let turn = this.currentTurn
       let shot = this.currentShot
       let previousShot = this.previousShot
       shot["isSuccess"] = false
       shot["isFinal"] = false
-      shot["isScratch"] = false
+      shot["isScratch"] = shot["isTableScratch"] = outcome["isTableScratch"]
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsRemaining"] = shot["ballsRemainingBefore"].slice()
       shot["isFollowingScratch"] = !!((previousShot != null) && previousShot["isScratch"])

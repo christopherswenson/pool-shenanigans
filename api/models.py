@@ -9,7 +9,7 @@ def user_to_dict(self):
         'shortName': self.get_short_name(),
         "isAdmin": self.is_superuser,
         'id': self.pk,
-        "player": self.player.toDict()
+        "player": self.player.to_dict()
     }
 
 User.add_to_class("to_dict", user_to_dict)
@@ -18,7 +18,7 @@ class Game(models.Model):
     started_at = models.DateTimeField('date started')
     ended_at = models.DateTimeField('date ended')
 
-    def toDict(self):
+    def to_dict(self):
         return {
             'id': self.pk
         }
@@ -37,7 +37,7 @@ class Player(models.Model):
     guest_code = models.CharField(max_length=255, default=generate_guest_code, unique=True)
     is_guest = models.BooleanField(default=False)
 
-    def toDict(self):
+    def to_dict(self):
         return {
             'id': self.pk,
             'firstName': self.first_name,

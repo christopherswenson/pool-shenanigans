@@ -40,7 +40,7 @@ class RegisterModal {
   complete (completeCallback) {
     this.completeCallback = () => {
       this.$modal.modal('hide')
-      completeCallback(this.auth.user)
+      completeCallback(Authentication.user)
     }
     return this
   }

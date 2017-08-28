@@ -20,7 +20,7 @@ def players(request):
         raise Http404
 
     players = Player.objects.all()
-    data = {'players': [ player.toDict() for player in players ]}
+    data = {'players': [ player.to_dict() for player in players ]}
     return JsonResponse(data)
 
 @login_required
@@ -30,7 +30,7 @@ def games(request):
 
         games = Game.objects.all()
         data = {
-            'games': [ game.toDict() for game in games ],
+            'games': [ game.to_dict() for game in games ],
         }
         return JsonResponse(data)
 
@@ -117,7 +117,7 @@ def games(request):
 
             shot_number_in_game += 1
 
-    return JsonResponse({'status': 'ok', 'game': game.toDict()})
+    return JsonResponse({'status': 'ok', 'game': game.to_dict()})
 
 @csrf_exempt
 def login(request):

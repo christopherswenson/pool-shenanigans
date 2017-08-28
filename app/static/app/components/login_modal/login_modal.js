@@ -6,7 +6,7 @@ class LoginModal {
   constructor ($element) {
     this.authenticating = false
 
-    this.$element = loadTemplate($element, "login_pane.html")
+    this.$element = loadTemplate($element, "login_modal.html")
 
     this.$emailInput = this.$element.find("#email-input")
     this.$passwordInput = this.$element.find("#password-input")
