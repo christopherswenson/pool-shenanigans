@@ -1,7 +1,7 @@
 
 class PocketSelector {
   constructor ($element, params) {
-    this.$element = loadTemplate($element, 'pocket_selector.html')
+    this.$element = Template.load($element, 'pocket_selector.html')
     this.$choices = this.$element.find(".choice")
 
     this.changeCallback = (() => null)

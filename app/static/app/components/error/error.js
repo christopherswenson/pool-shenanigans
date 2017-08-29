@@ -13,7 +13,7 @@ class ErrorPane {
     if (value == null) {
       this.$element.html("")
     } else {
-      loadTemplate(this.$element, "error.html", {
+      Template.load(this.$element, "error.html", {
         "#error": this.errorMap[value] || "An unknown error occurred"
       })
     }

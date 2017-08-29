@@ -4,7 +4,7 @@ class BallPocketedPane {
     this.initBallOptions = params["ballOptions"].slice()
     this.ballsPocketed = params["ballsPocketed"].slice()
 
-    this.$element = loadTemplate($element, "ball_pocketed_pane.html")
+    this.$element = Template.load($element, "ball_pocketed_pane.html")
 
     this.$clearButton = this.$element.find("#clear-button")
     this.$continueButton = this.$element.find("#continue-button")
@@ -119,7 +119,7 @@ class BallPocketedPane {
 
   updateGutter () {
     let $ballsPocketed = this.ballsPocketed.map( (ballPocketed, i) => {
-      let $ball = loadTemplate(null, "guttered_ball.html")
+      let $ball = Template.load(null, "guttered_ball.html")
       $ball.attr("number", ballPocketed.number)
       $ball.click( () => {
         this.ballsPocketed.splice(i, 1)

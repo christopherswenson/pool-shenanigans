@@ -1,6 +1,6 @@
 class GamesPage {
   constructor ($element, params) {
-    this.$element = loadTemplate($element, "games_page.html")
+    this.$element = Template.load($element, "games_page.html")
 
     this.$newGameButton = this.$element.find("#new-game-button")
     this.$logoutButton = this.$element.find("#logout-button")

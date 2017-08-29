@@ -2,7 +2,7 @@
 class CreateGameModal {
 
   constructor ($element, params) {
-    this.$element = loadTemplate($element, "create_game_modal.html")
+    this.$element = Template.load($element, "create_game_modal.html")
 
     this.$modal = this.$element.find("#new-game-modal")
     this.$modalContent = this.$element.find(".modal-content")

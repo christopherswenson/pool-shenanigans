@@ -32,7 +32,7 @@ class BallSelector {
       if (b == 0) return -1
       else return a - b
     }).map( (number) => {
-      let $choice = loadTemplate(null, 'ball_selector_choice.html')
+      let $choice = Template.load(null, 'ball_selector_choice.html')
       $choice.attr("number", number)
       $choice.attr("selected", number == this.value)
       $choice.click((event) => {

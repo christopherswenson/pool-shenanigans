@@ -1,6 +1,6 @@
 class Checkbox {
   constructor ($element, params) {
-    this.$element = loadTemplate($element, "checkbox.html")
+    this.$element = Template.load($element, "checkbox.html")
 
     if (params == null) params = {}
     this.changeEvent = (() => null)

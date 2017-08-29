@@ -1,7 +1,7 @@
 class BallCalledPane {
 
   constructor ($element, params) {
-    this.$element = loadTemplate($element, "ball_called_pane.html")
+    this.$element = Template.load($element, "ball_called_pane.html")
 
     this.$continueButton = this.$element.find("#continue-button")
     this.$successButton = this.$element.find("#success-button")

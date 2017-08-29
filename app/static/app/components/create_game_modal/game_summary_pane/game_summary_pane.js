@@ -4,7 +4,7 @@ class GameSummaryPane {
     this.game = params["game"]
     Log.info("Game JSON", this.game)
 
-    this.$element = loadTemplate($element, "game_summary_pane.html")
+    this.$element = Template.load($element, "game_summary_pane.html")
 
     this.$saveButton = this.$element.find("#save-button")
     this.$backButton = this.$element.find("#back-button")
@@ -17,7 +17,7 @@ class GameSummaryPane {
 
   setupSummeryContent () {
     let $turns = this.game["turns"].map((turn) => {
-      return loadTemplate(null, "turn_summary.html", {
+      return Template.load(null, "turn_summary.html", {
         "#player-name": turn["player"]["firstName"],
         "#shots": turn["shots"].map((shot) => {
           return shot["ballsPocketed"]

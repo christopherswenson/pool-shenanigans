@@ -2,7 +2,7 @@
 class SetupPane {
 
   constructor ($element, params) {
-    this.$element = loadTemplate($element, "setup_pane.html")
+    this.$element = Template.load($element, "setup_pane.html")
 
     this.$playerOneLabel = this.$element.find("#player-one-label")
     this.$playerTwoSelect = this.$element.find("#player-two-select")

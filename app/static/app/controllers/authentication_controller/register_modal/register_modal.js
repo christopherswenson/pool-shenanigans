@@ -5,7 +5,7 @@ class RegisterModal {
   constructor ($element, params) {
     this.registering = false
 
-    this.$element = loadTemplate($element, "register_modal.html")
+    this.$element = Template.load($element, "register_modal.html")
 
     this.$usernameInput = this.$element.find("#username-input")
     this.$passwordInput = this.$element.find("#password-input")

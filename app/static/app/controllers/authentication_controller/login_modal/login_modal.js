@@ -4,7 +4,7 @@ const ENTER_KEY = 13
 class LoginModal {
 
   constructor ($element) {
-    this.$element = loadTemplate($element, "login_modal.html")
+    this.$element = Template.load($element, "login_modal.html")
 
     this.$usernameInput = this.$element.find("#username-input")
     this.$passwordInput = this.$element.find("#password-input")
