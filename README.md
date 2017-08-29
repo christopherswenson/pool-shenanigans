@@ -1,7 +1,7 @@
 # Environment Variables
 
 ```
-SECRET_KEY=<app secret key>
+APP_SECRET=<app secret key>
 
 DB_HOST=<host for the database>
 DB_NAME=<name of the database>
