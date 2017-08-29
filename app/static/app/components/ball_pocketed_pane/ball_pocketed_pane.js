@@ -3,14 +3,8 @@ class BallPocketedPane {
   constructor ($element, params) {
     this.initBallOptions = params["ballOptions"].slice()
     this.ballsPocketed = params["ballsPocketed"].slice()
-    this.ballOptions = params["ballOptions"].filter((option) => {
-      return !this.ballsPocketed.find((ballPocketed) => {
-        return ballPocketed["number"] == option
-      })
-    })
 
     this.$element = loadTemplate($element, "ball_pocketed_pane.html")
-
 
     this.$clearButton = this.$element.find("#clear-button")
     this.$continueButton = this.$element.find("#continue-button")
@@ -28,6 +22,14 @@ class BallPocketedPane {
   }
 
   // Property getters and setters
+
+  get ballOptions () {
+    return this.initBallOptions.filter((option) => {
+      return !this.ballsPocketed.find((ballPocketed) => {
+        return ballPocketed["number"] == option
+      })
+    })
+  }
 
   set title (text) {
     let $title = this.$element.find("#title")
@@ -82,11 +84,9 @@ class BallPocketedPane {
         "number": this.ballNumber,
         "pocket": this.pocketId
       })
-      this.ballOptions = this.ballOptions.filter((number) => number != this.ballNumber)
-      this.setupBallSelector()
-      // this.setupPocketSelector()
       this.ballNumber = null
       this.pocketId = null
+      this.ballSelector.options = this.ballOptions
       this.maybeCollectSelection()
       this.updateGutter()
     }
@@ -94,9 +94,7 @@ class BallPocketedPane {
 
   clear () {
     this.ballsPocketed = []
-    this.ballOptions = this.initBallOptions
-    this.setupBallSelector()
-    this.setupPocketSelector()
+    this.ballSelector.options = this.ballOptions
     this.updateGutter()
   }
 
@@ -114,9 +112,9 @@ class BallPocketedPane {
 
   setupPocketSelector () {
     this.pocketSelector = new PocketSelector($("pocket-selector"), {})
-    this.pocketSelector.change( (value) => {
-      this.maybeCollectSelection()
-    })
+      .change( (value) => {
+        this.maybeCollectSelection()
+      })
   }
 
   updateGutter () {
@@ -125,8 +123,7 @@ class BallPocketedPane {
       $ball.attr("number", ballPocketed.number)
       $ball.click( () => {
         this.ballsPocketed.splice(i, 1)
-        this.ballOptions.push(ballPocketed["number"])
-        this.setupBallSelector()
+        this.ballSelector.options = this.ballOptions
         this.updateGutter()
       })
       return $ball

@@ -12,6 +12,8 @@ class BallSelector {
     this.value = params["value"] || null
   }
 
+  // Property getters and setters
+
   get value () {
     return this._value
   }
@@ -22,11 +24,6 @@ class BallSelector {
       $choice.attr("selected", $choice.attr("number") == number)
     })
     this.changeCallback(number)
-  }
-
-  change (changeCallback) {
-    this.changeCallback = changeCallback
-    return this
   }
 
   set options (options) {
@@ -46,5 +43,12 @@ class BallSelector {
     })
 
     this.$element.html(this.$choices)
+  }
+
+  // Event handlers
+
+  change (changeCallback) {
+    this.changeCallback = changeCallback
+    return this
   }
 }

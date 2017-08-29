@@ -8,6 +8,8 @@ class Checkbox {
     this.setupClickEvent()
   }
 
+  // Property getters and setters
+
   set value (newValue) {
     this.$element.attr("selected", newValue || null)
     this.changeEvent(this.value)
@@ -17,14 +19,18 @@ class Checkbox {
     return !!this.$element.attr("selected")
   }
 
-  change (callback) {
-    this.changeEvent = callback
-    return this
-  }
+  // Setup methods
 
   setupClickEvent () {
     this.$element.click( () => {
       this.value = !this.value
     })
+  }
+
+  // Event handlers
+
+  change (callback) {
+    this.changeEvent = callback
+    return this
   }
 }

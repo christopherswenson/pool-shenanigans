@@ -5,11 +5,7 @@ class BallCalledPane {
 
     this.$continueButton = this.$element.find("#continue-button")
     this.$successButton = this.$element.find("#success-button")
-
     this.$comboSelector = this.$element.find("#combo-count")
-    this.$comboSelector.change ( () => {
-      this.comboCount = parseInt(this.$comboSelector.val())
-    }).val(params["comboCount"] || 1)
 
     this.setupShotCheckboxes()
     this.setupPocketSelector()
@@ -20,7 +16,7 @@ class BallCalledPane {
     this.isJumpShot = params["isJumpShot"]
     this.calledPocket = params["calledPocket"] || null
     this.calledBall = params["calledBall"] || null
-
+    this.comboCount = params["comboCount"] || 1
   }
 
   // Property getters and setters

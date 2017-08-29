@@ -4,11 +4,9 @@ const ENTER_KEY = 13
 class LoginModal {
 
   constructor ($element) {
-    this.authenticating = false
-
     this.$element = loadTemplate($element, "login_modal.html")
 
-    this.$emailInput = this.$element.find("#email-input")
+    this.$usernameInput = this.$element.find("#username-input")
     this.$passwordInput = this.$element.find("#password-input")
     this.$errorPane = this.$element.find("#error-pane")
     this.$loginButton = this.$element.find("#login-button")
@@ -28,13 +26,17 @@ class LoginModal {
     this.setupRegisterButton()
   }
 
-  get emailValue () {
-    return this.$emailInput.val()
+  // Property getters and setters
+
+  get usernameValue () {
+    return this.$usernameInput.val()
   }
 
   get passwordValue () {
     return this.$passwordInput.val()
   }
+
+  // Setup methods
 
   setupEnterShortcut () {
     this.$element.keypress((event) => {
@@ -47,7 +49,7 @@ class LoginModal {
   setupRegisterButton () {
     this.$registerButton.click( () => {
       this.$modal.modal('hide')
-      Authentication.displayRegisterModal(this.emailValue, this.passwordValue, () => {
+      Authentication.displayRegisterModal(this.usernameValue, this.passwordValue, () => {
         this.completeCallback(Authentication.user)
       })
     })
@@ -59,35 +61,33 @@ class LoginModal {
     })
   }
 
-  complete (completeCallback) {
-    this.completeCallback = () => {
-      this.$modal.modal('hide')
-      completeCallback(Authentication.user)
-    }
-    return this
-  }
-
-  updateLoginButton () {
-    this.$loginButton.prop("disabled", this.authenticating)
-  }
+  // Controller methods
 
   authenticate () {
-    this.authenticating = true
     this.errorComponent.error = null
-    this.updateLoginButton()
+    this.$loginButton.prop("disabled", true)
     Authentication.login(
-      this.emailValue,
+      this.usernameValue,
       this.passwordValue,
       (response) => {
         if (response["status"] == "error") {
           this.errorComponent.error = response["error"]
-          this.authenticating = false
-          this.updateLoginButton()
+          this.$loginButton.prop("disabled", false)
         } else {
           this.errorComponent.error = null
           this.completeCallback()
         }
       }
     )
+  }
+
+  // Event handlers
+
+  complete (completeCallback) {
+    this.completeCallback = () => {
+      this.$modal.modal('hide')
+      completeCallback(Authentication.user)
+    }
+    return this
   }
 }

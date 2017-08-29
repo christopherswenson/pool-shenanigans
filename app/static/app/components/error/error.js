@@ -6,6 +6,8 @@ class ErrorPane {
     this.errorMap = params["errorMap"] || {}
   }
 
+  // Property getters and setters
+
   set error (value) {
     this._error = value
     if (value == null) {

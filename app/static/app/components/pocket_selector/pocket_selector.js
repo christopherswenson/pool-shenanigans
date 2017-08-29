@@ -9,6 +9,8 @@ class PocketSelector {
     this.setupChoices()
   }
 
+  // Property getters and setters
+
   set value (value) {
     this._value = value
     this.$choices.attr("selected", null)
@@ -20,15 +22,19 @@ class PocketSelector {
     return this._value
   }
 
-  change (changeCallback) {
-    this.changeCallback = changeCallback
-    return this
-  }
+  // Setup methods
 
   setupChoices () {
     this.$choices.click((event) => {
       let $target = $(event.target)
       this.value = parseInt($target.attr("number"))
     })
+  }
+
+  // Event handlers
+
+  change (changeCallback) {
+    this.changeCallback = changeCallback
+    return this
   }
 }

@@ -125,9 +125,9 @@ def login(request):
         raise Http404
 
     credentials_json = parse_json(request.body)
-    email = credentials_json['email']
+    username = credentials_json['username']
     password = credentials_json['password']
-    user = app_authenticate(request, username=email, password=password)
+    user = app_authenticate(request, username=username, password=password)
     if user is not None:
         app_login(request, user)
         return JsonResponse({
@@ -154,11 +154,11 @@ def register(request):
     credentials_json = registration_json["credentials"]
     player_json = registration_json["player"]
 
-    email = credentials_json['email']
+    username = credentials_json['username']
     password = credentials_json['password']
     invitation_code = credentials_json['invitationCode']
 
-    existing_user = User.objects.filter(email=email).first()
+    existing_user = User.objects.filter(username=username).first()
     if existing_user is not None:
         return JsonResponse({
             'status': 'error',
@@ -172,7 +172,7 @@ def register(request):
             'error': "invalid_invitation"
         })
 
-    user = User.objects.create_user(email, email, password)
+    user = User.objects.create_user(username, username, password)
     app_login(request, user)
 
     user.first_name = player_json["firstName"]

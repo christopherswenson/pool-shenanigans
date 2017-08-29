@@ -24,9 +24,9 @@ const Authentication = {
     })
   },
 
-  login (email, password, completeCallback) {
+  login (username, password, completeCallback) {
     AuthenticatedUserStore.login({
-      "email": email,
+      "username": username,
       "password": password
     }, (response) => {
       this.authenticatedUser = response["user"]

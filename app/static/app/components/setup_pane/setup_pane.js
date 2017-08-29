@@ -36,7 +36,7 @@ class SetupPane {
     this.breakingPlayer = params["breakingPlayer"]
   }
 
-  // Property getters
+  // Property getters and setters
 
   get isPlayerTwoNewGuest () {
     return this.guestCheckbox.value

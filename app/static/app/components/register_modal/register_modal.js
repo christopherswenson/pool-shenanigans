@@ -7,7 +7,7 @@ class RegisterModal {
 
     this.$element = loadTemplate($element, "register_modal.html")
 
-    this.$emailInput = this.$element.find("#email-input")
+    this.$usernameInput = this.$element.find("#username-input")
     this.$passwordInput = this.$element.find("#password-input")
     this.$passwordRepeatInput = this.$element.find("#password-repeat-input")
     this.$firstNameInput = this.$element.find("#first-name-input")
@@ -24,29 +24,23 @@ class RegisterModal {
         "no_password_match": "Passwords do not match",
         "no_first_name": "First name must not be blank",
         "no_last_name": "Last name must not be blank",
-        "no_email": "Email must not be blank",
+        "no_username": "Username must not be blank",
         "user_exists": "Username exists",
         "password_too_short": `Password must be ${MIN_PASSWORD_LENGTH}+ characters`,
         "no_invitation_code": "An invitation code is required",
-        "invalid_invitation": "Invalid invitation code",
-        "invalid_email": "Invalid email address",
+        "invalid_invitation": "Invalid invitation code"
       }
     })
 
     this.setupRegisterButton()
     this.setupCloseButton()
+    this.setupEnterShortcut()
   }
 
-  complete (completeCallback) {
-    this.completeCallback = () => {
-      this.$modal.modal('hide')
-      completeCallback(Authentication.user)
-    }
-    return this
-  }
+  // Property getters and setters
 
-  get emailValue () {
-    return this.$emailInput.val().trim()
+  get usernameValue () {
+    return this.$usernameInput.val().trim()
   }
 
   get passwordValue () {
@@ -69,20 +63,13 @@ class RegisterModal {
     return this.$invitationCodeInput.val().trim()
   }
 
-  isEmailValid () {
-    let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-    return re.test(this.emailValue)
-  }
-
   get validationError () {
     if (this.firstNameValue == "") {
       return "no_first_name"
     } else if (this.lastNameValue == "") {
       return "no_last_name"
-    } else if (this.emailValue == "") {
-      return "no_email"
-    } else if (!this.isEmailValid()) {
-      return "invalid_email"
+    } else if (this.usernameValue == "") {
+      return "no_username"
     } else if (this.passwordValue.length < MIN_PASSWORD_LENGTH) {
       return "password_too_short"
     } else if (this.passwordRepeatValue != this.passwordValue) {
@@ -92,12 +79,11 @@ class RegisterModal {
     }
   }
 
+  // Setup methods
+
   setupRegisterButton () {
     this.$registerButton.click( () => {
-      this.errorComponent.error = this.validationError
-      if (this.validationError == null) {
-        this.register()
-      }
+      this.sumbit()
     })
   }
 
@@ -107,15 +93,32 @@ class RegisterModal {
     })
   }
 
+  setupEnterShortcut () {
+    this.$element.keypress((event) => {
+      if (event.which == ENTER_KEY) {
+        this.sumbit()
+      }
+    })
+  }
+
+  // Controller methods
+
   updateRegisterButton () {
     this.$registerButton.prop("disabled", this.registering)
+  }
+
+  sumbit () {
+    this.errorComponent.error = this.validationError
+    if (this.validationError == null) {
+      this.register()
+    }
   }
 
   register () {
     this.registering = true
     this.updateRegisterButton()
     Authentication.register({
-      "email": this.emailValue,
+      "username": this.usernameValue,
       "password": this.passwordValue,
       "invitationCode": this.invitationCodeValue
     }, {
@@ -131,5 +134,15 @@ class RegisterModal {
         this.completeCallback()
       }
     })
+  }
+
+  // Event handlers
+
+  complete (completeCallback) {
+    this.completeCallback = () => {
+      this.$modal.modal('hide')
+      completeCallback(Authentication.user)
+    }
+    return this
   }
 }

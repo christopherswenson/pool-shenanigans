@@ -14,8 +14,11 @@ class GamesPage {
 
     this.setupNewGameButton()
     this.setupLogoutButton()
+
     this.ensureLogin()
   }
+
+  // Property getters and setters
 
   get gameId () {
     return parseInt(this.$gameSelector.val())
@@ -26,6 +29,8 @@ class GamesPage {
       return game.id == this.gameId
     })
   }
+
+  // Content manipulation methods
 
   loginSuccess () {
     this.setupGameSelector()
@@ -38,18 +43,6 @@ class GamesPage {
     let hidden = Authentication.user == null || !Authentication.user.isAdmin
     this.$adminButton.attr("hidden", hidden)
     this.$dbName.html(hidden ? "" : Meta.get("db_name"))
-  }
-
-  setupLogoutButton () {
-    this.$logoutButton.click( () => {
-      this.$logoutButton.prop("disabled", true)
-      Authentication.logout(() => {
-        this.$logoutButton.prop("disabled", false)
-        this.$embedIframe.attr("src", "")
-        this.updateGreeting()
-        this.ensureLogin()
-      })
-    })
   }
 
   ensureLogin () {
@@ -66,6 +59,36 @@ class GamesPage {
     }
   }
 
+  loadDashboard () {
+    if (Authentication.user == null) return
+    if (this.game == null) return
+    GameStore.embed_url(this.game["id"], (embed_url) => {
+      this.$embedIframe.attr("src", embed_url)
+    })
+  }
+
+  updateGameOptions () {
+    this.$gameSelector.empty().append(this.games.map((game) => {
+      let $option = $("<option></option>").val(game["id"])
+      $option.html(game["id"])
+      return $option
+    }))
+  }
+
+  // Setup methods
+
+  setupLogoutButton () {
+    this.$logoutButton.click( () => {
+      this.$logoutButton.prop("disabled", true)
+      Authentication.logout(() => {
+        this.$logoutButton.prop("disabled", false)
+        this.$embedIframe.attr("src", "")
+        this.updateGreeting()
+        this.ensureLogin()
+      })
+    })
+  }
+
   setupNewGameButton () {
     this.$newGameButton.click( () => {
       let createGamePaneComponent = new CreateGameModal(this.$element.find("new-game-modal-container")).complete((game) => {
@@ -75,22 +98,6 @@ class GamesPage {
         this.loadDashboard()
       })
     })
-  }
-
-  loadDashboard () {
-    if (Authentication.user == null) return
-    if (this.game == null) return
-    GameStore.embed_url(this.game["id"], (embed_url) => {
-      this.$embedIframe.attr("src", embed_url)
-    })
-  }
-
-  updateGameOptions() {
-    this.$gameSelector.empty().append(this.games.map((game) => {
-      let $option = $("<option></option>").val(game["id"])
-      $option.html(game["id"])
-      return $option
-    }))
   }
 
   setupGameSelector () {
