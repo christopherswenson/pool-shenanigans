@@ -19,11 +19,22 @@ class Checkbox {
     return !!this.$element.attr("selected")
   }
 
+  set disabled (value) {
+    this.$element.attr("disabled", value || null)
+    console.log(this.disabled)
+  }
+
+  get disabled () {
+    return this.$element.attr("disabled")
+  }
+
   // Setup methods
 
   setupClickEvent () {
     this.$element.click( () => {
-      this.value = !this.value
+      if (!this.disabled) {
+        this.value = !this.value
+      }
     })
   }
 

@@ -3,7 +3,7 @@ checkbox {
   width: 38px;
   display: inline-block;
   border-radius: 10px;
-  border:1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   margin-right: 10px;
   overflow: hidden;
 }
@@ -35,6 +35,19 @@ checkbox i.fa {
 
 checkbox[selected] i.fa {
   display: inline-block;
+}
+
+checkbox[disabled] {
+  background-color: #eceeef;
+}
+
+checkbox[disabled] i.fa {
+  color: #7e8386;
+}
+
+checkbox:hover, checkbox:focus {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  outline: none;
 }
 
 .checkbox-label {

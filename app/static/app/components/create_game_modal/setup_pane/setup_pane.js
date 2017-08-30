@@ -26,9 +26,9 @@ class SetupPane {
       }
     })
 
-    this.setupPlayerTwoOptions()
     this.setupGuestCheckbox()
-    this.setupPlayerOneLabel ()
+    this.setupPlayerTwoOptions()
+    this.setupPlayerOneLabel()
     this.setupBreakingPlayerOptions()
     this.setupGuestNameInputs()
 
@@ -81,8 +81,7 @@ class SetupPane {
   }
 
   set playerTwo (player) {
-    if (this.isPlayerTwoNewGuest) {
-      this.isPlayerTwoNewGuest = true
+    if (this.isPlayerTwoNewGuest || this.playerTwoOptions == []) {
       if (player && player["isGuest"]) {
         this.guestFirstName = player["firstName"]
         this.guestLastName = player["lastName"]
@@ -160,6 +159,10 @@ class SetupPane {
       this.$guestLastName.prop("disabled", !value)
       this.setupBreakingPlayerOptions()
     })
+    if (this.playerTwoOptions.length == 0) {
+      this.guestCheckbox.value = true
+      this.guestCheckbox.disabled = true
+    }
   }
 
   setupBreakingPlayerOptions () {

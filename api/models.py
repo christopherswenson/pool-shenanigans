@@ -47,6 +47,10 @@ class Player(models.Model):
             'isGuest': self.is_guest
         }
 
+class Friendship(models.Model):
+    giver = models.ForeignKey(Player, related_name="friendship_giver_set")
+    taker = models.ForeignKey(Player, related_name="friendship_taker_set")
+
 class GamePlayer(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)

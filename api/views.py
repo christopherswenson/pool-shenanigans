@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from os import environ
 from django.contrib.auth.decorators import login_required
 
-from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation
+from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation, Friendship
 
 from .models import Player
 
@@ -20,7 +20,12 @@ def players(request):
         raise Http404
 
     players = Player.objects.all()
-    data = {'players': [ player.to_dict() for player in players ]}
+    friends = [
+        player
+        for player in players
+        if Friendship.objects.filter(giver=player, taker=request.user.player).first() is not None
+    ] + [request.user.player]
+    data = {'players': [ player.to_dict() for player in friends ]}
     return JsonResponse(data)
 
 @login_required
@@ -58,6 +63,11 @@ def games(request):
                 is_guest = True
             )
             guest.save()
+            friendship = Friendship(
+                giver=guest,
+                taker=request.user.player
+            )
+            friendship.save()
         game_player = GamePlayer(
             game=game,
             player=guest if guest is not None else Player.objects.get(pk=game_player_json["id"]),
