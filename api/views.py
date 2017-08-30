@@ -32,13 +32,37 @@ def players(request):
     return JsonResponse(data)
 
 @login_required
+def friends(request):
+    guests = [friendship.giver for friendship in request.user.player.friendship_taker_set.all()]
+    data = {'guests': [ guest.to_dict() for guest in guests ]}
+    return JsonResponse(data)
+
+@login_required
+def guests(request):
+    guests = [friendship.giver for friendship in request.user.player.friendship_taker_set.all() if friendship.player.is_guest]
+    data = {'guests': [ guest.to_dict() for guest in guests ]}
+    return JsonResponse(data)
+
+@login_required
+def tables(request):
+    tables = request.user.player.table_set.all()
+    data = {'tables': [ table.to_dict() for table in tables ]}
+    return JsonResponse(data)
+
+@login_required
 @csrf_exempt
 def games(request):
     if request.method == 'GET':
 
+        tables = request.user.player.table_set.all()
         games = Game.objects.all()
+        my_games = [
+            game for game in games
+            if (request.user.player.is_in_game(game) or
+                any(map((lambda table: game.is_in_table(table)), tables)))
+        ]
         data = {
-            'games': [ game.to_dict() for game in games ],
+            'games': [ game.to_dict() for game in my_games ],
         }
         return JsonResponse(data)
 
@@ -82,7 +106,7 @@ def games(request):
     shot_number_in_game = 0
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
         turn_player_json = turn_json["player"]
-        player = guest if turn_player_json["isGuest"] else Player.objects.get(pk=turn_player_json["id"])
+        player = guest if turn_player_json["id"] == "guest" else Player.objects.get(pk=turn_player_json["id"])
         turn = Turn(
             game=game,
             player=player,

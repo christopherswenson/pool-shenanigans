@@ -23,6 +23,9 @@ class Game(models.Model):
             'id': self.pk
         }
 
+    def is_in_table(self, table):
+        table_member_ids = [tablemember.player.pk for tablemember in table.tablemember_set.all()]
+        return all(map((lambda gameplayer: gameplayer.player.pk in table_member_ids), self.gameplayer_set.all()))
 
 def generate_guest_code():
     while True:
@@ -47,6 +50,10 @@ class Player(models.Model):
             'isGuest': self.is_guest
         }
 
+    def is_in_game(self, game):
+        player_ids = [gameplayer.player.pk for gameplayer in game.gameplayer_set.all()]
+        return self.pk in player_ids
+
     def __unicode__(self):
        return 'Player: %s %s' % (self.first_name, self.last_name)
 
@@ -60,6 +67,13 @@ class Friendship(models.Model):
 class Table(models.Model):
     name = models.CharField(max_length=64, unique=True)
     creator = models.ForeignKey(Player)
+
+    def to_dict(self):
+        return {
+            'id': self.pk,
+            'name': self.name,
+            'creator': self.creator.to_dict()
+        }
 
     def __unicode__(self):
        return 'Table: %s' % self.name
