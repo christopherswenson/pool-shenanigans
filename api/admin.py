@@ -1,7 +1,7 @@
 
 from django.contrib import admin
 
-from .models import Game, GamePlayer, Turn, Shot, Player, Ball, Pocket, Invitation, Friendship
+from .models import Game, GamePlayer, Turn, Shot, Player, Ball, Pocket, Invitation, Friendship, Table, TableMember
 
 class GameInline(admin.TabularInline):
     model = Game
@@ -30,3 +30,5 @@ admin.site.register(Ball)
 admin.site.register(Pocket)
 admin.site.register(Invitation)
 admin.site.register(Friendship)
+admin.site.register(Table)
+admin.site.register(TableMember)

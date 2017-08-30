@@ -47,9 +47,29 @@ class Player(models.Model):
             'isGuest': self.is_guest
         }
 
+    def __unicode__(self):
+       return 'Player: %s %s' % (self.first_name, self.last_name)
+
 class Friendship(models.Model):
     giver = models.ForeignKey(Player, related_name="friendship_giver_set")
     taker = models.ForeignKey(Player, related_name="friendship_taker_set")
+
+    def __unicode__(self):
+       return 'Friendship: %s -> %s' % (self.giver.first_name, self.taker.first_name)
+
+class Table(models.Model):
+    name = models.CharField(max_length=64, unique=True)
+    creator = models.ForeignKey(Player)
+
+    def __unicode__(self):
+       return 'Table: %s' % self.name
+
+class TableMember(models.Model):
+    table = models.ForeignKey(Table)
+    player = models.ForeignKey(Player)
+
+    def __unicode__(self):
+       return 'TableMember: %s (%s)' % (self.player.first_name, self.table.name)
 
 class GamePlayer(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -66,9 +86,15 @@ class Ball(models.Model):
     kind = models.CharField(max_length=255)
     number = models.IntegerField(default=0)
 
+    def __unicode__(self):
+       return 'Ball #%s' % self.number
+
 class Pocket(models.Model):
     kind = models.CharField(max_length=255)
     number = models.IntegerField(default=0)
+
+    def __unicode__(self):
+       return 'Poket #%s' % self.number
 
 class Shot(models.Model):
     turn = models.ForeignKey(Turn, on_delete=models.CASCADE)
@@ -96,3 +122,6 @@ class BallPocketed(models.Model):
 
 class Invitation(models.Model):
     code = models.CharField(max_length=255)
+
+    def __unicode__(self):
+       return 'Invitation: %s' % self.code

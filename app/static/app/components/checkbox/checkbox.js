@@ -21,7 +21,6 @@ class Checkbox {
 
   set disabled (value) {
     this.$element.attr("disabled", value || null)
-    console.log(this.disabled)
   }
 
   get disabled () {

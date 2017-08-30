@@ -20,11 +20,14 @@ def players(request):
         raise Http404
 
     players = Player.objects.all()
-    friends = [
+    tables = request.user.player.table_set.all()
+    table_members = [member.player for table in tables for member in table.tablemember_set.all()]
+    print tables
+    friends = set([
         player
         for player in players
         if Friendship.objects.filter(giver=player, taker=request.user.player).first() is not None
-    ] + [request.user.player]
+    ] + [request.user.player] + table_members)
     data = {'players': [ player.to_dict() for player in friends ]}
     return JsonResponse(data)
 
