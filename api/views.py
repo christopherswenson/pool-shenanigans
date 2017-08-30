@@ -32,9 +32,36 @@ def players(request):
     return JsonResponse(data)
 
 @login_required
-def friends(request):
-    guests = [friendship.giver for friendship in request.user.player.friendship_taker_set.all()]
-    data = {'guests': [ guest.to_dict() for guest in guests ]}
+def friends_taken(request):
+    friends = [friendship.giver for friendship in request.user.player.friendship_taker_set.all()]
+    data = {'friends': [ friend.to_dict() for friend in friends ]}
+    return JsonResponse(data)
+
+@login_required
+def friends_given(request):
+    friends = [friendship.taker for friendship in request.user.player.friendship_giver_set.all()]
+    data = {'friends': [ friend.to_dict() for friend in friends ]}
+    return JsonResponse(data)
+
+@login_required
+def friends_give(request):
+    if request.method != 'POST':
+        raise Http404
+
+    request_json = parse_json(request.body)
+    friend = Player.objects.filter(username=request_json["username"]).first()
+    if friend is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_user"
+        })
+    if Friendship.objects.filter(giver=request.user.player, taker=friend) is not None:
+        return JsonResponse({
+            "status": "error",
+            "error": "friendship_exists"
+        })
+    friendship = Friendship(giver=request.user.player, taker=friend)
+    friendship.save()
     return JsonResponse(data)
 
 @login_required

@@ -13,6 +13,9 @@ urlpatterns = [
     url(r'^user/register$', views.register, name='register'),
     url(r'^user/tables$', views.tables, name='tables'),
     url(r'^user/guests$', views.guests, name='guests'),
-    url(r'^user/friends$', views.friends, name='friends'),
+
+    url(r'^user/friends/taken$', views.friends_taken, name='friends_taken'),
+    url(r'^user/friends/given$', views.friends_given, name='friends_given'),
+    
     url(r'^user$', views.user, name='user'),
 ]
