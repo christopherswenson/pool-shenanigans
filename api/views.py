@@ -55,13 +55,55 @@ def friends_give(request):
             "status": "error",
             "error": "no_matching_user"
         })
-    if Friendship.objects.filter(giver=request.user.player, taker=friend) is not None:
+    if Friendship.objects.filter(giver=request.user.player, taker=friend).first() is not None:
         return JsonResponse({
             "status": "error",
             "error": "friendship_exists"
         })
     friendship = Friendship(giver=request.user.player, taker=friend)
     friendship.save()
+    return JsonResponse(data)
+
+@login_required
+def table_join(request):
+    if request.method != 'POST':
+        raise Http404
+
+    request_json = parse_json(request.body)
+    table = Table.objects.filter(name=request_json["name"]).first()
+    if table is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table"
+        })
+    if TableMember.objects.filter(table=table, player=request.user.player) is not None:
+        return JsonResponse({
+            "status": "error",
+            "error": "table_member_exists"
+        })
+    table_member = TableMember(table=table, player=request.user.player)
+    table_member.save()
+    return JsonResponse(data)
+
+@login_required
+def table_leave(request):
+    if request.method != 'POST':
+        raise Http404
+
+    request_json = parse_json(request.body)
+    table = Table.objects.filter(name=request_json["name"]).first()
+    if table is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table"
+        })
+    table_member = TableMember.objects.filter(table=table, player=request.user.player).first()
+    if table_member is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table_member"
+        })
+    table_member.delete()
     return JsonResponse(data)
 
 @login_required
