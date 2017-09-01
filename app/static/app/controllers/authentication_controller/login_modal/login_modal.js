@@ -15,11 +15,7 @@ class LoginModal {
 
     this.$modal.modal()
 
-    this.errorComponent = new ErrorPane(this.$errorPane, {
-      "errorMap": {
-        "invalid_login_credentials": "Invalid Login Credentials"
-      }
-    })
+    this.errorComponent = new ErrorPane(this.$errorPane)
 
     this.setupEnterShortcut()
     this.setupLoginButton()

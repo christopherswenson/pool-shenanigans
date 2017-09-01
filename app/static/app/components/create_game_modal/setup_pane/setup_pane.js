@@ -19,12 +19,7 @@ class SetupPane {
     this.players = params["players"]
 
     this.$errorPane = this.$element.find("#error-pane")
-    this.errorComponent = new ErrorPane(this.$errorPane, {
-      "errorMap": {
-        "no_first_name": "Guest's first name must not be blank",
-        "no_last_name": "Guest's last name must not be blank"
-      }
-    })
+    this.errorComponent = new ErrorPane(this.$errorPane)
 
     this.setupGuestCheckbox()
     this.setupPlayerTwoOptions()
@@ -123,9 +118,9 @@ class SetupPane {
   get validationError () {
     if (this.isPlayerTwoNewGuest) {
       if (this.guestFirstName == "") {
-        return "no_first_name"
+        return "no_guest_first_name"
       } else if (this.guestLastName == "") {
-        return "no_last_name"
+        return "no_guest_last_name"
       }
     }
   }

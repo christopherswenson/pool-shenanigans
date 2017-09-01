@@ -1,0 +1,22 @@
+<template>
+  <div class="container-fluid">
+    <h3>Friends</h3>
+    <div class="input-group">
+      <div class="input-group-addon input-group-addon-md"><i class="fa fa-at" aria-hidden="true"></i></div>
+      <input type="text" class="form-control" id="friend-username-input" placeholder="Friend's username">
+      <span class="input-group-btn input-group-btn-md">
+        <button id="add-friend-button" type="button" class="btn btn-success">Add</button>
+      </span>
+    </div>
+    <hr/>
+    <div id="friends-given" class="input-group-list">
+      <spinner></spinner>
+    </div>
+    <br/>
+    <h3>Requests</h3>
+    <div id="friends-taken" class="input-group-list">
+      <spinner></spinner>
+    </div>
+    <div id="error-pane"></div>
+  </div>
+</template>

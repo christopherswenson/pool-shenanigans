@@ -19,18 +19,7 @@ class RegisterModal {
     this.$modal = this.$element.find("#register-modal")
 
     this.$modal.modal()
-    this.errorComponent = new ErrorPane(this.$errorPane, {
-      "errorMap": {
-        "no_password_match": "Passwords do not match",
-        "no_first_name": "First name must not be blank",
-        "no_last_name": "Last name must not be blank",
-        "no_username": "Username must not be blank",
-        "user_exists": "Username exists",
-        "password_too_short": `Password must be ${MIN_PASSWORD_LENGTH}+ characters`,
-        "no_invitation_code": "An invitation code is required",
-        "invalid_invitation": "Invalid invitation code"
-      }
-    })
+    this.errorComponent = new ErrorPane(this.$errorPane)
 
     this.setupRegisterButton()
     this.setupCloseButton()

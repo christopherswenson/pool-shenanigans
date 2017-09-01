@@ -9,11 +9,13 @@ class GamesPage {
     this.$embedIframe = this.$element.find("#embed-iframe")
     this.$userGreeting = this.$element.find("#user-greeting")
     this.$dbName = this.$element.find("#db-name")
+    this.$accountButton = this.$element.find("#account-button")
 
     this.games = []
 
     this.setupNewGameButton()
     this.setupLogoutButton()
+    this.setupAccountButton()
 
     this.ensureLogin()
   }
@@ -89,9 +91,15 @@ class GamesPage {
     })
   }
 
+  setupAccountButton () {
+    this.$accountButton.click( () => {
+      new AccountModal(this.$element.find("account-modal-container"))
+    })
+  }
+
   setupNewGameButton () {
     this.$newGameButton.click( () => {
-      let createGamePaneComponent = new CreateGameModal(this.$element.find("new-game-modal-container")).complete((game) => {
+      new CreateGameModal(this.$element.find("new-game-modal-container")).complete((game) => {
         this.games.push(game)
         this.updateGameOptions()
         this.$gameSelector.val(game["id"])

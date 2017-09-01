@@ -26,6 +26,22 @@ button[class="close"] {
   min-width: 50px;
 }
 
+.input-group-btn-md > .btn {
+  min-width: 85px;
+}
+
+.form-control.form-control-fixed {
+  display: inline-block;
+}
+
+.form-control-fixed span {
+  display: inline;
+}
+
+.input-group-list .input-group {
+  margin-bottom: 10px;
+}
+
 .btn-working[disabled] {
   background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(0.25, rgba(255, 255, 255, 0.15)), color-stop(0.25, transparent), color-stop(0.5, transparent), color-stop(0.5, rgba(255, 255, 255, 0.15)), color-stop(0.75, rgba(255, 255, 255, 0.15)), color-stop(0.75, transparent), to(transparent));
   background-image: -webkit-linear-gradient(-45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
@@ -40,4 +56,47 @@ button[class="close"] {
   -webkit-animation: progress-bar-stripes 2s linear infinite;
   -moz-animation: progress-bar-stripes 2s linear infinite;
   animation: progress-bar-stripes 2s linear infinite;
+}
+
+.modal-content {
+  overflow: hidden;
+}
+
+.btn-xs {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.list-group-item > .list-group-item-addon {
+  position: absolute;
+  right: 15px;
+}
+
+.modal-header + .modal-sidebar {
+  top: 69px;
+}
+
+.modal-sidebar {
+  padding: 15px;
+  position: absolute;
+  width: 25%;
+  left: 15px;
+}
+
+.modal-header + .modal-sidebar + .modal-body {
+  top: 69px;
+  height: calc(100% - 69px);
+}
+
+.modal-sidebar + .modal-body {
+  position: absolute;
+  width: 75%;
+  left: 25%;
+  height: 100%;
+}
+
+[hidden] {
+  display: none;
 }

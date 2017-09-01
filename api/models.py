@@ -47,7 +47,8 @@ class Player(models.Model):
             'lastName': self.last_name,
             'userId': self.user.pk if self.user else None,
             'fullName': "%s %s" % (self.first_name, self.last_name),
-            'isGuest': self.is_guest
+            'isGuest': self.is_guest,
+            'guestCode': self.guest_code
         }
 
     def is_in_game(self, game):
