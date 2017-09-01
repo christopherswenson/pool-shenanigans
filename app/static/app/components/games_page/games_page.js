@@ -39,6 +39,8 @@ class GamesPage {
     this.updateGreeting()
     this.loadDashboard()
     this.maybeEnableAdminButton()
+    this.$accountButton.prop("disabled", false)
+    this.$logoutButton.prop("disabled", false)
   }
 
   maybeEnableAdminButton () {
