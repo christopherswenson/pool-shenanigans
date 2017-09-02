@@ -14,7 +14,8 @@ class SetupPane {
 
     this.guestPlayer = {
       "id": "guest",
-      "isGuest": true
+      "isGuest": true,
+      "isNewGuest": true
     }
     this.players = params["players"]
 
@@ -27,6 +28,7 @@ class SetupPane {
     this.setupBreakingPlayerOptions()
     this.setupGuestNameInputs()
 
+    this.isPlayerTwoNewGuest = params["isPlayerTwoNewGuest"]
     this.playerTwo = params["playerTwo"] || this.playerTwoOptions[0]
     this.breakingPlayer = params["breakingPlayer"]
   }
@@ -111,7 +113,8 @@ class SetupPane {
       "breakingPlayer": this.breakingPlayer,
       "playerTwo": this.playerTwo,
       "otherPlayer": this.otherPlayer,
-      "playerOne": this.playerOne
+      "playerOne": this.playerOne,
+      "isPlayerTwoNewGuest": this.isPlayerTwoNewGuest
     }
   }
 

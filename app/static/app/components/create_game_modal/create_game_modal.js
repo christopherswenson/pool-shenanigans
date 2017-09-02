@@ -132,13 +132,15 @@ class CreateGameModal {
     let setupComponent = new SetupPane(this.$modalContent, {
       "playerTwo": this.game["playerTwo"] || null,
       "breakingPlayer": this.game["breakingPlayer"] || null,
-      "players": this.players
+      "players": this.players,
+      "isPlayerTwoNewGuest": this.game["isPlayerTwoNewGuest"]
     }).complete((results) => {
       this.game["breakingPlayer"] = results["breakingPlayer"]
       this.game["otherPlayer"] = results["otherPlayer"]
       this.game["playerTwo"] = results["playerTwo"]
       this.game["gamePlayers"] = [results["playerOne"], results["playerTwo"]]
       this.game["turns"] = []
+      this.game["isPlayerTwoNewGuest"] = results["isPlayerTwoNewGuest"]
       this.game["startedAt"] = new Date(Date.now())
       this.turnStart()
     })
