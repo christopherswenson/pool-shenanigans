@@ -115,6 +115,9 @@ class CreateGameModal {
         }
         let lastShot = this.currentShot
         let lastBallsPocketed = lastShot["ballsPocketed"]
+        if (lastShot["closesTable"]) {
+          this.currentPlayer["pattern"] = this.otherPlayer["pattern"] = null
+        }
         this.currentShot["ballsPocketed"] = null
         this.shotResult({
           "ballsPocketed": lastBallsPocketed,
@@ -211,6 +214,7 @@ class CreateGameModal {
       let previousShot = this.previousShot
       shot["isSuccess"] = false
       shot["isFinal"] = false
+      shot["closesTable"] = false
       shot["isScratch"] = shot["isTableScratch"] = outcome["isTableScratch"]
       shot["ballsPocketed"] = outcome["ballsPocketed"]
       shot["ballsRemaining"] = shot["ballsRemainingBefore"].slice()
@@ -221,11 +225,6 @@ class CreateGameModal {
         ballPocketed["isSlop"] = false
         if (isCalled) {
           shot["isSuccess"] = true
-          let ballPattern = this.patternOfBall(ballPocketed["number"])
-          if (this.currentPlayer["pattern"] == null && ballPattern != null) {
-            this.currentPlayer["pattern"] = ballPattern
-            this.otherPlayer["pattern"] = this.otherPattern(ballPattern)
-          }
         } else if (ballPocketed["number"] != 0 && ballPocketed["number"] != 8 && !turn["isBreakingTurn"]) {
           ballPocketed["isSlop"] = true
         }
@@ -237,6 +236,14 @@ class CreateGameModal {
       if (outcome["isTableScratch"]) shot["isScratch"] = true
       if (shot["isBreak"]) shot["isSuccess"] = shot["ballsPocketed"].length > 0
       if (shot["isScratch"]) shot["isSuccess"] = false
+      if (shot["isSuccess"]) {
+        let ballPattern = this.patternOfBall(shot["calledBall"])
+        if (this.currentPlayer["pattern"] == null && ballPattern != null) {
+          shot["closesTable"] = true
+          this.currentPlayer["pattern"] = ballPattern
+          this.otherPlayer["pattern"] = this.otherPattern(ballPattern)
+        }
+      }
 
       if (shot["isFinal"]) {
         turn["isFinal"] = true
