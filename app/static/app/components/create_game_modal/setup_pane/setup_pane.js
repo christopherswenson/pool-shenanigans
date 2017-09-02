@@ -6,6 +6,7 @@ class SetupPane {
 
     this.$playerOneLabel = this.$element.find("#player-one-label")
     this.$playerTwoSelect = this.$element.find("#player-two-select")
+    this.$playerTwoGuestLabel = this.$element.find("#player-two-guest-label")
     this.$breakingPlayerSelect = this.$element.find("#breaking-player-select")
     this.$nextButton = this.$element.find("#next-button")
     this.$backButton = this.$element.find("#back-button")
@@ -87,6 +88,7 @@ class SetupPane {
       this.$playerTwoSelect.val(player["id"])
     }
     this.setupBreakingPlayerOptions()
+    this.updatePlayerTwoGuestLabel()
   }
 
   get breakingPlayer () {
@@ -131,7 +133,8 @@ class SetupPane {
   // Setup methods
 
   nameForPlayer (player) {
-    return `${player["firstName"]} ${player["lastName"]} ${player["isGuest"] ? "(guest)" : ""}`
+    let fullName = `${player["firstName"]} ${player["lastName"]}`.trim()
+    return `${fullName} ${player["isGuest"] ? "(guest)" : ""}`.trim()
   }
 
   playerOptions (players) {
@@ -155,6 +158,9 @@ class SetupPane {
       this.$playerTwoSelect.prop("disabled", value)
       this.$guestFirstName.prop("disabled", !value)
       this.$guestLastName.prop("disabled", !value)
+      this.updatePlayerTwoGuestLabel()
+      this.$playerTwoGuestLabel.attr("hidden", !value || null)
+      this.$playerTwoSelect.attr("hidden", value || null)
       this.setupBreakingPlayerOptions()
     })
     if (this.playerTwoOptions.length == 0) {
@@ -175,10 +181,15 @@ class SetupPane {
     this.$playerOneLabel.val(this.playerOne["fullName"])
   }
 
+  updatePlayerTwoGuestLabel () {
+    this.$playerTwoGuestLabel.val(this.nameForPlayer(this.playerTwo))
+  }
+
   setupGuestNameInputs () {
     ;[this.$guestFirstName, this.$guestLastName].forEach(($element) => {
       $element.keyup(() => {
         this.setupBreakingPlayerOptions()
+        this.updatePlayerTwoGuestLabel()
       })
     })
   }
