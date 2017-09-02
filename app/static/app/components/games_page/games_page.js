@@ -71,10 +71,16 @@ class GamesPage {
     })
   }
 
+  gameName (game) {
+    let playerOne = (game["players"][0] || {})
+    let playerTwo = (game["players"][1] || {})
+    return `${playerOne["fullName"]} vs. ${playerTwo["fullName"]} (${game["id"]})`
+  }
+
   updateGameOptions () {
     this.$gameSelector.empty().append(this.games.map((game) => {
       let $option = $("<option></option>").val(game["id"])
-      $option.html(game["id"])
+      $option.html(this.gameName(game))
       return $option
     }))
   }

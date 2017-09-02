@@ -20,7 +20,10 @@ class Game(models.Model):
 
     def to_dict(self):
         return {
-            'id': self.pk
+            'id': self.pk,
+            'started_at': self.started_at,
+            'ended_at': self.ended_at,
+            'players': map((lambda gp: gp.player.to_dict()), self.gameplayer_set.all())
         }
 
     def is_in_table(self, table):
