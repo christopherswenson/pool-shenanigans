@@ -111,14 +111,14 @@ class CreateGameModal {
         if (turn["shots"].length == 1) {
           this.game["turns"].pop()
         } else {
-          this.game["turns"][0]["shots"].pop()
+          turn["shots"].pop()
         }
         let lastShot = this.currentShot
         let lastBallsPocketed = lastShot["ballsPocketed"]
         if (lastShot["closesTable"]) {
           this.currentPlayer["pattern"] = this.otherPlayer["pattern"] = null
         }
-        this.currentShot["ballsPocketed"] = null
+        lastShot["ballsPocketed"] = null
         this.shotResult({
           "ballsPocketed": lastBallsPocketed,
           "isTableScratch": lastShot["isTableScratch"]
