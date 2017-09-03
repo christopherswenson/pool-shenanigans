@@ -51,9 +51,7 @@ class TablesPane {
           $leaveButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
-            let x = this.tables // TODO HACK
-            x.splice(i, 1)
-            this.tables = x
+            this.tables = this.tables.spliced(i, 1)
           }
         })
       })
