@@ -45,15 +45,11 @@ class TablesPane {
       $leaveButton.click(() => {
         $leaveButton.prop("disabled", true)
         this.errorComponent.error = null
-        API.post("/api/user/tables/leave", {
-          "name": table.name
-        }, (response) => {
+        API.post(`/api/user/tables/${table.name}/leave`, null, (response) => {
           $leaveButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
-            let x = this.tables // TODO HACK
-            x.splice(i, 1)
-            this.tables = x
+            this.tables = this.tables.spliced(i, 1)
           }
         })
       })
@@ -78,9 +74,7 @@ class TablesPane {
       } else {
         this.errorComponent.error = null
         this.$joinButton.prop("disabled", true)
-        API.post("/api/user/tables/join", {
-          "name": this.joinTableName
-        }, (response) => {
+        API.post(`/api/user/tables/${this.joinTableName}/join`, null, (response) => {
           this.$joinButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {

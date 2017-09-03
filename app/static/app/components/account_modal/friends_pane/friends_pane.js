@@ -43,9 +43,7 @@ class FriendsPane {
             this.errorComponent.error = response["error"]
             if (response["status"] == "ok") {
               this.friendsGiven = this.friendsGiven.concat(friend)
-              let x = this.friendsTaken // TODO HACK
-              x.splice(i, 1)
-              this.friendsTaken = x
+              this.friendsTaken = this.friendsTaken.spliced(i, 1)
             }
           })
         })
@@ -71,15 +69,11 @@ class FriendsPane {
       $unfriendButton.click( () => {
         $unfriendButton.prop("disabled", true)
         this.errorComponent.error = null
-        API.delete("api/user/friends", {
-          "id": friend.id
-        }, (response) => {
+        API.delete(`api/user/friends/${friend.id}`, null, (response) => {
           $unfriendButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
-            let x = this.friendsGiven // TODO HACK
-            x.splice(i, 1)
-            this.friendsGiven = x
+            this.friendsGiven = this.friendsGiven.spliced(i, 1)
           }
         })
       })

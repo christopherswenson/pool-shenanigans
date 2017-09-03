@@ -29,7 +29,7 @@ class SetupPane {
     this.setupBreakingPlayerOptions()
     this.setupGuestNameInputs()
 
-    this.isPlayerTwoNewGuest = params["isPlayerTwoNewGuest"]
+    this.isPlayerTwoNewGuest = this.playerTwoOptions.length > 0 ? params["isPlayerTwoNewGuest"] : true
     this.playerTwo = params["playerTwo"] || this.playerTwoOptions[0]
     this.breakingPlayer = params["breakingPlayer"]
   }
@@ -152,8 +152,9 @@ class SetupPane {
 
   setupGuestCheckbox () {
     let $guestCheckbox = this.$element.find("checkbox#guest")
+    let initialValue = this.playerTwoOptions.length == 0
     this.guestCheckbox = new Checkbox($guestCheckbox, {
-      "value": false
+      "value": initialValue
     }).change( (value) => {
       this.$playerTwoSelect.prop("disabled", value)
       this.$guestFirstName.prop("disabled", !value)
@@ -163,10 +164,7 @@ class SetupPane {
       this.$playerTwoSelect.attr("hidden", value || null)
       this.setupBreakingPlayerOptions()
     })
-    if (this.playerTwoOptions.length == 0) {
-      this.guestCheckbox.value = true
-      this.guestCheckbox.disabled = true
-    }
+    this.guestCheckbox.disabled = initialValue
   }
 
   setupBreakingPlayerOptions () {
