@@ -3,7 +3,11 @@ span.code {
   border-radius: 3px;
   padding: 1px 6px;
   color: black;
-  margin-bottom: 2px;
   font-family: "Courier New", Courier, monospace;
   border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+#guest-code {
+  float: right;
+  font-size: 0.9em;
 }

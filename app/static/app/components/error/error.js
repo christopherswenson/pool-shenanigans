@@ -7,6 +7,7 @@ const ERROR_MAP = {
   "user_exists": "Username exists",
   "password_too_short": `Password must be 8+ characters`,
   "no_invitation_code": "An invitation code is required",
+  "no_guest_code": "Please enter a guest code",
   "invalid_invitation": "Invalid invitation code",
   "invalid_login_credentials": "Invalid login credentials",
   "no_guest_first_name": "Guest's first name must not be blank",

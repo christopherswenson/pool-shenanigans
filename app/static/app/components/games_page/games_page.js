@@ -66,8 +66,8 @@ class GamesPage {
   loadDashboard () {
     if (Authentication.user == null) return
     if (this.game == null) return
-    GameStore.embed_url(this.game["id"], (embed_url) => {
-      this.$embedIframe.attr("src", embed_url)
+    API.get(`/api/user/games/${this.game["id"]}/embed-url`, (response) => {
+      this.$embedIframe.attr("src", response["embed_url"])
     })
   }
 
@@ -120,8 +120,8 @@ class GamesPage {
     this.$gameSelector.change( () => {
       this.loadDashboard()
     })
-    GameStore.get((games) => {
-      this.games = games
+    API.get("/api/user/games", (response) => {
+      this.games = response["games"]
       this.updateGameOptions()
       this.loadDashboard()
     })

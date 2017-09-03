@@ -37,8 +37,10 @@ class GameSummaryPane {
   complete (completeCallback) {
     this.$saveButton.click( () => {
       this.$saveButton.prop("disabled", true)
-      GameStore.post(this.game, (game) => {
-        completeCallback(game)
+      API.post("/api/user/games", {
+        "game": this.game
+      }, (response) => {
+        completeCallback(response["game"])
       })
     })
     return this

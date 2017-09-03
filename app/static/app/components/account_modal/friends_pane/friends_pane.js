@@ -36,7 +36,9 @@ class FriendsPane {
         $acceptButton.click( () => {
           $acceptButton.prop("disabled", true)
           this.errorComponent.error = null
-          AuthenticatedUserStore.giveFriendship({"id": friend.id}, (response) => {
+          API.post("/api/user/friends", {
+            "id": friend.id
+          }, (response) => {
             $acceptButton.prop("disabled", false)
             this.errorComponent.error = response["error"]
             if (response["status"] == "ok") {
@@ -69,7 +71,9 @@ class FriendsPane {
       $unfriendButton.click( () => {
         $unfriendButton.prop("disabled", true)
         this.errorComponent.error = null
-        AuthenticatedUserStore.unfriend(friend.id, (response) => {
+        API.delete("api/user/friends", {
+          "id": friend.id
+        }, (response) => {
           $unfriendButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
@@ -90,12 +94,12 @@ class FriendsPane {
   // Setup methods
 
   retrieveFriends () {
-    AuthenticatedUserStore.friendRequests((friends) => {
-      this.friendsTaken = friends
+    API.get("/api/user/friend-requests", (response) => {
+      this.friendsTaken = response["friends"]
     })
 
-    AuthenticatedUserStore.friends((friends) => {
-      this.friendsGiven = friends
+    API.get("api/user/friends", (response) => {
+      this.friendsGiven = response["friends"]
     })
   }
 
@@ -106,7 +110,9 @@ class FriendsPane {
       } else {
         this.$addFriendButton.prop("disabled", true)
         this.errorComponent.error = null
-        AuthenticatedUserStore.giveFriendship({"username": this.friendUsername}, (response) => {
+        API.post("/api/user/friends", {
+          "username": this.friendUsername
+        }, (response) => {
           this.$addFriendButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {

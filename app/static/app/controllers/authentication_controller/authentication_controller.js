@@ -16,16 +16,16 @@ const Authentication = {
   },
 
   ensureLogin (completeCallback) {
-    AuthenticatedUserStore.get((user) => {
-      this.authenticatedUser = user
+    API.get("/api/user", (data) => {
+      this.authenticatedUser = data["user"]
       if (this.authenticatedUser == null) {
         this.displayLoginModal(completeCallback)
-      } else completeCallback(user)
+      } else completeCallback(this.authenticatedUser)
     })
   },
 
   login (username, password, completeCallback) {
-    AuthenticatedUserStore.login({
+    API.post("/api/user/login", {
       "username": username,
       "password": password
     }, (response) => {
@@ -42,11 +42,11 @@ const Authentication = {
       })
   },
 
-  register (credentials, user, completeCallback) {
-    AuthenticatedUserStore.register(
-      credentials,
-      user,
-      (response) => {
+  register (credentials, player, completeCallback) {
+    API.post("/api/user/register", {
+      "credentials": credentials,
+      "player": player
+    }, (response) => {
         this.authenticatedUser = response["user"]
         completeCallback(response)
       }
@@ -54,7 +54,7 @@ const Authentication = {
   },
 
   logout (completeCallback) {
-    AuthenticatedUserStore.logout(() => {
+    API.post("/api/user/logout", null, (response) => {
       this.authenticatedUser = null
       completeCallback()
     })

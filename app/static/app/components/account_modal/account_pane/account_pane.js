@@ -88,7 +88,9 @@ class AccountPane {
         } else {
           this.$lastNameEditButton.prop("disabled", true)
           this.errorComponent.error = null
-          AuthenticatedUserStore.setLastName(this.lastNameValue, (response) => {
+          API.patch("/api/user", {
+            "lastName": this.lastNameValue
+          }, (response) => {
             this.errorComponent.error = response["error"]
             this.$lastNameEditButton.prop("disabled", false)
             if (response["status"] == "ok") {
@@ -113,7 +115,9 @@ class AccountPane {
         } else {
           this.$firstNameEditButton.prop("disabled", true)
           this.errorComponent.error = null
-          AuthenticatedUserStore.setFirstName(this.firstNameValue, (response) => {
+          API.patch("/api/user", {
+            "firstName": this.firstNameValue
+          }, (response) => {
             this.errorComponent.error = response["error"]
             this.$firstNameEditButton.prop("disabled", false)
             if (response["status"] == "ok") {
@@ -138,7 +142,9 @@ class AccountPane {
         } else {
           this.$usernameEditButton.prop("disabled", true)
           this.errorComponent.error = null
-          AuthenticatedUserStore.setUsername(this.usernameValue, (response) => {
+          API.patch("/api/user", {
+            "username": this.usernameValue
+          }, (response) => {
             this.errorComponent.error = response["error"]
             this.$usernameEditButton.prop("disabled", false)
             if (response["status"] == "ok") {
@@ -166,7 +172,10 @@ class AccountPane {
       } else {
         this.$passwordResetButton.prop("disabled", true)
         this.errorComponent.error = null
-        AuthenticatedUserStore.setPassword(this.oldPasswordValue, this.passwordValue, (response) => {
+        API.patch("/api/user", {
+          "oldPassword": this.oldPasswordValue,
+          "newPassword": this.passwordValue
+        }, (response) => {
           this.errorComponent.error = response["error"]
           this.$passwordResetButton.prop("disabled", false)
           if (response["status"] == "ok") {

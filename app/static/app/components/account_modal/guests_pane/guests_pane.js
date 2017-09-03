@@ -23,7 +23,10 @@ class GuestsPane {
         let $deleteButton = $listing.find("#delete-button")
         $deleteButton.click( () => {
           $deleteButton.prop("disabled", true)
-          AuthenticatedUserStore.removeGuest(guest.id, () => {
+          API.delete("/api/user/guests", {
+            "id": guest.id
+          }, (data) => {
+            // TODO error?
             $deleteButton.prop("disabled", true)
             let x = this.guests // TODO HACK
             x.splice(i, 1)
@@ -49,8 +52,8 @@ class GuestsPane {
   }
 
   retrieveGuests () {
-    AuthenticatedUserStore.guests((guests) => {
-      this.guests = guests
+    API.get("/api/user/guests", (data) => {
+      this.guests = data["guests"]
     })
   }
 }

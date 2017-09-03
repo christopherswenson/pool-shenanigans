@@ -45,7 +45,9 @@ class TablesPane {
       $leaveButton.click(() => {
         $leaveButton.prop("disabled", true)
         this.errorComponent.error = null
-        TableStore.leave(table.name, (response) => {
+        API.post("/api/user/tables/leave", {
+          "name": table.name
+        }, (response) => {
           $leaveButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
@@ -64,8 +66,8 @@ class TablesPane {
   }
 
   retrieveTables () {
-    AuthenticatedUserStore.tables((tables) => {
-      this.tables = tables
+    API.get("/api/user/tables", (data) => {
+      this.tables = data["tables"]
     })
   }
 
@@ -76,7 +78,9 @@ class TablesPane {
       } else {
         this.errorComponent.error = null
         this.$joinButton.prop("disabled", true)
-        TableStore.join(this.joinTableName, (response) => {
+        API.post("/api/user/tables/join", {
+          "name": this.joinTableName
+        }, (response) => {
           this.$joinButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
@@ -95,10 +99,11 @@ class TablesPane {
       } else {
         this.errorComponent.error = null
         this.$createButton.prop("disabled", true)
-        TableStore.create(this.createTableName, (response) => {
+        API.post("/api/user/tables", {
+          "name": this.createTableName
+        }, (response) => {
           this.$createButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
-          console.log(response)
           if (response["status"] == "ok") {
             this.tables = this.tables.concat(response["table"])
             this.createTableName = ""

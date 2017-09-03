@@ -9,8 +9,8 @@ class CreateGameModal {
 
     this.game = {}
 
-    PlayerStore.get((players) => {
-      this.players = players
+    API.get("/api/user/players", (response) => {
+      this.players = response["players"]
       this.gameSetup()
     })
 
