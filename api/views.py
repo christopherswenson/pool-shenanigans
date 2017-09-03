@@ -287,11 +287,14 @@ class Games(View):
 
         for game_player_json in game_json["gamePlayers"]:
             if game_player_json["id"] == "guest":
+                invitation = Invitation(is_guest_code=True)
+                invitation.save()
                 guest = Player(
                     first_name=game_player_json["firstName"],
                     last_name=game_player_json["lastName"],
                     user = None,
-                    is_guest = True
+                    is_guest = True,
+                    guest_invitation = invitation
                 )
                 guest.save()
                 friendship = Friendship(
@@ -414,6 +417,7 @@ class Users(View):
                 })
             request.user.set_password(request_json["newPassword"])
             request.user.save()
+            app_login(request, request.user)
         return JsonResponse({
             "status": "ok"
         })
@@ -456,18 +460,18 @@ class Users(View):
             password = credentials_json['password']
             invitation_code = credentials_json['invitationCode']
 
-            existing_user = User.objects.filter(username=username).first()
-            if existing_user is not None:
-                return JsonResponse({
-                    'status': 'error',
-                    'error': "user_exists"
-                })
-
             invitation = Invitation.objects.filter(code=invitation_code).first()
             if invitation is None:
                 return JsonResponse({
                     'status': 'error',
                     'error': "invalid_invitation"
+                })
+
+            existing_user = User.objects.filter(username=username).first()
+            if existing_user is not None:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': "user_exists"
                 })
 
             user = User.objects.create_user(username, username, password)
@@ -477,12 +481,27 @@ class Users(View):
             user.last_name = player_json["lastName"]
             user.save()
 
-            player = Player(
-                first_name=user.first_name,
-                last_name=user.last_name,
-                user=user
-            )
-            player.save()
+            if invitation.is_guest_code:
+                guest = Player.objects.filter(guest_invitation=invitation, is_guest=True).first()
+                if guest is None:
+                    return JsonResponse({
+                        "status": "error",
+                        "error": "no_matching_guest"
+                    })
+                guest.first_name = user.first_name
+                guest.last_name = user.last_name
+                guest.user = user
+                guest.is_guest = False
+                guest.guest_invitation = None
+                guest.save()
+                invitation.delete()
+            else:
+                player = Player(
+                    first_name=user.first_name,
+                    last_name=user.last_name,
+                    user=user
+                )
+                player.save()
 
             return JsonResponse({
                 'status': 'ok',

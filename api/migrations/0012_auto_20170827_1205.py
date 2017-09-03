@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='player',
             name='guest_code',
-            field=models.CharField(default=api.models.generate_guest_code, max_length=255, unique=True),
+            field=models.CharField(default=api.models.generate_invitation_code, max_length=255, unique=True),
         ),
         migrations.AddField(
             model_name='player',

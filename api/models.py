@@ -30,17 +30,24 @@ class Game(models.Model):
         table_member_ids = [tablemember.player.pk for tablemember in table.tablemember_set.all()]
         return all(map((lambda gameplayer: gameplayer.player.pk in table_member_ids), self.gameplayer_set.all()))
 
-def generate_guest_code():
+def generate_invitation_code():
     while True:
         code = get_random_string(6, '123456789ABCDEFGHIJKLMNPQRSTUVWXYZ')
-        if Player.objects.filter(guest_code=code).first() is None:
+        if Invitation.objects.filter(code=code).first() is None:
             return code
+
+class Invitation(models.Model):
+    code = models.CharField(max_length=255, default=generate_invitation_code)
+    is_guest_code = models.BooleanField(default=False)
+
+    def __unicode__(self):
+       return 'Invitation: %s' % self.code
 
 class Player(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
-    guest_code = models.CharField(max_length=255, default=generate_guest_code, unique=True)
+    guest_invitation = models.ForeignKey(Invitation, null=True)
     is_guest = models.BooleanField(default=False)
 
     def to_dict(self):
@@ -51,7 +58,7 @@ class Player(models.Model):
             'userId': self.user.pk if self.user else None,
             'fullName': "%s %s" % (self.first_name, self.last_name),
             'isGuest': self.is_guest,
-            'guestCode': self.guest_code
+            'guestCode': self.guest_invitation.code if self.guest_invitation else None
         }
 
     def is_in_game(self, game):
@@ -137,9 +144,3 @@ class BallPocketed(models.Model):
     ball = models.ForeignKey(Ball, on_delete=models.CASCADE)
     is_called = models.BooleanField(default=False)
     is_slop = models.BooleanField(default=False)
-
-class Invitation(models.Model):
-    code = models.CharField(max_length=255)
-
-    def __unicode__(self):
-       return 'Invitation: %s' % self.code
