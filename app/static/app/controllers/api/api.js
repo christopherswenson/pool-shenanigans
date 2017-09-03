@@ -10,6 +10,7 @@ const API = {
   },
 
   makeRequest (method, route, data, callback) {
+    if (callback == null) callback = (() => 0)
     let xhr = new XMLHttpRequest()
     let url = API.url(route)
     xhr.open(method, url, true)
