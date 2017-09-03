@@ -1,10 +1,11 @@
 from django.conf.urls import url
 
 from . import views
+from .views import Players
 
 urlpatterns = [
 
-    url(r'^user/players$', views.players, name='players'),
+    url(r'^user/players$', Players.as_view()),
 
     url(r'^user/games$', views.games, name='games'),
     url(r'^user/games/(?P<game_id>\d+)/embed-url$', views.game_embed_url, name='game_embed_url'),

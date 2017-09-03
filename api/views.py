@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate as app_authenticate, login as app_l
 from django.contrib.auth.models import User
 from os import environ
 from django.contrib.auth.decorators import login_required
+from django.views import View
+from django.utils.decorators import method_decorator
 
 from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation, Friendship, Table, TableMember
 
@@ -14,22 +16,22 @@ from .models import Player
 
 from .looker_embed import embed_url_for_user
 
-@login_required
-def players(request):
-    if request.method != 'GET':
-        raise Http404
+class Players(View):
 
-    players = Player.objects.all()
-    tables = request.user.player.table_set.all()
-    table_members = [member.player for table in tables for member in table.tablemember_set.all()]
-    print tables
-    friends = set([
-        player
-        for player in players
-        if Friendship.objects.filter(giver=player, taker=request.user.player).first() is not None
-    ] + [request.user.player] + table_members)
-    data = {'players': [ player.to_dict() for player in friends ]}
-    return JsonResponse(data)
+    @method_decorator(login_required)
+    def get(self, request):
+        players = Player.objects.all()
+        tables = request.user.player.table_set.all()
+        table_members = [member.player for table in tables for member in table.tablemember_set.all()]
+        print tables
+        friends = set([
+            player
+            for player in players
+            if Friendship.objects.filter(giver=player, taker=request.user.player).first() is not None
+        ] + [request.user.player] + table_members)
+        return JsonResponse({
+            'players': [ player.to_dict() for player in friends ]
+        })
 
 @login_required
 def friend_requests(request):
