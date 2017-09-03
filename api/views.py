@@ -129,16 +129,32 @@ class FriendRequests(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class Guests(View):
 
-    def get(self, request):
+    def get(self, request, player_id=None):
         guests = [friendship.giver for friendship in request.user.player.friendship_taker_set.all() if friendship.giver.is_guest]
+        if player_id is not None:
+            guest = Player.objects.filter(pk=player_id).first()
+            if guest is None or guest not in guests:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'no_matching_guest'
+                })
+            else:
+                return JsonResponse({
+                    'status': 'ok',
+                    'guest': guest.to_dict()
+                })
         return JsonResponse({
             'guests': [ guest.to_dict() for guest in guests ]
         })
 
-    def delete(self, request):
-        request_json = parse_json(request.body)
+    def delete(self, request, player_id=None):
+        if player_id is None:
+            return JsonResponse({
+                'status': 'error',
+                'error': 'no_player_id'
+            })
 
-        guest = Player.objects.filter(pk=request_json["id"]).first()
+        guest = Player.objects.filter(pk=player_id).first()
         if guest is None:
             return JsonResponse({
                 "status": "error",

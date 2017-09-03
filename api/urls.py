@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^user/register$', Users.Register.as_view()),
 
     url(r'^user/guests$', Guests.as_view()),
-    # DELETE url(r'^user/guests/1$', views.guests, name='guests'),
+    url(r'^user/guests/(?P<player_id>\d+)$', Guests.as_view()),
 
     url(r'^user/tables$', Tables.as_view()),
     url(r'^user/tables/join$', Tables.Join.as_view()),
