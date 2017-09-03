@@ -205,9 +205,14 @@ class Tables(View):
     @method_decorator(login_required, name="dispatch")
     @method_decorator(csrf_exempt, name="dispatch")
     class Join(View):
-        def post(self, request):
-            request_json = parse_json(request.body)
-            table = Table.objects.filter(name=request_json["name"]).first()
+        def post(self, request, table_name=None):
+            if table_name is None:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'no_table_name'
+                })
+
+            table = Table.objects.filter(name=table_name).first()
             if table is None:
                 return JsonResponse({
                     "status": "error",
@@ -228,9 +233,14 @@ class Tables(View):
     @method_decorator(login_required, name="dispatch")
     @method_decorator(csrf_exempt, name="dispatch")
     class Leave(View):
-        def post(self, request):
-            request_json = parse_json(request.body)
-            table = Table.objects.filter(name=request_json["name"]).first()
+        def post(self, request, table_name=None):
+            if table_name is None:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'no_table_name'
+                })
+
+            table = Table.objects.filter(name=table_name).first()
             if table is None:
                 return JsonResponse({
                     "status": "error",

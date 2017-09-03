@@ -19,11 +19,8 @@ urlpatterns = [
     url(r'^user/guests/(?P<player_id>\d+)$', Guests.as_view()),
 
     url(r'^user/tables$', Tables.as_view()),
-    url(r'^user/tables/join$', Tables.Join.as_view()),
-    # url(r'^user/tables/:name/join$', views.table_join, name='table_join'),
-    url(r'^user/tables/leave$', Tables.Leave.as_view()),
-    # url(r'^user/tables/:name/leave$', views.table_leave, name='table_leave'),
-    # POST url(r'^user/tables/$', views.table_create, name='table_create'),
+    url(r'^user/tables/(?P<table_name>.+)/join$', Tables.Join.as_view()),
+    url(r'^user/tables/(?P<table_name>.+)/leave$', Tables.Leave.as_view()),
 
     url(r'^user/friends/(?P<player_id>\d+)$', Friends.as_view()),
     url(r'^user/friends$', Friends.as_view()),
