@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from . import views
-from .views import Players
+from .views import Players, Friends
 
 urlpatterns = [
 
@@ -26,9 +26,9 @@ urlpatterns = [
     # url(r'^user/tables/:name/leave$', views.table_leave, name='table_leave'),
     # POST url(r'^user/tables/$', views.table_create, name='table_create'),
 
-    url(r'^user/friends$', views.friends, name='friends'),
+    url(r'^user/friends$', Friends.as_view()),
     url(r'^user/friend-requests$', views.friend_requests, name='friend_requests'),
-    url(r'^user/friends/1$', views.friend_requests, name='friend_requests'),
+    # url(r'^user/friends/1$', views.friend_requests, name='friend_requests'),
 
 
 ]

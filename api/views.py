@@ -16,9 +16,10 @@ from .models import Player
 
 from .looker_embed import embed_url_for_user
 
+@method_decorator(login_required, name="dispatch")
+@method_decorator(csrf_exempt, name="dispatch")
 class Players(View):
 
-    @method_decorator(login_required)
     def get(self, request):
         players = Player.objects.all()
         tables = request.user.player.table_set.all()
@@ -44,14 +45,17 @@ def friend_requests(request):
     data = {'friends': [ request.to_dict() for request in requests ]}
     return JsonResponse(data)
 
-@login_required
-@csrf_exempt
-def friends(request):
-    if request.method == "GET":
+@method_decorator(login_required, name="dispatch")
+@method_decorator(csrf_exempt, name="dispatch")
+class Friends(View):
+
+    def get(self, request):
         friends = [friendship.taker for friendship in request.user.player.friendship_giver_set.all()]
-        data = {'friends': [ friend.to_dict() for friend in friends ]}
-        return JsonResponse(data)
-    elif request.method == 'POST':
+        return JsonResponse({
+            'friends': [ friend.to_dict() for friend in friends ]
+        })
+
+    def post(self, request):
         request_json = parse_json(request.body)
         friend = None
         if request_json.get("username", None) is not None:
@@ -85,7 +89,8 @@ def friends(request):
             "status": "ok",
             "friend": friend.to_dict()
         })
-    elif request.method == "DELETE":
+
+    def delete(self, request):
         request_json = parse_json(request.body)
         friend = Player.objects.filter(pk=request_json["id"]).first()
         friendship = Friendship.objects.filter(giver=request.user.player, taker=friend).first()
@@ -97,9 +102,6 @@ def friends(request):
         return JsonResponse({
             "status": "ok"
         })
-    else:
-        raise Http404
-
 
 @login_required
 @csrf_exempt
