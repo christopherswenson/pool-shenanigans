@@ -67,7 +67,7 @@ class GamesPage {
     if (Authentication.user == null) return
     if (this.game == null) return
     API.get(`/api/user/games/${this.game["id"]}/embed-url`, (response) => {
-      this.$embedIframe.attr("src", response["embed_url"])
+      this.$embedIframe.attr("src", response["url"])
     })
   }
 
