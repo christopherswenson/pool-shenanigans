@@ -38,11 +38,25 @@ class Players(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class Friends(View):
 
-    def get(self, request):
+    def get(self, request, player_id=None):
         friends = [friendship.taker for friendship in request.user.player.friendship_giver_set.all()]
-        return JsonResponse({
-            'friends': [ friend.to_dict() for friend in friends ]
-        })
+        if player_id is not None:
+            friend = Player.objects.filter(pk=player_id).first()
+            if friend is None or friend not in friends:
+                return JsonResponse({
+                    'status': 'error',
+                    'error': 'no_matching_friend'
+                })
+            else:
+                return JsonResponse({
+                    'status': 'ok',
+                    'friend': friend.to_dict()
+                })
+        else:
+            return JsonResponse({
+                'status': 'ok',
+                'friends': [ friend.to_dict() for friend in friends ]
+            })
 
     def post(self, request):
         request_json = parse_json(request.body)
@@ -79,9 +93,14 @@ class Friends(View):
             "friend": friend.to_dict()
         })
 
-    def delete(self, request):
-        request_json = parse_json(request.body)
-        friend = Player.objects.filter(pk=request_json["id"]).first()
+    def delete(self, request, player_id=None):
+        if player_id is None:
+            return JsonResponse({
+                "status": "error",
+                "error": "no_player_id"
+            })
+
+        friend = Player.objects.filter(pk=player_id).first()
         friendship = Friendship.objects.filter(giver=request.user.player, taker=friend).first()
         if friendship is not None:
             friendship.delete()

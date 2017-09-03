@@ -11,11 +11,20 @@ const API = {
 
   makeRequest (method, route, data, callback) {
     let xhr = new XMLHttpRequest()
-    xhr.open(method, API.url(route), true)
+    let url = API.url(route)
+    xhr.open(method, url, true)
     xhr.onreadystatechange = () => {
       if (xhr.readyState == XMLHttpRequest.DONE) {
-        let response = JSON.parse(xhr.responseText)
-        Log.info(route, response)
+        let response = null
+        if (xhr.status == 200) {
+          response = JSON.parse(xhr.responseText)
+        } else {
+          response = {
+            'status': 'error',
+            'error': 'server_error'
+          }
+        }
+        Log.info(`${method} ${url}`, response)
         callback(response)
       }
     }

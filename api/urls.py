@@ -25,6 +25,7 @@ urlpatterns = [
     # url(r'^user/tables/:name/leave$', views.table_leave, name='table_leave'),
     # POST url(r'^user/tables/$', views.table_create, name='table_create'),
 
+    url(r'^user/friends/(?P<player_id>\d+)$', Friends.as_view()),
     url(r'^user/friends$', Friends.as_view()),
     url(r'^user/friend-requests$', FriendRequests.as_view()),
     # url(r'^user/friends/1$', views.friend_requests, name='friend_requests'),

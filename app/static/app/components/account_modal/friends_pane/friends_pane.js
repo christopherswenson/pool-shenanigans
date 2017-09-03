@@ -71,9 +71,7 @@ class FriendsPane {
       $unfriendButton.click( () => {
         $unfriendButton.prop("disabled", true)
         this.errorComponent.error = null
-        API.delete("api/user/friends", {
-          "id": friend.id
-        }, (response) => {
+        API.delete(`api/user/friends/${friend.id}`, null, (response) => {
           $unfriendButton.prop("disabled", false)
           this.errorComponent.error = response["error"]
           if (response["status"] == "ok") {
