@@ -1,63 +1,60 @@
 
-class AuthenticationController {
-  constructor () {
-    this.authenticatedUser = null
-  }
+const Authentication = {
+
+  authenticatedUser: null,
 
   get user () {
     return this.authenticatedUser
-  }
+  },
 
   displayLoginModal (completeCallback) {
-    let loginPaneComponent = new LoginPaneComponent
-    loginPaneComponent.display($("login-modal-container"))
-    loginPaneComponent.onComplete((user) => {
-      this.authenticatedUser = user
-      completeCallback(user)
-    })
-  }
+    let loginPaneComponent = new LoginModal($("login-modal-container"))
+      .complete((user) => {
+        this.authenticatedUser = user
+        completeCallback(user)
+      })
+  },
 
   ensureLogin (completeCallback) {
-    AuthenticatedUserStore.get((user) => {
-      this.authenticatedUser = user
+    API.get("/api/user", (data) => {
+      this.authenticatedUser = data["user"]
       if (this.authenticatedUser == null) {
         this.displayLoginModal(completeCallback)
-      } else completeCallback(user)
+      } else completeCallback(this.authenticatedUser)
     })
-  }
+  },
 
-  login (email, password, completeCallback) {
-    AuthenticatedUserStore.login({
-      "email": email,
+  login (username, password, completeCallback) {
+    API.post("/api/user/login", {
+      "username": username,
       "password": password
     }, (response) => {
       this.authenticatedUser = response["user"]
       completeCallback(response)
     })
-  }
+  },
 
   displayRegisterModal (username, password, completeCallback) {
-    let registerModalComponent = new RegisterModalComponent
-    registerModalComponent.display($("register-modal-container"))
-    registerModalComponent.onComplete((user) => {
-      this.authenticatedUser = user
-      completeCallback(user)
-    })
-  }
+    let registerModalComponent = new RegisterModal($("register-modal-container"))
+      .complete((user) => {
+        this.authenticatedUser = user
+        completeCallback(user)
+      })
+  },
 
-  register (credentials, user, completeCallback) {
-    AuthenticatedUserStore.register(
-      credentials,
-      user,
-      (response) => {
+  register (credentials, player, completeCallback) {
+    API.post("/api/user/register", {
+      "credentials": credentials,
+      "player": player
+    }, (response) => {
         this.authenticatedUser = response["user"]
         completeCallback(response)
       }
     )
-  }
+  },
 
   logout (completeCallback) {
-    AuthenticatedUserStore.logout(() => {
+    API.post("/api/user/logout", null, (response) => {
       this.authenticatedUser = null
       completeCallback()
     })

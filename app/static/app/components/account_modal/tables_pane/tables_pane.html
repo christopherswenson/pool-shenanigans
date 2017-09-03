@@ -1,0 +1,26 @@
+<template>
+  <div class="container-fluid">
+    <h3>Pool Tables</h3>
+    <div class="input-group-list">
+      <div class="input-group">
+        <div class="input-group-addon input-group-addon-md"><i class="fa fa-globe" aria-hidden="true"></i></div>
+        <input type="text" class="form-control" id="join-table-name-input" placeholder="Existing table name">
+        <span class="input-group-btn input-group-btn-md">
+          <button id="join-button" type="button" class="btn btn-primary btn-working">Join</button>
+        </span>
+      </div>
+      <div class="input-group">
+        <div class="input-group-addon input-group-addon-md"><i class="fa fa-globe" aria-hidden="true"></i></div>
+        <input type="text" class="form-control" id="create-table-name-input" placeholder="New table name">
+        <span class="input-group-btn input-group-btn-md">
+          <button id="create-button" type="button" class="btn btn-success btn-working">Create</button>
+        </span>
+      </div>
+      <hr/>
+      <div id="tables" class="input-group-list">
+        <spinner></spinner>
+      </div>
+      <div id="error-pane"></div>
+    </div>
+  </div>
+</template>

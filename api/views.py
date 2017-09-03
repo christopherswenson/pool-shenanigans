@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from os import environ
 from django.contrib.auth.decorators import login_required
 
-from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation
+from .models import Game, Turn, Shot, Pocket, Ball, BallPocketed, GamePlayer, BallRemaining, Invitation, Friendship, Table, TableMember
 
 from .models import Player
 
@@ -20,17 +20,213 @@ def players(request):
         raise Http404
 
     players = Player.objects.all()
-    data = {'players': [ player.toDict() for player in players ]}
+    tables = request.user.player.table_set.all()
+    table_members = [member.player for table in tables for member in table.tablemember_set.all()]
+    print tables
+    friends = set([
+        player
+        for player in players
+        if Friendship.objects.filter(giver=player, taker=request.user.player).first() is not None
+    ] + [request.user.player] + table_members)
+    data = {'players': [ player.to_dict() for player in friends ]}
     return JsonResponse(data)
+
+@login_required
+def friend_requests(request):
+    requests = [
+        friendship.giver
+        for friendship in request.user.player.friendship_taker_set.all()
+        if (Friendship.objects.filter(taker=friendship.giver, giver=request.user.player).first() is None and
+            not friendship.giver.is_guest)
+    ]
+    data = {'friends': [ request.to_dict() for request in requests ]}
+    return JsonResponse(data)
+
+@login_required
+@csrf_exempt
+def friends(request):
+    if request.method == "GET":
+        friends = [friendship.taker for friendship in request.user.player.friendship_giver_set.all()]
+        data = {'friends': [ friend.to_dict() for friend in friends ]}
+        return JsonResponse(data)
+    elif request.method == 'POST':
+        request_json = parse_json(request.body)
+        friend = None
+        if request_json.get("username", None) is not None:
+            if request_json["username"] == request.user.username:
+                return JsonResponse({
+                    "status": "error",
+                    "error": "self_friending"
+                })
+            user = User.objects.filter(username=request_json["username"]).first()
+            if user is None:
+                return JsonResponse({
+                    "status": "error",
+                    "error": "no_matching_username"
+                })
+            friend = user.player
+        if request_json.get("id", None) is not None:
+            friend = Player.objects.filter(pk=request_json["id"]).first()
+        if friend is None:
+            return JsonResponse({
+                "status": "error",
+                "error": "no_matching_user"
+            })
+        if Friendship.objects.filter(giver=request.user.player, taker=friend).first() is not None:
+            return JsonResponse({
+                "status": "error",
+                "error": "friendship_exists"
+            })
+        friendship = Friendship(giver=request.user.player, taker=friend)
+        friendship.save()
+        return JsonResponse({
+            "status": "ok",
+            "friend": friend.to_dict()
+        })
+    elif request.method == "DELETE":
+        request_json = parse_json(request.body)
+        friend = Player.objects.filter(pk=request_json["id"]).first()
+        friendship = Friendship.objects.filter(giver=request.user.player, taker=friend).first()
+        if friendship is not None:
+            friendship.delete()
+        friendship = Friendship.objects.filter(giver=friend, taker=request.user.player).first()
+        if friendship is not None:
+            friendship.delete()
+        return JsonResponse({
+            "status": "ok"
+        })
+    else:
+        raise Http404
+
+
+@login_required
+@csrf_exempt
+def table_join(request):
+    if request.method != 'POST':
+        raise Http404
+
+    request_json = parse_json(request.body)
+    table = Table.objects.filter(name=request_json["name"]).first()
+    if table is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table"
+        })
+    if TableMember.objects.filter(table=table, player=request.user.player).first() is not None:
+        return JsonResponse({
+            "status": "error",
+            "error": "table_member_exists"
+        })
+    table_member = TableMember(table=table, player=request.user.player)
+    table_member.save()
+    return JsonResponse({
+        'status': 'ok',
+        'table': table.to_dict()
+    })
+
+@login_required
+@csrf_exempt
+def table_leave(request):
+    if request.method != 'POST':
+        raise Http404
+
+    request_json = parse_json(request.body)
+    table = Table.objects.filter(name=request_json["name"]).first()
+    if table is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table"
+        })
+    table_member = TableMember.objects.filter(table=table, player=request.user.player).first()
+    if table_member is None:
+        return JsonResponse({
+            "status": "error",
+            "error": "no_matching_table_member"
+        })
+    table_member.delete()
+    return JsonResponse({
+        "status": "ok"
+    })
+
+# /api/user/guests
+#  GET         - returns user's guests
+#  DELETE (id) - removes guest with given id
+@login_required
+@csrf_exempt
+def guests(request):
+    if request.method == 'GET':
+        guests = [friendship.giver for friendship in request.user.player.friendship_taker_set.all() if friendship.giver.is_guest]
+        return JsonResponse({
+            'guests': [ guest.to_dict() for guest in guests ]
+        })
+    elif request.method == 'DELETE':
+        request_json = parse_json(request.body)
+
+        guest = Player.objects.filter(pk=request_json["id"]).first()
+        if guest is None:
+            return JsonResponse({
+                "status": "error",
+                "error": "no_matching_guest"
+            })
+        if not guest.is_guest:
+            return JsonResponse({
+                "status": "error",
+                "error": "player_is_not_guest"
+            })
+        friendship = Friendship.objects.filter(giver=guest, taker=request.user.player).first()
+        if friendship is None:
+            return JsonResponse({
+                "status": "error",
+                "error": "not_your_guest"
+            })
+        friendship.delete()
+        return JsonResponse({
+            "status": "ok"
+        })
+    else:
+        raise Http404
+
+@login_required
+@csrf_exempt
+def tables(request):
+
+    if request.method == 'POST':
+        request_json = parse_json(request.body)
+        if Table.objects.filter(name=request_json["name"]).first() is not None:
+            return JsonResponse({
+                "status": "error",
+                "error": "table_exists"
+            })
+        table = Table(name=request_json["name"], creator=request.user.player)
+        table.save()
+        table_member = TableMember(table=table, player=request.user.player)
+        table_member.save()
+        return JsonResponse({
+            'status': 'ok',
+            'table': table.to_dict()
+        })
+    elif request.method == 'GET':
+        table_members = request.user.player.tablemember_set.all()
+        return JsonResponse({
+            'tables': [ table_member.table.to_dict() for table_member in table_members ]
+        })
+    else:
+        raise Http404
 
 @login_required
 @csrf_exempt
 def games(request):
     if request.method == 'GET':
 
+        tables = request.user.player.table_set.all()
         games = Game.objects.all()
+        my_games = [
+            game for game in games
+            if (request.user.player.is_in_game(game) or
+                any(map((lambda table: game.is_in_table(table)), tables)))
+        ]
         data = {
-            'games': [ game.toDict() for game in games ],
+            'games': [ game.to_dict() for game in my_games ],
         }
         return JsonResponse(data)
 
@@ -47,10 +243,25 @@ def games(request):
     )
     game.save()
 
+    guest = None
+
     for game_player_json in game_json["gamePlayers"]:
+        if game_player_json["id"] == "guest":
+            guest = Player(
+                first_name=game_player_json["firstName"],
+                last_name=game_player_json["lastName"],
+                user = None,
+                is_guest = True
+            )
+            guest.save()
+            friendship = Friendship(
+                giver=guest,
+                taker=request.user.player
+            )
+            friendship.save()
         game_player = GamePlayer(
             game=game,
-            player=Player.objects.get(pk=game_player_json["id"]),
+            player=guest if guest is not None else Player.objects.get(pk=game_player_json["id"]),
             is_winner=game_player_json["isWinner"],
             pattern=game_player_json.get("pattern", None)
         )
@@ -58,9 +269,11 @@ def games(request):
 
     shot_number_in_game = 0
     for (turn_number, turn_json) in enumerate(game_json["turns"]):
+        turn_player_json = turn_json["player"]
+        player = guest if turn_player_json["id"] == "guest" else Player.objects.get(pk=turn_player_json["id"])
         turn = Turn(
             game=game,
-            player=Player.objects.get(pk=turn_json["player"]["id"]),
+            player=player,
             number=turn_number)
         turn.save()
 
@@ -105,7 +318,7 @@ def games(request):
 
             shot_number_in_game += 1
 
-    return JsonResponse({'status': 'ok', 'game': game.toDict()})
+    return JsonResponse({'status': 'ok', 'game': game.to_dict()})
 
 @csrf_exempt
 def login(request):
@@ -113,9 +326,9 @@ def login(request):
         raise Http404
 
     credentials_json = parse_json(request.body)
-    email = credentials_json['email']
+    username = credentials_json['username']
     password = credentials_json['password']
-    user = app_authenticate(request, username=email, password=password)
+    user = app_authenticate(request, username=username, password=password)
     if user is not None:
         app_login(request, user)
         return JsonResponse({
@@ -142,11 +355,11 @@ def register(request):
     credentials_json = registration_json["credentials"]
     player_json = registration_json["player"]
 
-    email = credentials_json['email']
+    username = credentials_json['username']
     password = credentials_json['password']
     invitation_code = credentials_json['invitationCode']
 
-    existing_user = User.objects.filter(email=email).first()
+    existing_user = User.objects.filter(username=username).first()
     if existing_user is not None:
         return JsonResponse({
             'status': 'error',
@@ -160,7 +373,7 @@ def register(request):
             'error': "invalid_invitation"
         })
 
-    user = User.objects.create_user(email, email, password)
+    user = User.objects.create_user(username, username, password)
     app_login(request, user)
 
     user.first_name = player_json["firstName"]
@@ -179,18 +392,52 @@ def register(request):
         'user': user.to_dict()
     })
 
+@csrf_exempt
 def user(request):
-    if request.method != 'GET':
-        raise Http404
+    if request.method == 'GET':
+        if request.user.is_authenticated:
+            return JsonResponse({
+                'user': request.user.to_dict()
+            })
+        else:
+            return JsonResponse({
+                'user': None
+            })
+    elif request.method == 'PATCH':
 
-    if request.user.is_authenticated:
+        request_json = parse_json(request.body)
+        if request_json.get("username", None) is not None:
+            if request.user.username != request_json["username"]:
+                if User.objects.filter(username=request_json["username"]).first() is not None:
+                    return JsonResponse({
+                        "status": "error",
+                        "error": "user_exists"
+                    })
+                request.user.username = request_json["username"]
+                request.user.save()
+        if request_json.get("firstName", None) is not None:
+            request.user.player.first_name = request_json["firstName"]
+            request.user.player.save()
+            request.user.first_name = request_json["firstName"]
+            request.user.save()
+        if request_json.get("lastName", None) is not None:
+            request.user.player.last_name = request_json["lastName"]
+            request.user.player.save()
+            request.user.last_name = request_json["lastName"]
+            request.user.save()
+        if request_json.get("newPassword", None) is not None:
+            if app_authenticate(username=request.user.username, password=request_json["oldPassword"]) is None:
+                return JsonResponse({
+                    "status": "error",
+                    "error": "bad_password"
+                })
+            request.user.set_password(request_json["newPassword"])
+            request.user.save()
         return JsonResponse({
-            'user': request.user.to_dict()
+            "status": "ok"
         })
     else:
-        return JsonResponse({
-            'user': None
-        })
+        raise Http404
 
 
 @login_required
@@ -201,16 +448,3 @@ def game_embed_url(request, game_id=None):
     return JsonResponse({
         'url': embed_url_for_user(request.user, "/embed/dashboards/309?game_id=%s" % game_id)
     })
-
-# # # # # # # # # # # # # # # # # # # # # # # # #
-# helpers
-
-def user_to_dict(self):
-    return {
-        'username': self.get_username(),
-        'fullName': self.get_full_name(),
-        'shortName': self.get_short_name(),
-        "isAdmin": self.is_superuser
-    }
-
-User.add_to_class("to_dict", user_to_dict)

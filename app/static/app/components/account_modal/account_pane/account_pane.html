@@ -1,0 +1,83 @@
+<template>
+  <div class="container-fluid">
+    <h3>Account</h3>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+            <input type="text" class="form-control" id="first-name-input" placeholder="First name" disabled>
+            <span class="input-group-btn input-group-btn-md">
+              <button id="first-name-edit-button" type="button" class="btn btn-secondary btn-working" data-kind="edit">Edit</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-addon input-group-addon-md"><i class="fa fa-user" aria-hidden="true"></i></div>
+            <input type="text" class="form-control" id="last-name-input" placeholder="Last name" disabled>
+            <span class="input-group-btn input-group-btn-md">
+              <button id="last-name-edit-button" type="button" class="btn btn-secondary btn-working" data-kind="edit">Edit</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-addon input-group-addon-md"><i class="fa fa-at" aria-hidden="true"></i></div>
+            <input type="text" class="form-control" id="username-input" placeholder="Username" disabled>
+            <span class="input-group-btn input-group-btn-md">
+              <button id="username-edit-button" type="button" class="btn btn-secondary btn-working" data-kind="edit">Edit</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+            <div class="input-group-addon input-group-addon-md"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+            <input type="password" class="form-control" id="old-password-input" placeholder="Password" disabled>
+            <span class="input-group-btn input-group-btn-md">
+              <button id="password-edit-button" type="button" class="btn btn-secondary">Edit</button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="password-change-form" hidden>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+              <div class="input-group-addon input-group-addon-md"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+              <input type="password" class="form-control" id="password-input" placeholder="New password">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+              <div class="input-group-addon input-group-addon-md"><i class="fa fa-unlock-alt" aria-hidden="true"></i></div>
+              <input type="password" class="form-control" id="password-repeat-input" placeholder="New password (again)">
+              <span class="input-group-btn input-group-btn-md">
+                <button id="password-reset-button" type="button" class="btn btn-success btn-working">Reset</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="error-pane"></div>
+  </div>
+</template>

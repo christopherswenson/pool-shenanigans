@@ -1,0 +1,5 @@
+.sidebar-item:hover, .sidebar-item[selected] {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #337ab7;
+}

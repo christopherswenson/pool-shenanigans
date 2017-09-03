@@ -1,0 +1,13 @@
+span.code {
+  background-color: #eaeaea;
+  border-radius: 3px;
+  padding: 1px 6px;
+  color: black;
+  font-family: "Courier New", Courier, monospace;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+#guest-code {
+  float: right;
+  font-size: 0.9em;
+}

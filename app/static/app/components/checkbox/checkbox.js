@@ -1,30 +1,46 @@
-class CheckboxComponent {
-  constructor (params) {
+class Checkbox {
+  constructor ($element, params) {
+    this.$element = Template.load($element, "checkbox.html")
+
     if (params == null) params = {}
-    this.value = params['value'] || false
     this.changeEvent = (() => null)
-  }
-
-  display ($element) {
-    this.$element = loadTemplate($element, "checkbox.html")
-
-    this.setValue(this.value)
+    this.value = params['value'] || false
     this.setupClickEvent()
   }
 
-  onChange (callback) {
-    this.changeEvent = callback
-  }
+  // Property getters and setters
 
-  setValue (value) {
-    this.value = value
-    this.$element.attr("selected", this.value || null)
+  set value (newValue) {
+    this.$element.attr("selected", newValue || null)
     this.changeEvent(this.value)
   }
 
+  get value () {
+    return !!this.$element.attr("selected")
+  }
+
+  set disabled (value) {
+    this.$element.attr("disabled", value || null)
+  }
+
+  get disabled () {
+    return this.$element.attr("disabled")
+  }
+
+  // Setup methods
+
   setupClickEvent () {
     this.$element.click( () => {
-      this.setValue(!this.value)
+      if (!this.disabled) {
+        this.value = !this.value
+      }
     })
+  }
+
+  // Event handlers
+
+  change (callback) {
+    this.changeEvent = callback
+    return this
   }
 }

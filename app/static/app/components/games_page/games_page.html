@@ -4,7 +4,10 @@
       <h5 class="modal-title inline-block">Game Summary</h5>
       <select class="form-control" id="game-select"></select>
     </span>
-    <button class="btn btn-primary" id="new-game-button">New Game</button>
+    <span>
+      <button class="btn btn-secondary" id="account-button" disabled>Account</button>
+      <button class="btn btn-primary" id="new-game-button">New Game</button>
+    </div>
   </div>
   <div class="modal-body looker-embed-container">
     <iframe id="embed-iframe" class="looker-embed" src=""></iframe>
@@ -14,17 +17,13 @@
     <span>
       <span id="db-name"></span>
       <a class="btn btn-secondary" href="admin/" id="admin-button" hidden>Admin</a>
-      <button class="btn btn-secondary btn-working" id="logout-button">Logout</button>
+      <button class="btn btn-secondary btn-working" id="logout-button" disabled>Logout</button>
     </span>
 
   </div>
 
-  <div class="modal fade" id="new-game-modal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content modal-content-tall"></div>
-    </div>
-  </div>
-
   <login-modal-container></login-modal-container>
   <register-modal-container></register-modal-container>
+  <new-game-modal-container></new-game-modal-container>
+  <account-modal-container></account-modal-container>
 </template>
